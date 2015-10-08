@@ -21,7 +21,7 @@ public class SlaReportGenerator {
     public void generateReport(String incidentFile, String auditFile, String d)
             throws SlaReportGenerationException {
         if(incidentFile.isEmpty() || auditFile.isEmpty()){
-            throw new SlaReportGenerationException("Please Select an incident file and an audit file");
+            throw new SlaReportGenerationException("Please select an incident file and an audit file");
         }
         ExcelReader incidentExcel=new ExcelReader();
         ExcelReader auditExcel=new ExcelReader();

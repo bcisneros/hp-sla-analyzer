@@ -3,6 +3,7 @@ package com.hp.sla.analyser.model.util;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import org.apache.log4j.Logger;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -17,6 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelReader {
 
     private FileInputStream inputFile;
+    final static Logger logger = Logger.getLogger(ExcelReader.class);
 
     public void setInputFile(FileInputStream inputFile) {
         this.inputFile = inputFile;
@@ -26,6 +28,7 @@ public class ExcelReader {
         Workbook w;
 
         try {
+            logger.info("Startig reading the file ");
             XSSFWorkbook myWorkBook = new XSSFWorkbook(inputFile);
             // Return first sheet from the XLSX workbook XSSFSheet mySheet = myWorkBook.getSheetAt(0);
             XSSFSheet mySheet = myWorkBook.getSheetAt(0);
@@ -51,11 +54,10 @@ public class ExcelReader {
                         default:
                     }
                 }
-                System.out.println("");
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("An error", e);
         }
 
     }
