@@ -1,5 +1,10 @@
 package com.hp.sla.analyser.view;
 
+import com.hp.sla.analyser.model.SlaReportGenerator;
+import com.hp.sla.analyser.model.SlaReportGenerationException;
+import com.hp.sla.analyser.model.util.ExcelFilter;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Benjamin Cisneros Barraza
@@ -39,6 +44,11 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
         setResizable(false);
 
         generateSLAButton.setText("Generate SLA Report");
+        generateSLAButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generateSLAButtonActionPerformed(evt);
+            }
+        });
 
         file2NameLabel.setText("Assigment Audit File:");
 
@@ -120,6 +130,15 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
             file2Name.setText(fileName);
         }
     }//GEN-LAST:event_browseFile2ButtonActionPerformed
+
+    private void generateSLAButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateSLAButtonActionPerformed
+       SlaReportGenerator slaRG=new SlaReportGenerator();
+       try{
+           slaRG.generateReport(file1Name.getText(), file2Name.getText(),"C:\\Users\\ramirmal\\Downloads");
+       }catch(SlaReportGenerationException SlaRGE){
+           JOptionPane.showMessageDialog(this, SlaRGE.getLocalizedMessage(),  "Error Generating Report", JOptionPane.ERROR_MESSAGE);
+       } 
+    }//GEN-LAST:event_generateSLAButtonActionPerformed
 
     /**
      * @param args the command line arguments
