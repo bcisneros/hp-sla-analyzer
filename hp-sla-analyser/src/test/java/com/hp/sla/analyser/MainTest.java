@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hp.sla.analyser;
 
 import org.junit.After;
@@ -14,7 +9,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author cisnerob
+ * @author Benjamin Cisneros Barraza
  */
 public class MainTest {
     
@@ -45,8 +40,6 @@ public class MainTest {
         System.out.println("main");
         String[] args = null;
         Main.main(args);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
     
 }
