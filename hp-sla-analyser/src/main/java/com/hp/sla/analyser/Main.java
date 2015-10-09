@@ -9,7 +9,7 @@ package com.hp.sla.analyser;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Starting HP SLA Analyser");
+        System.out.println("Starting HP SLA Analyzer");
     }
 
 }
