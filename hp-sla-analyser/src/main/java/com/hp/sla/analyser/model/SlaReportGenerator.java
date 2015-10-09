@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
@@ -29,8 +30,11 @@ public class SlaReportGenerator {
             incidentExcel.setInputFile(new FileInputStream(new File(incidentFile)));
             auditExcel.setInputFile(new FileInputStream(new File(auditFile)));
             
-            incidentExcel.read();
-            auditExcel.read();
+            XSSFSheet incidentSheet = incidentExcel.read();
+            XSSFSheet auditSheet = auditExcel.read();
+            
+            
+            
         } catch (FileNotFoundException ex) {
             throw new SlaReportGenerationException(ex.getLocalizedMessage());
         } catch (IOException ioe){

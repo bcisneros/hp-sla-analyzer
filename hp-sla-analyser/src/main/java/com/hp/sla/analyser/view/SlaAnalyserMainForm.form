@@ -97,6 +97,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="file1Name">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="browseFile1Button">
       <Properties>
@@ -120,6 +123,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="file2Name">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

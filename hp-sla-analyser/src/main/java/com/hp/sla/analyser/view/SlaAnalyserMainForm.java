@@ -52,6 +52,8 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
 
         file2NameLabel.setText("Assigment Audit File:");
 
+        file1Name.setEditable(false);
+
         browseFile1Button.setText("Browse...");
         browseFile1Button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -67,6 +69,8 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
         });
 
         file1NameLabel.setText("Incident Ticket File:");
+
+        file2Name.setEditable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
