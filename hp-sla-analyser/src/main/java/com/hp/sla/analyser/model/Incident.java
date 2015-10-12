@@ -18,7 +18,7 @@ public class Incident {
     private double timeToFixDuration;
     private String configurationItemLogicalName;
     private String currentStatusPhaseDescription;
-    private boolean isProductionActive;
+    private boolean productionActive;
     private String priority;
     private double agingDurationInDays;
     private String closureCodeDescription;
@@ -87,12 +87,12 @@ public class Incident {
         this.currentStatusPhaseDescription = currentStatusPhaseDescription;
     }
 
-    public boolean isIsProductionActive() {
-        return isProductionActive;
+    public boolean isProductionActive() {
+        return productionActive;
     }
 
-    public void setIsProductionActive(boolean isProductionActive) {
-        this.isProductionActive = isProductionActive;
+    public void setProductionActive(boolean productionActive) {
+        this.productionActive = productionActive;
     }
 
     public String getPriority() {
