@@ -21,18 +21,6 @@ public class Audit {
     public String systemModifiedUser;
     public Date systemModifiedTime;     
 
-    public Audit(String fieldDisplayName, String fieldName, String incidentID, Boolean logicalDeleteFlag, String newVaueText, String previousValueText, int recordNumber, String systemModifiedUser, Date systemModifiedTime) {
-        this.fieldDisplayName = fieldDisplayName;
-        this.fieldName = fieldName;
-        this.incidentID = incidentID;
-        this.logicalDeleteFlag = logicalDeleteFlag;
-        this.newVaueText = newVaueText;
-        this.previousValueText = previousValueText;
-        this.recordNumber = recordNumber;
-        this.systemModifiedUser = systemModifiedUser;
-        this.systemModifiedTime = systemModifiedTime;
-    }
-
     public String getFieldDisplayName() {
         return fieldDisplayName;
     }
