@@ -5,6 +5,7 @@
  */
 package com.hp.sla.analyser.model;
 import java.util.Date;  
+import java.util.Objects;
 
 /**
  *
@@ -92,8 +93,60 @@ public class Audit {
     public void setSystemModifiedTime(Date systemModifiedTime) {
         this.systemModifiedTime = systemModifiedTime;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Audit other = (Audit) obj;
+        if (!Objects.equals(this.fieldDisplayName, other.fieldDisplayName)) {
+            return false;
+        }
+        if (!Objects.equals(this.fieldName, other.fieldName)) {
+            return false;
+        }
+        if (!Objects.equals(this.incidentID, other.incidentID)) {
+            return false;
+        }
+        if (!Objects.equals(this.logicalDeleteFlag, other.logicalDeleteFlag)) {
+            return false;
+        }
+        if (!Objects.equals(this.newVaueText, other.newVaueText)) {
+            return false;
+        }
+        if (!Objects.equals(this.previousValueText, other.previousValueText)) {
+            return false;
+        }
+        if (this.recordNumber != other.recordNumber) {
+            return false;
+        }
+        if (!Objects.equals(this.systemModifiedUser, other.systemModifiedUser)) {
+            return false;
+        }
+        if (!Objects.equals(this.systemModifiedTime, other.systemModifiedTime)) {
+            return false;
+        }
+        return true;
+    }
     
     
+      
+    @Override
+    public String toString(){
+        return "["+fieldDisplayName+", "+fieldName+", "+incidentID+", "+
+                logicalDeleteFlag+", "+newVaueText+", "+previousValueText+", "+
+                +recordNumber+", "+systemModifiedUser+", "+systemModifiedTime+"]";
+    }
     
     
 }
