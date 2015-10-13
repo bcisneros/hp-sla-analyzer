@@ -1,6 +1,7 @@
 package com.hp.sla.analyser.model;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -38,6 +39,7 @@ public class Incident {
     private String configurationItemEnvironment;
     private String currentStatus;
     private String configurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name;
+    private List<Audit> audits;
 
     public String getId() {
         return id;
@@ -245,6 +247,14 @@ public class Incident {
 
     public void setConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name(String configurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name) {
         this.configurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name = configurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name;
+    }
+
+    public List<Audit> getAudits() {
+        return audits;
+    }
+
+    public void setAudits(List<Audit> audits) {
+        this.audits = audits;
     }
 
     @Override

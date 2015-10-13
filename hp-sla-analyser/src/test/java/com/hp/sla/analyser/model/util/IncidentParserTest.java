@@ -54,7 +54,7 @@ public class IncidentParserTest {
         XSSFSheet sheet = excelReader.read();
         IncidentParser instance = new IncidentParser();
         List<Incident> result = instance.parseDocument(sheet);
-        assertNotNull("This must return a not null value", sheet);
+        assertNotNull("This must return a not null value", result);
         assertEquals("This must return 4196 incidents", 4196, result.size());
 
         Incident firstIncident = result.get(0);
