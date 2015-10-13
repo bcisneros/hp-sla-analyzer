@@ -1,13 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hp.sla.analyser.model.util;
 
 import com.hp.sla.analyser.model.Audit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
@@ -15,13 +9,13 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 /**
- *
+ * This class parses the audit document to obtain an Audit List
  * @author ramirmal
  */
 public class AuditParser extends ExcelParser {
 
     @Override
-    public List parseDocument(XSSFSheet sheet) {
+    public List<Audit> parseDocument(XSSFSheet sheet) {
         List data = new ArrayList();
         // Get iterator to all the rows in current sheet 
         Iterator<Row> rowIterator = sheet.iterator();
