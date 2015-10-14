@@ -6,15 +6,31 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.log4j.Logger;
 
-
 /**
  * Determines if an Incident have compliance with the SLA defined by HP
  *
  * @author Benjamin Cisneros Barraza
  */
 public class SlaAnalyzer {
-    
+
     private final Logger logger = Logger.getLogger(SlaAnalyzer.class);
+    private static final ServiceLevelAgreement[][] serviceLevelAgreements
+            = new ServiceLevelAgreement[][]{
+                new ServiceLevelAgreement[]{
+                    ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP,
+                    ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH,
+                    ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM,
+                    ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW},
+                new ServiceLevelAgreement[]{
+                    ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_TOP,
+                    ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH,
+                    ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM,
+                    ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW},
+                new ServiceLevelAgreement[]{
+                    ServiceLevelAgreement.HP_IT_NORMAL_TOP,
+                    ServiceLevelAgreement.HP_IT_NORMAL_HIGH,
+                    ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM,
+                    ServiceLevelAgreement.HP_IT_NORMAL_LOW}};
 
     /**
      * For each incident provided determines if it is in compliance with the SLA
@@ -37,8 +53,8 @@ public class SlaAnalyzer {
         }
         return details;
     }
-    
-    public List<String> getAssignmentGroupsListToAnalize(){
+
+    protected List<String> getAssignmentGroupsListToAnalize() {
         List<String> assignmentGroups = new ArrayList<>();
         assignmentGroups.add("W-INCLV4-FAIT-AP-AR");
         assignmentGroups.add("W-INCLV4-FAIT-LEGAL");
@@ -60,8 +76,8 @@ public class SlaAnalyzer {
         List<Audit> audits = incident.getAudits();
         Collections.sort(audits, new AuditSystemModifiedTimeComparator());
         Audit lastAssignmentGroupAudit = null;
-        for(Audit tempAudit:audits) {
-            if (getAssignmentGroupsListToAnalize().contains(tempAudit.getNewVaueText())){
+        for (Audit tempAudit : audits) {
+            if (getAssignmentGroupsListToAnalize().contains(tempAudit.getNewVaueText())) {
                 lastAssignmentGroupAudit = tempAudit;
                 logger.debug("Last AG Audit: " + lastAssignmentGroupAudit.getNewVaueText());
                 break;
@@ -74,5 +90,51 @@ public class SlaAnalyzer {
         detail.setIncident(incident);
         detail.setComplianceWithSLA(true);
         return detail;
+    }
+
+    protected ServiceLevelAgreement getServiceLevelAgreementByIncident(Incident incident) throws SlaAnalysisException {
+        String criticality = incident.getCriticalityDescription();
+
+        if (criticality == null) {
+            throw new SlaAnalysisException("Incident Critically Description is required to get the SLA");
+        }
+
+        Integer criticalityIndex = null;
+        switch (criticality.toUpperCase()) {
+            case "MISSION CRITICAL":
+                criticalityIndex = 0;
+                break;
+            case "ENTITY ESSENTIAL":
+                criticalityIndex = 1;
+                break;
+            case "NORMAL":
+                criticalityIndex = 2;
+                break;
+            default:
+                throw new SlaAnalysisException("Criticatility \"" + criticality + "\" is not recognized as valid value.");
+        }
+        String priority = incident.getPriority();
+        if (priority == null) {
+            throw new SlaAnalysisException("Incident Priority Description is required to get the SLA");
+        }
+        Integer priorityIndex = null;
+        switch (priority.toUpperCase()) {
+            case "TOP":
+                priorityIndex = 0;
+                break;
+            case "HIGH":
+                priorityIndex = 1;
+                break;
+            case "MEDIUM":
+                priorityIndex = 2;
+                break;
+            case "LOW":
+                priorityIndex = 3;
+                break;
+            default:
+                throw new SlaAnalysisException("Priority \"" + priority + "\" is not recognized as valid value.");
+        }
+
+        return serviceLevelAgreements[criticalityIndex][priorityIndex];
     }
 }

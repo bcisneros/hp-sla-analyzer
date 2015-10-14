@@ -1,6 +1,5 @@
 package com.hp.sla.analyser.model;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +100,7 @@ public class SlaAnalyzerTest {
         Incident incident = new Incident();
         incident.setId("IM0001");
         incident.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00.00"));
-        
+
         List<Audit> audits = new ArrayList<>();
         final Audit audit1 = new Audit();
         audit1.setNewVaueText("ANOTHER-NON-APLYABLE-AG");
@@ -112,7 +111,7 @@ public class SlaAnalyzerTest {
         audit2.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 12:00:00.00"));
         audits.add(audit2);
         incident.setAudits(audits);
-        
+
         return incident;
     }
 
@@ -120,11 +119,50 @@ public class SlaAnalyzerTest {
         Incident incident = new Incident();
         incident.setId("IM0002");
         incident.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00.00"));
-        
+
         List<Audit> audits = new ArrayList<>();
         audits.add(new Audit());
         incident.setAudits(audits);
         return incident;
+    }
+
+    /**
+     * Test of getServiceLevelAgreementByIncident method, of class SlaAnalyzer.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testGetServiceLevelAgreementByIncident() throws Exception {
+        Incident incident = new Incident();
+        incident.setCriticalityDescription("Mission Critical");
+        incident.setPriority("top");
+        assertSame(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP, instance.getServiceLevelAgreementByIncident(incident));
+        incident.setPriority("high");
+        assertSame(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH, instance.getServiceLevelAgreementByIncident(incident));
+        incident.setPriority("medium");
+        assertSame(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM, instance.getServiceLevelAgreementByIncident(incident));
+        incident.setPriority("low");
+        assertSame(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW, instance.getServiceLevelAgreementByIncident(incident));
+        
+        incident.setCriticalityDescription("Entity Essential");
+        incident.setPriority("top");
+        assertSame(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_TOP, instance.getServiceLevelAgreementByIncident(incident));
+        incident.setPriority("high");
+        assertSame(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH, instance.getServiceLevelAgreementByIncident(incident));
+        incident.setPriority("medium");
+        assertSame(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM, instance.getServiceLevelAgreementByIncident(incident));
+        incident.setPriority("low");
+        assertSame(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW, instance.getServiceLevelAgreementByIncident(incident));
+        
+        incident.setCriticalityDescription("Normal");
+        incident.setPriority("top");
+        assertSame(ServiceLevelAgreement.HP_IT_NORMAL_TOP, instance.getServiceLevelAgreementByIncident(incident));
+        incident.setPriority("high");
+        assertSame(ServiceLevelAgreement.HP_IT_NORMAL_HIGH, instance.getServiceLevelAgreementByIncident(incident));
+        incident.setPriority("medium");
+        assertSame(ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM, instance.getServiceLevelAgreementByIncident(incident));
+        incident.setPriority("low");
+        assertSame(ServiceLevelAgreement.HP_IT_NORMAL_LOW, instance.getServiceLevelAgreementByIncident(incident));
     }
 
 }
