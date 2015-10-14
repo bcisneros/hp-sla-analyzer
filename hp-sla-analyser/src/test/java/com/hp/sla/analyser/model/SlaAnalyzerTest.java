@@ -143,7 +143,7 @@ public class SlaAnalyzerTest {
         assertSame(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM, instance.getServiceLevelAgreementByIncident(incident));
         incident.setPriority("low");
         assertSame(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW, instance.getServiceLevelAgreementByIncident(incident));
-        
+
         incident.setCriticalityDescription("Entity Essential");
         incident.setPriority("top");
         assertSame(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_TOP, instance.getServiceLevelAgreementByIncident(incident));
@@ -153,7 +153,7 @@ public class SlaAnalyzerTest {
         assertSame(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM, instance.getServiceLevelAgreementByIncident(incident));
         incident.setPriority("low");
         assertSame(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW, instance.getServiceLevelAgreementByIncident(incident));
-        
+
         incident.setCriticalityDescription("Normal");
         incident.setPriority("top");
         assertSame(ServiceLevelAgreement.HP_IT_NORMAL_TOP, instance.getServiceLevelAgreementByIncident(incident));
@@ -165,4 +165,33 @@ public class SlaAnalyzerTest {
         assertSame(ServiceLevelAgreement.HP_IT_NORMAL_LOW, instance.getServiceLevelAgreementByIncident(incident));
     }
 
+    @Test(expected = SlaAnalysisException.class)
+    public void testGetServiceLevelAgreementByIncidentWithNullCriticality() throws Exception {
+        Incident incident = new Incident();
+        incident.setCriticalityDescription(null);
+        instance.getServiceLevelAgreementByIncident(incident);
+    }
+
+    @Test(expected = SlaAnalysisException.class)
+    public void testGetServiceLevelAgreementByIncidentWithNullPriority() throws Exception {
+        Incident incident = new Incident();
+        incident.setCriticalityDescription("Mission Critical");
+        incident.setPriority(null);
+        instance.getServiceLevelAgreementByIncident(incident);
+    }
+
+    @Test(expected = SlaAnalysisException.class)
+    public void testGetServiceLevelAgreementByIncidentWithNotValidCriticality() throws Exception {
+        Incident incident = new Incident();
+        incident.setCriticalityDescription("An invalid criticality value");
+        instance.getServiceLevelAgreementByIncident(incident);
+    }
+
+    @Test(expected = SlaAnalysisException.class)
+    public void testGetServiceLevelAgreementByIncidentWithNotValidPriority() throws Exception {
+        Incident incident = new Incident();
+        incident.setCriticalityDescription("Mission Critical");
+        incident.setPriority("An invalid priority");
+        instance.getServiceLevelAgreementByIncident(incident);
+    }
 }
