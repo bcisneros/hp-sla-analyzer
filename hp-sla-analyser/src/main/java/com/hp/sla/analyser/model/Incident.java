@@ -1,6 +1,8 @@
 package com.hp.sla.analyser.model;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -255,6 +257,14 @@ public class Incident implements Comparable<Incident>{
 
     public void setAudits(List<Audit> audits) {
         this.audits = audits;
+    }
+    
+    public Timestamp getTimeToFix(ServiceLevelAgreement sla){
+        Calendar c = Calendar.getInstance();       
+        c.setTime(creationTimestamp);
+        c.add(Calendar.HOUR, 
+                2);
+        return new Timestamp(c.getTime().getTime());
     }
 
     @Override
