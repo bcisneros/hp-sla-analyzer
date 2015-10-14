@@ -118,66 +118,31 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void browseFile1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseFile1ButtonActionPerformed
-        int returnVal = fileChooser.showOpenDialog( this );
-        if(returnVal == javax.swing.JFileChooser.APPROVE_OPTION){
-            java.io.File file=fileChooser.getSelectedFile();
-            String fileName=file.toString();
+        int returnVal = fileChooser.showOpenDialog(this);
+        if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File file = fileChooser.getSelectedFile();
+            String fileName = file.toString();
             file1Name.setText(fileName);
         }
     }//GEN-LAST:event_browseFile1ButtonActionPerformed
 
     private void browseFile2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseFile2ButtonActionPerformed
-        int returnVal = fileChooser.showOpenDialog( this );
-        if(returnVal == javax.swing.JFileChooser.APPROVE_OPTION){
-            java.io.File file=fileChooser.getSelectedFile();
-            String fileName=file.toString();
+        int returnVal = fileChooser.showOpenDialog(this);
+        if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File file = fileChooser.getSelectedFile();
+            String fileName = file.toString();
             file2Name.setText(fileName);
         }
     }//GEN-LAST:event_browseFile2ButtonActionPerformed
 
     private void generateSLAButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateSLAButtonActionPerformed
-       SlaReportGenerator slaRG=new SlaReportGenerator();
-       try{
-           slaRG.generateReport(file1Name.getText(), file2Name.getText(),"C:\\Users\\ramirmal\\Downloads");
-       }catch(SlaReportGenerationException SlaRGE){
-           JOptionPane.showMessageDialog(this, SlaRGE.getLocalizedMessage(),  "Error Generating Report", JOptionPane.ERROR_MESSAGE);
-       } 
-    }//GEN-LAST:event_generateSLAButtonActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+        SlaReportGenerator slaRG = new SlaReportGenerator();
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(SlaAnalyserMainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(SlaAnalyserMainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(SlaAnalyserMainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SlaAnalyserMainForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            slaRG.generateReport(file1Name.getText(), file2Name.getText(), "C:\\Users\\ramirmal\\Downloads");
+        } catch (SlaReportGenerationException SlaRGE) {
+            JOptionPane.showMessageDialog(this, SlaRGE.getLocalizedMessage(), "Error Generating Report", JOptionPane.ERROR_MESSAGE);
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new SlaAnalyserMainForm().setVisible(true);
-            }
-        });
-    }
+    }//GEN-LAST:event_generateSLAButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton browseFile1Button;
