@@ -11,7 +11,7 @@ import java.util.Objects;
  * @author ramirmal
  * @updatedby Benjamín Cisneros Barraza
  */
-public class Incident {
+public class Incident implements Comparable<Incident>{
 
     private String id;
     private Timestamp creationTimestamp;
@@ -259,7 +259,7 @@ public class Incident {
 
     @Override
     public String toString() {
-        return "Incident{" + "id=" + id + ", title=" + title + '}';
+        return "Incident{" + "id=" + id + ", audits=" + audits + '}';
     }
 
     @Override
@@ -279,6 +279,11 @@ public class Incident {
         }
         final Incident other = (Incident) obj;
         return Objects.equals(this.id, other.id);
+    }
+
+    @Override
+    public int compareTo(Incident o) {
+        return this.id.compareTo(o.getId());
     }
 
 }

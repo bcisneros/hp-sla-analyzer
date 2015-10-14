@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @author ramirmal
  */
-public class Audit {
+public class Audit implements Comparable<Audit>{
     public String fieldDisplayName;
     public String fieldName;
     public String incidentID;
@@ -143,9 +143,12 @@ public class Audit {
       
     @Override
     public String toString(){
-        return "["+fieldDisplayName+", "+fieldName+", "+incidentID+", "+
-                logicalDeleteFlag+", "+newVaueText+", "+previousValueText+", "+
-                +recordNumber+", "+systemModifiedUser+", "+systemModifiedTime+"]";
+        return "["+incidentID+", "+systemModifiedTime+"]";
+    }
+
+    @Override
+    public int compareTo(Audit o) {
+        return this.incidentID.compareTo(o.getIncidentID());
     }
     
     
