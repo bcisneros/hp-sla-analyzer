@@ -82,24 +82,28 @@ public class SlaAnalyzerTest {
      * @throws java.lang.Exception
      */
     @Test
-    public void testAnalizeIncidentThatIsComplianceWithSLA() throws Exception {
+    public void testAnalizeIncidentThatIsComplianceWithSLAButNotBurnedOut() throws Exception {
         Incident incident = getCompliantWithSLAIncident();
         ReportDetail result = instance.analizeIncident(incident);
-        assertTrue("This incident must be compliant with the SLA", result.isComplianceWithSLA());
+        assertTrue("This incident must be compliant with the SLA", result.isCompliantWithSLA());
+        assertFalse("This incident must not be burned out", result.isBurnedOut());
     }
 
     @Test
-    @Ignore
     public void testAnalizeIncidentThatsIsNotCompliantWithSLA() throws Exception {
         Incident incident = getNotCompliantWithSLAIncident();
         ReportDetail result = instance.analizeIncident(incident);
-        assertFalse("This incident must not be compliant with the SLA", result.isComplianceWithSLA());
+        assertFalse("This incident must not be compliant with the SLA", result.isCompliantWithSLA());
+        assertTrue("This incident must be burned out", result.isBurnedOut());
     }
 
     private Incident getCompliantWithSLAIncident() {
         Incident incident = new Incident();
         incident.setId("IM0001");
         incident.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00.00"));
+        incident.setCloseTimestamp(Timestamp.valueOf("2015-01-01 02:31:00.00"));
+        incident.setCriticalityDescription("Mission Critical");
+        incident.setPriority("top");
 
         List<Audit> audits = new ArrayList<>();
         final Audit audit1 = new Audit();
@@ -108,7 +112,7 @@ public class SlaAnalyzerTest {
         audits.add(audit1);
         final Audit audit2 = new Audit();
         audit2.setNewVaueText("W-INCLV4-FAIT-CTE");
-        audit2.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 12:00:00.00"));
+        audit2.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 2:30:00.00"));
         audits.add(audit2);
         incident.setAudits(audits);
 
@@ -118,10 +122,19 @@ public class SlaAnalyzerTest {
     private Incident getNotCompliantWithSLAIncident() {
         Incident incident = new Incident();
         incident.setId("IM0002");
+        incident.setCriticalityDescription("Mission Critical");
+        incident.setPriority("top");
         incident.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00.00"));
-
+        incident.setCloseTimestamp(Timestamp.valueOf("2015-01-01 3:31:00.00"));
         List<Audit> audits = new ArrayList<>();
-        audits.add(new Audit());
+        final Audit audit1 = new Audit();
+        audit1.setNewVaueText("ANOTHER-NON-APLYABLE-AG");
+        audit1.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 00:30:00.00"));
+        audits.add(audit1);
+        final Audit audit2 = new Audit();
+        audit2.setNewVaueText("W-INCLV4-FAIT-CTE");
+        audit2.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 3:30:00.00"));
+        audits.add(audit2);
         incident.setAudits(audits);
         return incident;
     }

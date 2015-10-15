@@ -7,7 +7,8 @@ package com.hp.sla.analyser.model;
 public class ReportDetail {
 
     private Incident incident;
-    private boolean complianceWithSLA;
+    private boolean compliantWithSLA;
+    private boolean burnedOut;
 
     public Incident getIncident() {
         return incident;
@@ -21,11 +22,19 @@ public class ReportDetail {
         return incident.getId();
     }
 
-    public boolean isComplianceWithSLA() {
-        return complianceWithSLA;
+    public boolean isCompliantWithSLA() {
+        return compliantWithSLA;
     }
 
-    public void setComplianceWithSLA(boolean complianceWithSLA) {
-        this.complianceWithSLA = complianceWithSLA;
+    public void setCompliantWithSLA(boolean compliantWithSLA) {
+        this.compliantWithSLA = compliantWithSLA;
+    }
+
+    public boolean isBurnedOut() {
+        return burnedOut;
+    }
+
+    public void setBurnedOut(boolean burnedOut) {
+        this.burnedOut = burnedOut;
     }
 }
