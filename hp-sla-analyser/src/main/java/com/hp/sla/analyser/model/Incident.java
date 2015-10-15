@@ -1,10 +1,12 @@
 package com.hp.sla.analyser.model;
 
+import com.hp.sla.analyser.util.DateTimeUtil;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents an Incident object that have all the details about an incident
@@ -13,7 +15,7 @@ import java.util.Objects;
  * @author ramirmal
  * @updatedby Benjamín Cisneros Barraza
  */
-public class Incident implements Comparable<Incident>{
+public class Incident implements Comparable<Incident> {
 
     private String id;
     private Timestamp creationTimestamp;
@@ -42,6 +44,7 @@ public class Incident implements Comparable<Incident>{
     private String currentStatus;
     private String configurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name;
     private List<Audit> audits;
+    private Audit lastAssignmentGroupAudit;
 
     public String getId() {
         return id;
@@ -258,11 +261,11 @@ public class Incident implements Comparable<Incident>{
     public void setAudits(List<Audit> audits) {
         this.audits = audits;
     }
-    
-    public Timestamp getTimeToFix(ServiceLevelAgreement sla){
-        Calendar c = Calendar.getInstance();       
+
+    public Timestamp getTimeToFix(ServiceLevelAgreement sla) {
+        Calendar c = Calendar.getInstance();
         c.setTime(creationTimestamp);
-        c.add(Calendar.HOUR, 
+        c.add(Calendar.HOUR,
                 2);
         return new Timestamp(c.getTime().getTime());
     }
@@ -294,6 +297,22 @@ public class Incident implements Comparable<Incident>{
     @Override
     public int compareTo(Incident o) {
         return this.id.compareTo(o.getId());
+    }
+
+    public Audit getLastAssignmentGroupAudit() {
+        return lastAssignmentGroupAudit;
+    }
+
+    public void setLastAssignmentGroupAudit(Audit lastAssignmentGroupAudit) {
+        this.lastAssignmentGroupAudit = lastAssignmentGroupAudit;
+    }
+
+    public Timestamp calculateBurnedOutDate(ServiceLevelAgreement serviceLevelAgreement) {
+        return new Timestamp(creationTimestamp.getTime() + DateTimeUtil.hoursToMilliseconds(serviceLevelAgreement.getBurnedOut()));
+    }
+
+    public Timestamp calculateTimeToFixDeadLine(ServiceLevelAgreement serviceLevelAgreement) {
+        return new Timestamp(creationTimestamp.getTime() + DateTimeUtil.hoursToMilliseconds(serviceLevelAgreement.getTimeToFix()));
     }
 
 }
