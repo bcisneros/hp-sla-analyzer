@@ -1,6 +1,7 @@
 package com.hp.sla.analyser.model;
 
 import com.hp.sla.analyser.model.util.AuditSystemModifiedTimeComparator;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -87,25 +88,21 @@ public class SlaAnalyzer {
         if (lastAssignmentGroupAudit == null) {
             throw new SlaAnalysisException("It was not encountered the last Assignment Group Audit");
         }
+        incident.setLastAssignmentGroupAudit(lastAssignmentGroupAudit);
         ServiceLevelAgreement serviceLevelAgreement = getServiceLevelAgreementByIncident(incident);
         if (serviceLevelAgreement == null) {
             throw new SlaAnalysisException("No Service Level Agreement was found");
         }
-        // Calculating the time for burned out rate
-        long timeDifference = lastAssignmentGroupAudit.getSystemModifiedTime().getTime() - incident.getCreationTimestamp().getTime();
-        float hours = (float) timeDifference / (3600 * 1000);
-        logger.debug("Hours: " + hours);
         
-        //Calculating the time to fix limit
-        timeDifference = (incident.getCloseTimestamp() != null ? incident.getCloseTimestamp().getTime(): new Date().getTime()) - incident.getCreationTimestamp().getTime();
-        float hoursSLA = (float) timeDifference / (3600 * 1000);
-        logger.debug("Hours SLA: " + hoursSLA);       
-        logger.debug(serviceLevelAgreement);
+        Timestamp incidentBurnedOutDate = incident.calculateBurnedOutDate(serviceLevelAgreement);
+        Timestamp incidentTimeToFixDeadline = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
         
+        boolean isBurnedOut = incidentBurnedOutDate.compareTo(incident.getLastAssignmentGroupAudit().getSystemModifiedTime()) < 0;
+        boolean isCompliantWithSLA = incidentTimeToFixDeadline.compareTo(incident.getCloseTimestamp()) > 0;
         ReportDetail detail = new ReportDetail();
         detail.setIncident(incident);
-        detail.setCompliantWithSLA(hoursSLA < serviceLevelAgreement.getTimeToFix());
-        detail.setBurnedOut(hours > serviceLevelAgreement.getBurnedOut());
+        detail.setCompliantWithSLA(isCompliantWithSLA);
+        detail.setBurnedOut(isBurnedOut);
         return detail;
     }
 

@@ -8,6 +8,7 @@ package com.hp.sla.analyser.model;
 import com.hp.sla.analyser.model.util.AuditParserTest;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -106,6 +107,47 @@ public class SlaReportGeneratorTest {
         audits.add(audit);
         return audits;
     }
+     private List<ReportDetail> dummyReportDetails(){
+        List<ReportDetail> data=new LinkedList();
+        Date date= new Date();
+        
+        ReportDetail rd=new ReportDetail();
+         rd.setBurnedOut(true);
+        Incident i= new Incident();
+        i.setId("IM0005");
+ 
+        i.setCreationTimestamp(new Timestamp(date.getTime()));
+        rd.setIncident(i);
+        
+        data.add(rd);
+        
+        rd=new ReportDetail();
+        rd.setBurnedOut(true);
+        i= new Incident();
+        i.setId("IM0006");
+        i.setCreationTimestamp(new Timestamp(date.getTime()));
+        rd.setIncident(i);
+        
+        data.add(rd);
+        
+        rd=new ReportDetail();
+         rd.setBurnedOut(false);
+        i= new Incident();
+        i.setId("IM0007");
+        i.setCreationTimestamp(new Timestamp(date.getTime()));
+        rd.setIncident(i);
+        
+        data.add(rd);
+        return data;
+    }
+    
+     @Test
+    public void testGenerateWorkbook() throws IllegalArgumentException, IllegalAccessException{
+        System.out.println("Testing generate Report");
+        SlaReportGenerator instance = new SlaReportGenerator();
+        instance.generateWorkbook(dummyReportDetails());
+    }
+    
     
     /**
      * Test of generateReport method, of class SlaReportGenerator.
@@ -114,7 +156,6 @@ public class SlaReportGeneratorTest {
     @Test
     @Ignore
     public void testGenerateReport() throws Exception {
-        System.out.println("generateReport");
         String incidentFile = "";
         String auditFile = "";
         String d = "";
@@ -123,5 +164,7 @@ public class SlaReportGeneratorTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
+    
+   
     
 }

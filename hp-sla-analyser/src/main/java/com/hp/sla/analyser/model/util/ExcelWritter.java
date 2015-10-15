@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hp.sla.analyser.model.util;
 
 import java.io.FileNotFoundException;
@@ -32,6 +27,7 @@ public class ExcelWritter {
      * @param titles the titles of the columns 
      * @param data the data 
      * @param fileName the name of the file
+     * @throws java.lang.IllegalAccessException
      */
     public void write(Workbook wb, String fileName) throws IllegalArgumentException, IllegalAccessException {
 
@@ -55,6 +51,5 @@ public class ExcelWritter {
         } catch (IOException ex) {
             Logger.getLogger(ExcelWritter.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 }
