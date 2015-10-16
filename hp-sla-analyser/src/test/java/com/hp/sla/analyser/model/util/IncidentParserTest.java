@@ -6,13 +6,9 @@ import java.io.FileInputStream;
 import java.sql.Timestamp;
 import java.util.List;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -20,25 +16,6 @@ import org.junit.Test;
  * @author cisnerob
  */
 public class IncidentParserTest {
-
-    public IncidentParserTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     /**
      * Test of parseDocument method, of class IncidentParser.
@@ -51,7 +28,7 @@ public class IncidentParserTest {
         ClassLoader classLoader = getClass().getClassLoader();
         FileInputStream testFile = new FileInputStream(new File(classLoader.getResource("files/Incidenttickets-ALLGFITFAIT.xlsx").getFile()));
         excelReader.setInputFile(testFile);
-        XSSFSheet sheet = excelReader.read();
+        XSSFSheet sheet = (XSSFSheet) excelReader.read().getSheetAt(0);
         IncidentParser instance = new IncidentParser();
         List<Incident> result = instance.parseDocument(sheet);
         assertNotNull("This must return a not null value", result);
