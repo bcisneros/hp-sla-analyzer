@@ -1,6 +1,7 @@
 package com.hp.sla.analyser.model;
 
 import com.hp.sla.analyser.model.util.AuditParserTest;
+import com.hp.sla.analyser.util.ResourcesUtil;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.LinkedList;
@@ -9,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -17,6 +19,25 @@ import org.junit.Test;
  */
 public class SlaReportGeneratorTest {
 
+    private SlaReportGenerator instance;
+
+    @Before
+    public void setUp() {
+        instance = new SlaReportGenerator();
+    }
+
+    @Test
+    public void testGenerateReport() {
+        try {
+            System.out.println("user.dir:");
+            System.out.println(System.getProperty("user.dir"));
+            String resourcesLocation = System.getProperty("user.dir") + "\\src\\test\\resources\\files\\";
+            instance.generateReport(resourcesLocation + "testIncidents.xlsx", resourcesLocation + "testAssignmentGroupAudits.xlsx", "C:\\temp\\");
+        } catch (SlaReportGenerationException ex) {
+            fail("This exception was not expected " + ex.getMessage());
+        }
+    }
+
     /**
      * Test of generateReport method, of class SlaReportGenerator.
      */
@@ -24,8 +45,6 @@ public class SlaReportGeneratorTest {
     public void testIntegrateIncidents() {
         List<Audit> audits = testAudits();
         List<Incident> incidents = testIncidents();
-
-        SlaReportGenerator instance = new SlaReportGenerator();
         List<Incident> result = instance.integrateIncidents(incidents, audits);
 
         Logger.getLogger(AuditParserTest.class.getName()).log(Level.INFO, "{0}Integrated Incidents: ", result);
@@ -34,94 +53,15 @@ public class SlaReportGeneratorTest {
         assertEquals("Audits per incident " + result.get(2).getId(), result.get(2).getAudits().size(), 2);
     }
 
-    private List<Incident> testIncidents() {
-        List<Incident> incidents = new LinkedList();
-
-        Incident incident = new Incident();
-        incident.setId("IM0001");
-
-        incidents.add(incident);
-
-        incident = new Incident();
-        incident.setId("IM0010");
-
-        incidents.add(incident);
-
-        incident = new Incident();
-        incident.setId("IM0005");
-
-        incidents.add(incident);
-
-        return incidents;
-    }
-
-    private List<Audit> testAudits() {
-        List<Audit> audits = new LinkedList();
-
-        Audit audit = new Audit();
-        audit.setNewVaueText("ANOTHER-NON-APLYABLE-AG");
-        audit.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 00:30:00.00"));
-        audit.setIncidentID("IM0005");
-
-        audits.add(audit);
-
-        audit = new Audit();
-        audit.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 01:30:00.00"));
-        audit.setIncidentID("IM0010");
-
-        audits.add(audit);
-
-        audit = new Audit();
-        audit.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 07:56:00.00"));
-        audit.setIncidentID("IM0010");
-
-        audits.add(audit);
-        return audits;
-    }
-
-    private List<ReportDetail> dummyReportDetails() {
-        List<ReportDetail> data = new LinkedList();
-        ReportDetail rd = new ReportDetail();
-        rd.setBurnedOut(true);
-        Incident i = new Incident();
-        i.setId("IM0005");
-
-        i.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00"));
-        rd.setIncident(i);
-
-        data.add(getTestReportDetail1());
-
-        rd = new ReportDetail();
-        rd.setBurnedOut(true);
-        i = new Incident();
-        i.setId("IM0006");
-        i.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00"));
-        i.setCloseTimestamp(Timestamp.valueOf("2015-01-01 15:34:12"));
-        rd.setIncident(i);
-
-        data.add(rd);
-
-        rd = new ReportDetail();
-        rd.setBurnedOut(false);
-        i = new Incident();
-        i.setId("IM0007");
-        i.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00"));
-        i.setCloseTimestamp(Timestamp.valueOf("2015-01-01 23:15:12"));
-        rd.setIncident(i);
-
-        data.add(rd);
-        return data;
-    }
-
     @Test
     public void testGenerateWorkbook() {
-        SlaReportGenerator instance = new SlaReportGenerator();
         try {
             instance.generateWorkbook(dummyReportDetails());
         } catch (Exception ex) {
             fail("No exception is expected here: " + ex.getMessage());
         }
     }
+
     private ReportDetail getTestReportDetail1() {
         return new ReportDetail() {
 
@@ -276,6 +216,85 @@ public class SlaReportGeneratorTest {
             }
 
         };
+    }
+
+    private List<Incident> testIncidents() {
+        List<Incident> incidents = new LinkedList();
+
+        Incident incident = new Incident();
+        incident.setId("IM0001");
+
+        incidents.add(incident);
+
+        incident = new Incident();
+        incident.setId("IM0010");
+
+        incidents.add(incident);
+
+        incident = new Incident();
+        incident.setId("IM0005");
+
+        incidents.add(incident);
+
+        return incidents;
+    }
+
+    private List<Audit> testAudits() {
+        List<Audit> audits = new LinkedList();
+
+        Audit audit = new Audit();
+        audit.setNewVaueText("ANOTHER-NON-APLYABLE-AG");
+        audit.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 00:30:00.00"));
+        audit.setIncidentID("IM0005");
+
+        audits.add(audit);
+
+        audit = new Audit();
+        audit.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 01:30:00.00"));
+        audit.setIncidentID("IM0010");
+
+        audits.add(audit);
+
+        audit = new Audit();
+        audit.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 07:56:00.00"));
+        audit.setIncidentID("IM0010");
+
+        audits.add(audit);
+        return audits;
+    }
+
+    private List<ReportDetail> dummyReportDetails() {
+        List<ReportDetail> data = new LinkedList();
+        ReportDetail rd = new ReportDetail();
+        rd.setBurnedOut(true);
+        Incident i = new Incident();
+        i.setId("IM0005");
+
+        i.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00"));
+        rd.setIncident(i);
+
+        data.add(getTestReportDetail1());
+
+        rd = new ReportDetail();
+        rd.setBurnedOut(true);
+        i = new Incident();
+        i.setId("IM0006");
+        i.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00"));
+        i.setCloseTimestamp(Timestamp.valueOf("2015-01-01 15:34:12"));
+        rd.setIncident(i);
+
+        data.add(rd);
+
+        rd = new ReportDetail();
+        rd.setBurnedOut(false);
+        i = new Incident();
+        i.setId("IM0007");
+        i.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00"));
+        i.setCloseTimestamp(Timestamp.valueOf("2015-01-01 23:15:12"));
+        rd.setIncident(i);
+
+        data.add(rd);
+        return data;
     }
 
 }

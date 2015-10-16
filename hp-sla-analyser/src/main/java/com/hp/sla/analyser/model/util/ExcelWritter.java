@@ -30,6 +30,7 @@ public class ExcelWritter {
         // Write the output to a file
         FileOutputStream out;
         try {
+            logger.debug(fileName);
             out = new FileOutputStream(fileName + ".xlsx");
             if (wb == null) {
                 wb = new XSSFWorkbook();

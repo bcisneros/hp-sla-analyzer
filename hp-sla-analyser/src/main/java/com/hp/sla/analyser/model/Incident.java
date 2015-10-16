@@ -1,8 +1,11 @@
 package com.hp.sla.analyser.model;
 
+import com.hp.sla.analyser.model.util.AuditSystemModifiedTimeComparator;
 import com.hp.sla.analyser.util.DateTimeUtil;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +46,7 @@ public class Incident implements Comparable<Incident> {
     private String configurationItemEnvironment;
     private String currentStatus;
     private String configurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name;
-    private List<Audit> audits;
+    private List<Audit> audits = new ArrayList<>();
     private Audit lastAssignmentGroupAudit;
 
     public String getId() {
@@ -313,6 +316,22 @@ public class Incident implements Comparable<Incident> {
 
     public Timestamp calculateTimeToFixDeadLine(ServiceLevelAgreement serviceLevelAgreement) {
         return new Timestamp(creationTimestamp.getTime() + DateTimeUtil.hoursToMilliseconds(serviceLevelAgreement.getTimeToFix()));
+    }
+
+    void searchAndSetLastAssignmentGroupAudit(List<String> assignmentGroupsListToAnalize) {
+        lastAssignmentGroupAudit = null;
+        
+        if (assignmentGroupsListToAnalize != null && audits != null) {
+            Collections.sort(audits, new AuditSystemModifiedTimeComparator());
+            for (Audit tempAudit : audits) {
+                if (assignmentGroupsListToAnalize.contains(tempAudit.getNewVaueText())) {
+                    lastAssignmentGroupAudit = tempAudit;
+                    //logger.debug("Last AG Audit: " + lastAssignmentGroupAudit.getNewVaueText());
+                    break;
+                }
+            }
+        }
+ 
     }
 
 }

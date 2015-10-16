@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 /**
  * This class parses the audit document to obtain an Audit List
+ *
  * @author ramirmal
  */
 public class AuditParser extends ExcelParser {
@@ -20,8 +21,9 @@ public class AuditParser extends ExcelParser {
         // Get iterator to all the rows in current sheet 
         Iterator<Row> rowIterator = sheet.iterator();
         boolean dataStart = false;
+        int rowNum = 0;
         // Traversing over each row of XLSX file 
-        while (rowIterator.hasNext()) {
+        while (rowIterator.hasNext() && rowNum < sheet.getLastRowNum() - 1) {
             Row row = rowIterator.next();
             // For each row, iterate through each columns 
             Iterator<Cell> cellIterator = row.cellIterator();
@@ -31,10 +33,11 @@ public class AuditParser extends ExcelParser {
                 au.setFieldDisplayName(cellIterator.next().getStringCellValue());
                 au.setFieldName(cellIterator.next().getStringCellValue());
                 au.setIncidentID(cellIterator.next().getStringCellValue());
-                if(cellIterator.next().getStringCellValue().equals("n"))
+                if (cellIterator.next().getStringCellValue().equals("n")) {
                     au.setLogicalDeleteFlag(false);
-                else
+                } else {
                     au.setLogicalDeleteFlag(true);
+                }
                 au.setNewVaueText(cellIterator.next().getStringCellValue());
                 au.setPreviousValueText(cellIterator.next().getStringCellValue());
                 au.setRecordNumber((int) cellIterator.next().getNumericCellValue());
@@ -44,6 +47,8 @@ public class AuditParser extends ExcelParser {
             } else if (cellIterator.hasNext() && cellIterator.next().getStringCellValue().equals("Incident Audit Field Display Name")) {
                 dataStart = true;
             }
+
+            rowNum++;
         }
         if (!dataStart) {
             //The required columns was not foud

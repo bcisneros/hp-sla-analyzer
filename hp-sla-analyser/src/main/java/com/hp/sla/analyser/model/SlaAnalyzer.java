@@ -50,6 +50,10 @@ public class SlaAnalyzer {
             try {
                 details.add(analizeIncident(incident));
             } catch (SlaAnalysisException ex) {
+                ReportDetail detailError = new ReportDetail();
+                detailError.setIncident(incident);
+                detailError.setDetailException(ex);
+                details.add(detailError);
                 logger.error("Error during the SLA Analysis of incident " + incident, ex);
             }
         }
@@ -75,20 +79,14 @@ public class SlaAnalyzer {
     }
 
     protected ReportDetail analizeIncident(Incident incident) throws SlaAnalysisException {
-        List<Audit> audits = incident.getAudits();
-        Collections.sort(audits, new AuditSystemModifiedTimeComparator());
-        Audit lastAssignmentGroupAudit = null;
-        for (Audit tempAudit : audits) {
-            if (getAssignmentGroupsListToAnalize().contains(tempAudit.getNewVaueText())) {
-                lastAssignmentGroupAudit = tempAudit;
-                logger.debug("Last AG Audit: " + lastAssignmentGroupAudit.getNewVaueText());
-                break;
-            }
+        logger.info("Analyzing the incident " + incident.getId());
+        incident.searchAndSetLastAssignmentGroupAudit(getAssignmentGroupsListToAnalize());
+
+        if (incident.getLastAssignmentGroupAudit() == null) {
+            String errorMessage = "It was not encountered the last Assignment Group Audit";
+            logger.error(errorMessage);
+            throw new SlaAnalysisException(errorMessage);
         }
-        if (lastAssignmentGroupAudit == null) {
-            throw new SlaAnalysisException("It was not encountered the last Assignment Group Audit");
-        }
-        incident.setLastAssignmentGroupAudit(lastAssignmentGroupAudit);
         ServiceLevelAgreement serviceLevelAgreement = getServiceLevelAgreementByIncident(incident);
         if (serviceLevelAgreement == null) {
             throw new SlaAnalysisException("No Service Level Agreement was found");
@@ -98,7 +96,7 @@ public class SlaAnalyzer {
         Timestamp incidentTimeToFixDeadline = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
         
         boolean isBurnedOut = incidentBurnedOutDate.compareTo(incident.getLastAssignmentGroupAudit().getSystemModifiedTime()) < 0;
-        boolean isCompliantWithSLA = incidentTimeToFixDeadline.compareTo(incident.getCloseTimestamp()) > 0;
+        boolean isCompliantWithSLA = incidentTimeToFixDeadline.compareTo(incident.getCloseTimestamp() != null ? incident.getCloseTimestamp(): new Date()) > 0;
         ReportDetail detail = new ReportDetail();
         detail.setIncident(incident);
         detail.setCompliantWithSLA(isCompliantWithSLA);

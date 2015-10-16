@@ -13,6 +13,10 @@ public class ReportDetail {
     private boolean compliantWithSLA;
     private boolean burnedOut;
     private Exception detailException;
+    
+    public final static String BURNED_OUT_COMPLIANCE_STRING = "yes";
+    public final static String BURNED_OUT_NO_COMPLIANCE_STRING = "no";
+    public final static String BURNED_OUT_INDETERMINED = "indetermined";
 
     public Incident getIncident() {
         return incident;
@@ -50,13 +54,15 @@ public class ReportDetail {
         return incident.getCloseTimestamp();
     }
 
-    //TODO:
     public Date getIncidentAuditSystemModifiedTime() {
-        return null;
+        return incident.getLastAssignmentGroupAudit() != null ? incident.getLastAssignmentGroupAudit().getSystemModifiedTime() : null;
     }
 
     public String getBurnedOutComplianceString() {
-        return isBurnedOut() ? "no" : "yes";
+        if (detailException != null) {
+            return BURNED_OUT_INDETERMINED;
+        }
+        return isBurnedOut() ? BURNED_OUT_NO_COMPLIANCE_STRING : BURNED_OUT_COMPLIANCE_STRING;
     }
 
     public Double getIncidentTimeToFixDurationHours() {
@@ -67,9 +73,8 @@ public class ReportDetail {
         return incident.getCurrentAssignmentGroup();
     }
 
-    //TODO:
     public String getIncidentAuditNewValueText() {
-        return null;
+        return incident.getLastAssignmentGroupAudit() != null ? incident.getLastAssignmentGroupAudit().getNewVaueText() : null;
     }
 
     public String getConfigurationItemLogicalName() {

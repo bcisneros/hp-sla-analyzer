@@ -7,13 +7,12 @@ import com.hp.sla.analyser.model.util.IncidentParser;
 import com.hp.sla.analyser.util.ResourcesUtil;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -26,16 +25,24 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
  */
 public class SlaReportGenerator {
 
-    public void generateReport(String incidentFile, String auditFile, String d) throws SlaReportGenerationException {
-        if (incidentFile.isEmpty() || auditFile.isEmpty()) {
+    final static Logger logger = Logger.getLogger(SlaReportGenerator.class);
+    private String destination = null;
+
+    public void generateReport(String incidentsFile, String auditsFile, String destinationPath) throws SlaReportGenerationException {
+
+        destination = destinationPath;
+        logger.info("Report Generation Process initialized!");
+        if (incidentsFile.isEmpty() || auditsFile.isEmpty()) {
+            logger.debug("Incidents File: " + incidentsFile);
+            logger.debug("Audits File: " + auditsFile);
             throw new SlaReportGenerationException("Please select an incident file and an audit file");
         }
         //TODO: convert read method to static who receives a String with the filename  
         ExcelReader incidentExcel = new ExcelReader();
         ExcelReader auditExcel = new ExcelReader();
         try {
-            incidentExcel.setInputFile(new FileInputStream(new File(incidentFile)));
-            auditExcel.setInputFile(new FileInputStream(new File(auditFile)));
+            incidentExcel.setInputFile(new FileInputStream(new File(incidentsFile)));
+            auditExcel.setInputFile(new FileInputStream(new File(auditsFile)));
 
             XSSFSheet incidentSheet = (XSSFSheet) incidentExcel.read().getSheetAt(0);
             XSSFSheet auditSheet = (XSSFSheet) auditExcel.read().getSheetAt(0);
@@ -48,13 +55,13 @@ public class SlaReportGenerator {
 
             SlaAnalyzer slaa = new SlaAnalyzer();
             List<ReportDetail> report = slaa.analyze(integrateIncidents(incidents, audits));
+            generateWorkbook(report);
 
-        } catch (FileNotFoundException ex) {
-            throw new SlaReportGenerationException(ex.getLocalizedMessage());
-        } catch (IOException ioe) {
-            throw new SlaReportGenerationException(ioe.getLocalizedMessage());
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(SlaReportGenerator.class.getName()).log(Level.SEVERE, null, ex);
+            logger.info("Report Generation Process completed!");
+
+        } catch (Exception ex) {
+            logger.error("Error during the generation of the report", ex);
+            throw new SlaReportGenerationException(ex.getMessage());
         }
 
     }
@@ -120,6 +127,13 @@ public class SlaReportGenerator {
             row.createCell(25).setCellValue(reportDetail.getErrorMessage());
         }
         ExcelWritter ew = new ExcelWritter();
-        ew.write(wb, "Report");
+        ew.write(wb, generateFileName());
+    }
+
+    protected String generateFileName() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
+        String fileNameSuffix = format.format(new Date());
+
+        return "C:\\temp\\" + "SLAAnalysisReport-" + fileNameSuffix;
     }
 }

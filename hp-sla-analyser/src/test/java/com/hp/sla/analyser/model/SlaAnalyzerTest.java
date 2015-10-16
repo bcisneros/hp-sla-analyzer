@@ -3,13 +3,15 @@ package com.hp.sla.analyser.model;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *
@@ -19,24 +21,9 @@ public class SlaAnalyzerTest {
 
     private SlaAnalyzer instance;
 
-    public SlaAnalyzerTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Before
     public void setUp() {
         instance = new SlaAnalyzer();
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -97,46 +84,16 @@ public class SlaAnalyzerTest {
         assertTrue("This incident must be burned out", result.isBurnedOut());
     }
 
-    private Incident getCompliantWithSLAIncident() {
-        Incident incident = new Incident();
-        incident.setId("IM0001");
-        incident.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00.00"));
-        incident.setCloseTimestamp(Timestamp.valueOf("2015-01-01 02:31:00.00"));
-        incident.setCriticalityDescription("Mission Critical");
-        incident.setPriority("top");
-
-        List<Audit> audits = new ArrayList<>();
-        final Audit audit1 = new Audit();
-        audit1.setNewVaueText("ANOTHER-NON-APLYABLE-AG");
-        audit1.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 00:30:00.00"));
-        audits.add(audit1);
-        final Audit audit2 = new Audit();
-        audit2.setNewVaueText("W-INCLV4-FAIT-CTE");
-        audit2.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 2:30:00.00"));
-        audits.add(audit2);
-        incident.setAudits(audits);
-
-        return incident;
-    }
-
-    private Incident getNotCompliantWithSLAIncident() {
-        Incident incident = new Incident();
-        incident.setId("IM0002");
-        incident.setCriticalityDescription("Mission Critical");
-        incident.setPriority("top");
-        incident.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00.00"));
-        incident.setCloseTimestamp(Timestamp.valueOf("2015-01-01 3:31:00.00"));
-        List<Audit> audits = new ArrayList<>();
-        final Audit audit1 = new Audit();
-        audit1.setNewVaueText("ANOTHER-NON-APLYABLE-AG");
-        audit1.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 00:30:00.00"));
-        audits.add(audit1);
-        final Audit audit2 = new Audit();
-        audit2.setNewVaueText("W-INCLV4-FAIT-CTE");
-        audit2.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 3:30:00.00"));
-        audits.add(audit2);
-        incident.setAudits(audits);
-        return incident;
+    @Test
+    public void testAnalizeIncidentWithNullValuesOnNotRequiredFields() throws Exception {
+        Incident incident = getNotCompliantWithSLAIncident();
+        incident.setCloseTimestamp(null);
+        try {
+            ReportDetail result = instance.analizeIncident(incident);
+            assertNotNull("The object must be not null", result);
+        } catch (Exception exception) {
+            fail("This test must not throw an exception: " + exception);
+        }
     }
 
     /**
@@ -207,4 +164,47 @@ public class SlaAnalyzerTest {
         incident.setPriority("An invalid priority");
         instance.getServiceLevelAgreementByIncident(incident);
     }
+
+    private Incident getCompliantWithSLAIncident() {
+        Incident incident = new Incident();
+        incident.setId("IM0001");
+        incident.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00.00"));
+        incident.setCloseTimestamp(Timestamp.valueOf("2015-01-01 02:31:00.00"));
+        incident.setCriticalityDescription("Mission Critical");
+        incident.setPriority("top");
+
+        List<Audit> audits = new ArrayList<>();
+        final Audit audit1 = new Audit();
+        audit1.setNewVaueText("ANOTHER-NON-APLYABLE-AG");
+        audit1.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 00:30:00.00"));
+        audits.add(audit1);
+        final Audit audit2 = new Audit();
+        audit2.setNewVaueText("W-INCLV4-FAIT-CTE");
+        audit2.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 2:30:00.00"));
+        audits.add(audit2);
+        incident.setAudits(audits);
+
+        return incident;
+    }
+
+    private Incident getNotCompliantWithSLAIncident() {
+        Incident incident = new Incident();
+        incident.setId("IM0002");
+        incident.setCriticalityDescription("Mission Critical");
+        incident.setPriority("top");
+        incident.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00.00"));
+        incident.setCloseTimestamp(Timestamp.valueOf("2015-01-01 3:31:00.00"));
+        List<Audit> audits = new ArrayList<>();
+        final Audit audit1 = new Audit();
+        audit1.setNewVaueText("ANOTHER-NON-APLYABLE-AG");
+        audit1.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 00:30:00.00"));
+        audits.add(audit1);
+        final Audit audit2 = new Audit();
+        audit2.setNewVaueText("W-INCLV4-FAIT-CTE");
+        audit2.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 3:30:00.00"));
+        audits.add(audit2);
+        incident.setAudits(audits);
+        return incident;
+    }
+
 }

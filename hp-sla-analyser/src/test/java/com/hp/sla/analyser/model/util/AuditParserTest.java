@@ -37,9 +37,10 @@ public class AuditParserTest {
             Logger.getLogger(AuditParserTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         AuditParser instance = new AuditParser();
-        List result = instance.parseDocument(sheet);
+        List<Audit> result = instance.parseDocument(sheet);
+        final int EXPECTED_AUDITS = 3040;
         assertNotNull("The resulting List is not null", result);
-        assertEquals("The resulting list has 3040 elements", 3040, result.size());
+        assertEquals(EXPECTED_AUDITS + " audits were expected", EXPECTED_AUDITS, result.size());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyy HH:mm:ss");
 
@@ -65,21 +66,19 @@ public class AuditParserTest {
         secondAudit.setSystemModifiedUser("BSMIntegrator");
         secondAudit.setSystemModifiedTime(simpleDateFormat.parse("09/18/2015 14:36:44"));
 
-        Audit thirdAudit = new Audit();
-        thirdAudit.setFieldDisplayName("Assignment Group");
-        thirdAudit.setFieldName("assignment");
-        thirdAudit.setIncidentID("IM20929991");
-        thirdAudit.setLogicalDeleteFlag(false);
-        thirdAudit.setNewVaueText("W-INCFLS-HPIT-BIZAPPS-CORP-FUNCTIONS");
-        thirdAudit.setPreviousValueText("null");
-        thirdAudit.setRecordNumber(0);
-        thirdAudit.setSystemModifiedUser("HPOO");
-        thirdAudit.setSystemModifiedTime(simpleDateFormat.parse("09/16/2015 00:08:23"));
+        Audit lastAudit = new Audit();
+        lastAudit.setFieldDisplayName("Assignment Group");
+        lastAudit.setFieldName("assignment");
+        lastAudit.setIncidentID("IM20929991");
+        lastAudit.setLogicalDeleteFlag(false);
+        lastAudit.setNewVaueText("W-INCFLS-HPIT-BIZAPPS-CORP-FUNCTIONS");
+        lastAudit.setPreviousValueText("null");
+        lastAudit.setRecordNumber(0);
+        lastAudit.setSystemModifiedUser("HPOO");
+        lastAudit.setSystemModifiedTime(simpleDateFormat.parse("09/16/2015 00:08:23"));
 
-        assertEquals("The first element is correct", result.get(0), firstAudit);
-        assertEquals("The last element is correct", result.get(result.size() - 1), thirdAudit);
-        assertEquals("One intermediate element (" + (result.size() - 1) / 2 + ") is correct", result.get((result.size() - 1) / 2), secondAudit);
-
+        assertEquals("The first element must be the first Audit", firstAudit, result.get(0));
+        assertEquals("The last element must be the last Audit", lastAudit, result.get(result.size() - 1));
     }
 
 }
