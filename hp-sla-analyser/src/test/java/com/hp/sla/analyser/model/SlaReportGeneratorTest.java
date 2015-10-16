@@ -1,7 +1,6 @@
 package com.hp.sla.analyser.model;
 
 import com.hp.sla.analyser.model.util.AuditParserTest;
-import com.hp.sla.analyser.util.ResourcesUtil;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.LinkedList;
