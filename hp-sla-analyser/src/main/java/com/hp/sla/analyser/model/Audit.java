@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hp.sla.analyser.model;
 import java.util.Date;  
 import java.util.Objects;
@@ -12,15 +7,15 @@ import java.util.Objects;
  * @author ramirmal
  */
 public class Audit implements Comparable<Audit>{
-    public String fieldDisplayName;
-    public String fieldName;
-    public String incidentID;
-    public Boolean logicalDeleteFlag;
-    public String newVaueText;
-    public String previousValueText;
-    public int recordNumber;
-    public String systemModifiedUser;
-    public Date systemModifiedTime;     
+    private String fieldDisplayName;
+    private String fieldName;
+    private String incidentID;
+    private Boolean logicalDeleteFlag;
+    private String newVaueText;
+    private String previousValueText;
+    private int recordNumber;
+    private String systemModifiedUser;
+    private Date systemModifiedTime;     
 
     public String getFieldDisplayName() {
         return fieldDisplayName;
