@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -91,9 +92,9 @@ public class SlaReportGenerator {
         Sheet sheet2 = wb.getSheetAt(1);
         List<ReportDetail> determinedIncidents = new ArrayList<>();
         List<ReportDetail> undeterminedIncidents = new ArrayList<>();
-        
-        for(ReportDetail detail:data) {
-            if(ReportDetail.BURNED_OUT_INDETERMINED.equalsIgnoreCase(detail.getBurnedOutComplianceString())) {
+
+        for (ReportDetail detail : data) {
+            if (ReportDetail.BURNED_OUT_INDETERMINED.equalsIgnoreCase(detail.getBurnedOutComplianceString())) {
                 undeterminedIncidents.add(detail);
             } else {
                 determinedIncidents.add(detail);
@@ -104,24 +105,22 @@ public class SlaReportGenerator {
         ExcelWritter ew = new ExcelWritter();
         ew.write(wb, generateFileName());
     }
-    
-    
+
     protected void loadData(Sheet sheet, List<ReportDetail> data) {
         sheet.createFreezePane(0, 1);
         Row row;
         int rownum = 1;
-        CellStyle dataStyle = sheet.getRow(0).getRowStyle();
+        CellStyle dataStyle = sheet.getRow(0).getCell(0).getCellStyle();
+        dataStyle.setFillBackgroundColor(CellStyle.NO_FILL);
         for (int i = 0; i < data.size(); i++, rownum++) {
             row = sheet.createRow(rownum);
             row.setRowStyle(dataStyle);
-            dataStyle.setFillBackgroundColor(CellStyle.NO_FILL);
             ReportDetail reportDetail = data.get(i);
             row.createCell(0).setCellValue(reportDetail.getIncidentIdentifier());
             row.getCell(0).setCellStyle(dataStyle);
-            row.createCell(1).setCellValue(reportDetail.getIncidentCreatedTimestamp().toString());
-            row.getCell(1).setCellStyle(dataStyle);
-            row.createCell(2).setCellValue(reportDetail.getIncidentClosedTimestamp() == null ? "" : reportDetail.getIncidentClosedTimestamp().toString());
-            row.createCell(3).setCellValue(reportDetail.getIncidentAuditSystemModifiedTime() == null ? "" : reportDetail.getIncidentAuditSystemModifiedTime().toString());
+            createDateCellValue(reportDetail.getIncidentCreatedTimestamp(), row, sheet, 1);
+            createDateCellValue(reportDetail.getIncidentClosedTimestamp(), row, sheet, 2);
+            createDateCellValue(reportDetail.getIncidentAuditSystemModifiedTime(), row, sheet, 3);
             row.createCell(4).setCellValue(reportDetail.getBurnedOutComplianceString());
             row.createCell(5).setCellValue(reportDetail.getIncidentTimeToFixDurationHours());
             row.createCell(6).setCellValue(reportDetail.getIncidentCurrentAssignmentGroupName());
@@ -144,6 +143,18 @@ public class SlaReportGenerator {
             row.createCell(23).setCellValue(reportDetail.getConfigurationItemEnvironmentDescription());
             row.createCell(24).setCellValue(reportDetail.getIncidentConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name());
             row.createCell(25).setCellValue(reportDetail.getErrorMessage());
+        }
+    }
+
+    protected void createDateCellValue(Date dateToStore, Row row, Sheet sheet, int cellIndex) {
+        if (dateToStore == null) {
+            row.createCell(cellIndex).setCellValue("");
+        } else {
+            CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+            cellStyle.setDataFormat(sheet.getWorkbook().getCreationHelper().createDataFormat().getFormat("mm/dd/yyyy h:mm:ss"));
+            Cell cell = row.createCell(cellIndex);
+            cell.setCellValue(dateToStore);
+            cell.setCellStyle(cellStyle);
         }
     }
 
