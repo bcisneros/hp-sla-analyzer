@@ -14,7 +14,7 @@ public class ServiceLevelAgreement {
     public static final ServiceLevelAgreement HP_IT_MISSION_CRITICAL_TOP = new ServiceLevelAgreement(0.25F, 3F, 3F);
     public static final ServiceLevelAgreement HP_IT_MISSION_CRITICAL_HIGH = new ServiceLevelAgreement(1F, 6F, 6F);
     public static final ServiceLevelAgreement HP_IT_MISSION_CRITICAL_MEDIUM = new ServiceLevelAgreement(4F, 72F, 72F * 0.75F);
-    public static final ServiceLevelAgreement HP_IT_MISSION_CRITICAL_LOW = new ServiceLevelAgreement(8F, 96F, 96F);
+    public static final ServiceLevelAgreement HP_IT_MISSION_CRITICAL_LOW = new ServiceLevelAgreement(8F, 96F, 96F * 0.75F);
     public static final ServiceLevelAgreement HP_IT_ENTITY_ESSENTIAL_TOP = null;
     public static final ServiceLevelAgreement HP_IT_ENTITY_ESSENTIAL_HIGH = new ServiceLevelAgreement(1F, 6F, 6F);
     public static final ServiceLevelAgreement HP_IT_ENTITY_ESSENTIAL_MEDIUM = new ServiceLevelAgreement(4F, 72F, 72F * 0.75F);

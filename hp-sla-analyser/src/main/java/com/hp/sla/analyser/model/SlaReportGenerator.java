@@ -83,11 +83,21 @@ public class SlaReportGenerator {
     }
 
     protected void generateWorkbook(List<ReportDetail> data) throws Exception {
-
         ExcelReader reader = new ExcelReader();
         reader.setInputFile(ResourcesUtil.getResourceFromProjectClasspath("files/reportTemplate.xlsx"));
         Workbook wb = reader.read();
-        Sheet sheet = wb.getSheetAt(0);
+        Sheet sheet1 = wb.getSheetAt(0);
+        Sheet sheet2 = wb.getSheetAt(1);
+        List<ReportDetail> data1 = null;
+        loadData(sheet1, data1);
+        List<ReportDetail> data2 = null;
+        loadData(sheet2, data2);
+        ExcelWritter ew = new ExcelWritter();
+        ew.write(wb, generateFileName());
+    }
+    
+    
+    protected void loadData(Sheet sheet, List<ReportDetail> data) {
         sheet.createFreezePane(0, 1);
         Row row;
         int rownum = 1;
@@ -126,8 +136,6 @@ public class SlaReportGenerator {
             row.createCell(24).setCellValue(reportDetail.getIncidentConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name());
             row.createCell(25).setCellValue(reportDetail.getErrorMessage());
         }
-        ExcelWritter ew = new ExcelWritter();
-        ew.write(wb, generateFileName());
     }
 
     protected String generateFileName() {
