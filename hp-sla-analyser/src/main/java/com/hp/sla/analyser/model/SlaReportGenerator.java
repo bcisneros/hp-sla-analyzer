@@ -8,6 +8,7 @@ import com.hp.sla.analyser.util.ResourcesUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -88,10 +89,18 @@ public class SlaReportGenerator {
         Workbook wb = reader.read();
         Sheet sheet1 = wb.getSheetAt(0);
         Sheet sheet2 = wb.getSheetAt(1);
-        List<ReportDetail> data1 = null;
-        loadData(sheet1, data1);
-        List<ReportDetail> data2 = null;
-        loadData(sheet2, data2);
+        List<ReportDetail> determinedIncidents = new ArrayList<>();
+        List<ReportDetail> undeterminedIncidents = new ArrayList<>();
+        
+        for(ReportDetail detail:data) {
+            if(ReportDetail.BURNED_OUT_INDETERMINED.equalsIgnoreCase(detail.getBurnedOutComplianceString())) {
+                undeterminedIncidents.add(detail);
+            } else {
+                determinedIncidents.add(detail);
+            }
+        }
+        loadData(sheet1, determinedIncidents);
+        loadData(sheet2, undeterminedIncidents);
         ExcelWritter ew = new ExcelWritter();
         ew.write(wb, generateFileName());
     }

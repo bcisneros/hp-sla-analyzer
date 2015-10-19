@@ -16,7 +16,7 @@ public class ReportDetail {
     
     public final static String BURNED_OUT_COMPLIANCE_STRING = "yes";
     public final static String BURNED_OUT_NO_COMPLIANCE_STRING = "no";
-    public final static String BURNED_OUT_INDETERMINED = "indetermined";
+    public final static String BURNED_OUT_INDETERMINED = "undetermined";
 
     public Incident getIncident() {
         return incident;
