@@ -32,14 +32,14 @@ public class ReportDetailTest {
         instance.setBurnedOut(true);
         assertEquals(ReportDetail.BURNED_OUT_NO_COMPLIANCE_STRING, instance.getBurnedOutComplianceString());
     }
-    
+
     @Test
     public void testGetBurnedOutComplianceStringWithNotBurnedOutIncident() {
         ReportDetail instance = new ReportDetail();
         instance.setBurnedOut(false);
         assertEquals(ReportDetail.BURNED_OUT_COMPLIANCE_STRING, instance.getBurnedOutComplianceString());
     }
-    
+
     @Test
     public void testGetBurnedOutComplianceStringWithIndeterminatedBurnedOutIncidentStatus() {
         ReportDetail instance = new ReportDetail();

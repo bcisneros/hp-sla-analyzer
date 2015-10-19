@@ -24,7 +24,6 @@ public class ServiceLevelAgreement {
     public static final ServiceLevelAgreement HP_IT_NORMAL_MEDIUM = new ServiceLevelAgreement(4F, 72F, 72F * 0.75F);
     public static final ServiceLevelAgreement HP_IT_NORMAL_LOW = new ServiceLevelAgreement(8F, 96F, 96F * 0.75F);
 
-
     public ServiceLevelAgreement(Float timeToOwn, Float timeToFix, Float burnedOut) {
         this.timeToOwn = timeToOwn;
         this.timeToFix = timeToFix;
@@ -42,6 +41,7 @@ public class ServiceLevelAgreement {
     public Float getBurnedOut() {
         return burnedOut;
     }
+
     @Override
     public String toString() {
         return "ServiceLevelAgreement{" + "timeToOwn=" + timeToOwn + ", timeToFix=" + timeToFix + ", burnedOut=" + burnedOut + '}';

@@ -12,7 +12,8 @@ import java.util.Comparator;
  *
  * @author ramirmal
  */
-public class AuditComparator implements Comparator<Audit>{
+public class AuditComparator implements Comparator<Audit> {
+
     @Override
     public int compare(Audit o1, Audit o2) {
         return o1.getIncidentID().compareTo(o2.getIncidentID());

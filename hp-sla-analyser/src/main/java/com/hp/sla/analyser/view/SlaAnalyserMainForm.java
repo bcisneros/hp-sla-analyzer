@@ -3,6 +3,7 @@ package com.hp.sla.analyser.view;
 import com.hp.sla.analyser.model.SlaReportGenerator;
 import com.hp.sla.analyser.model.SlaReportGenerationException;
 import com.hp.sla.analyser.model.util.ExcelFilter;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -31,12 +32,17 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
 
         fileChooser = new javax.swing.JFileChooser();
         generateSLAButton = new javax.swing.JButton();
-        file2NameLabel = new javax.swing.JLabel();
-        file1Name = new javax.swing.JTextField();
-        browseFile1Button = new javax.swing.JButton();
-        browseFile2Button = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
         file1NameLabel = new javax.swing.JLabel();
-        file2Name = new javax.swing.JTextField();
+        incidentsFileTextField = new javax.swing.JTextField();
+        browseIncidentsFileButton = new javax.swing.JButton();
+        file2NameLabel = new javax.swing.JLabel();
+        assignmentAuditsTextField = new javax.swing.JTextField();
+        browseAssignmentAuditsFileButton = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        outputDirectoryLabel = new javax.swing.JLabel();
+        outputDirectoryTextField = new javax.swing.JTextField();
+        browseOutputDirectoryButton = new javax.swing.JButton();
 
         fileChooser.setFileFilter(new ExcelFilter());
 
@@ -50,108 +56,185 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
             }
         });
 
-        file2NameLabel.setText("Assigment Audit File:");
-
-        file1Name.setEditable(false);
-
-        browseFile1Button.setText("Browse...");
-        browseFile1Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                browseFile1ButtonActionPerformed(evt);
-            }
-        });
-
-        browseFile2Button.setText("Browse...");
-        browseFile2Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                browseFile2ButtonActionPerformed(evt);
-            }
-        });
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Input Files"));
 
         file1NameLabel.setText("Incident Ticket File:");
 
-        file2Name.setEditable(false);
+        incidentsFileTextField.setEditable(false);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(224, 224, 224)
-                .addComponent(generateSLAButton, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
-                .addGap(208, 208, 208))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        browseIncidentsFileButton.setText("Browse...");
+        browseIncidentsFileButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                browseIncidentsFileButtonActionPerformed(evt);
+            }
+        });
+
+        file2NameLabel.setText("Assigment Audit File:");
+
+        assignmentAuditsTextField.setEditable(false);
+
+        browseAssignmentAuditsFileButton.setText("Browse...");
+        browseAssignmentAuditsFileButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                browseAssignmentAuditsFileButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(file2NameLabel)
                     .addComponent(file1NameLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(file1Name, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
-                    .addComponent(file2Name))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(browseFile2Button)
-                    .addComponent(browseFile1Button))
-                .addGap(22, 22, 22))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(incidentsFileTextField)
+                    .addComponent(assignmentAuditsTextField))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(browseAssignmentAuditsFileButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(browseIncidentsFileButton, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(32, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(file1Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(file1NameLabel)
-                    .addComponent(browseFile1Button))
+                    .addComponent(incidentsFileTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(browseIncidentsFileButton))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(file2Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(browseFile2Button))
-                    .addComponent(file2NameLabel))
-                .addGap(16, 16, 16)
-                .addComponent(generateSLAButton)
-                .addGap(19, 19, 19))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(file2NameLabel)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(assignmentAuditsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(browseAssignmentAuditsFileButton)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Output Files"));
 
-    private void browseFile1ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseFile1ButtonActionPerformed
+        outputDirectoryLabel.setText("Output Directory:");
+
+        outputDirectoryTextField.setEditable(false);
+        outputDirectoryTextField.setText("C:\\temp\\");
+
+            browseOutputDirectoryButton.setText("Browse...");
+            browseOutputDirectoryButton.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    browseOutputDirectoryButtonActionPerformed(evt);
+                }
+            });
+
+            javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+            jPanel2.setLayout(jPanel2Layout);
+            jPanel2Layout.setHorizontalGroup(
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGap(26, 26, 26)
+                    .addComponent(outputDirectoryLabel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(outputDirectoryTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                    .addGap(9, 9, 9)
+                    .addComponent(browseOutputDirectoryButton)
+                    .addContainerGap())
+            );
+            jPanel2Layout.setVerticalGroup(
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGap(13, 13, 13)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(outputDirectoryLabel)
+                        .addComponent(outputDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(browseOutputDirectoryButton))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            );
+
+            javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+            getContentPane().setLayout(layout);
+            layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGap(224, 224, 224)
+                    .addComponent(generateSLAButton, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                    .addGap(208, 208, 208))
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap())
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap())
+            );
+            layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(generateSLAButton)
+                    .addGap(22, 22, 22))
+            );
+
+            pack();
+        }// </editor-fold>//GEN-END:initComponents
+
+    private void browseIncidentsFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseIncidentsFileButtonActionPerformed
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
             java.io.File file = fileChooser.getSelectedFile();
             String fileName = file.toString();
-            file1Name.setText(fileName);
+            incidentsFileTextField.setText(fileName);
         }
-    }//GEN-LAST:event_browseFile1ButtonActionPerformed
+    }//GEN-LAST:event_browseIncidentsFileButtonActionPerformed
 
-    private void browseFile2ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseFile2ButtonActionPerformed
+    private void browseAssignmentAuditsFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseAssignmentAuditsFileButtonActionPerformed
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
             java.io.File file = fileChooser.getSelectedFile();
             String fileName = file.toString();
-            file2Name.setText(fileName);
+            assignmentAuditsTextField.setText(fileName);
         }
-    }//GEN-LAST:event_browseFile2ButtonActionPerformed
+    }//GEN-LAST:event_browseAssignmentAuditsFileButtonActionPerformed
 
     private void generateSLAButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateSLAButtonActionPerformed
         SlaReportGenerator slaRG = new SlaReportGenerator();
         try {
-            slaRG.generateReport(file1Name.getText(), file2Name.getText(), "C:\\Users\\ramirmal\\Downloads");
+            slaRG.generateReport(incidentsFileTextField.getText(), assignmentAuditsTextField.getText(), outputDirectoryTextField.getText());
         } catch (SlaReportGenerationException SlaRGE) {
             JOptionPane.showMessageDialog(this, SlaRGE.getLocalizedMessage(), "Error Generating Report", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_generateSLAButtonActionPerformed
 
+    private void browseOutputDirectoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseOutputDirectoryButtonActionPerformed
+        JFileChooser directoryChooser = new JFileChooser("C:\\temp\\");
+        directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int returnedValue = directoryChooser.showOpenDialog(this);
+        if (JFileChooser.APPROVE_OPTION == returnedValue) {
+            outputDirectoryTextField.setText(directoryChooser.getSelectedFile().getPath() + "\\");
+        }
+    }//GEN-LAST:event_browseOutputDirectoryButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton browseFile1Button;
-    private javax.swing.JButton browseFile2Button;
-    private javax.swing.JTextField file1Name;
+    private javax.swing.JTextField assignmentAuditsTextField;
+    private javax.swing.JButton browseAssignmentAuditsFileButton;
+    private javax.swing.JButton browseIncidentsFileButton;
+    private javax.swing.JButton browseOutputDirectoryButton;
     private javax.swing.JLabel file1NameLabel;
-    private javax.swing.JTextField file2Name;
     private javax.swing.JLabel file2NameLabel;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JButton generateSLAButton;
+    private javax.swing.JTextField incidentsFileTextField;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel outputDirectoryLabel;
+    private javax.swing.JTextField outputDirectoryTextField;
     // End of variables declaration//GEN-END:variables
 }

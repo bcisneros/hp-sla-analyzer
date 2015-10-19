@@ -23,15 +23,17 @@ public class ExcelWritter {
      *
      * @param wb The Workbook object to write
      * @param fileName the name of the file
+     * @return
      * @throws java.lang.IllegalAccessException
      */
-    public void write(Workbook wb, String fileName) throws IllegalArgumentException, IllegalAccessException {
+    public String write(Workbook wb, String fileName) throws IllegalArgumentException, IllegalAccessException {
 
         // Write the output to a file
-        FileOutputStream out;
+        FileOutputStream out = null;
+        final String file = fileName + ".xlsx";
         try {
-            logger.debug(fileName);
-            out = new FileOutputStream(fileName + ".xlsx");
+            logger.debug(file);
+            out = new FileOutputStream(file);
             if (wb == null) {
                 wb = new XSSFWorkbook();
                 Sheet sheet = wb.createSheet("None");
@@ -41,11 +43,22 @@ public class ExcelWritter {
             }
             wb.write(out);
 
-            out.close();
         } catch (FileNotFoundException ex) {
             logger.error("File not found.", ex);
+            return null;
         } catch (IOException ex) {
             logger.error("I/O Error.", ex);
+            return null;
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+
+            } catch (Exception ex) {
+                logger.error("Error closing the file", ex);
+            }
         }
+        return file;
     }
 }

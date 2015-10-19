@@ -16,26 +16,25 @@ import static org.junit.Assert.*;
  * @author Benjamin Cisneros Barraza
  */
 public class ExcelReaderTest {
-    
+
     public ExcelReaderTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
-
 
     /**
      * Test of read method, of class ExcelReader.
@@ -44,10 +43,10 @@ public class ExcelReaderTest {
     public void testRead() throws Exception {
         System.out.println("read");
         ExcelReader excelReader = new ExcelReader();
-        ClassLoader classLoader = getClass().getClassLoader(); 
+        ClassLoader classLoader = getClass().getClassLoader();
         FileInputStream testFile = new FileInputStream(new File(classLoader.getResource("files/testWorkBook.xlsx").getFile()));
         excelReader.setInputFile(testFile);
         excelReader.read();
     }
-    
+
 }

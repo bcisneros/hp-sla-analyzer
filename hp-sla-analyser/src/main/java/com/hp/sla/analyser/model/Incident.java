@@ -320,7 +320,7 @@ public class Incident implements Comparable<Incident> {
 
     void searchAndSetLastAssignmentGroupAudit(List<String> assignmentGroupsListToAnalize) {
         lastAssignmentGroupAudit = null;
-        
+
         if (assignmentGroupsListToAnalize != null && audits != null) {
             Collections.sort(audits, new AuditSystemModifiedTimeComparator());
             for (Audit tempAudit : audits) {
@@ -331,7 +331,7 @@ public class Incident implements Comparable<Incident> {
                 }
             }
         }
- 
+
     }
 
 }

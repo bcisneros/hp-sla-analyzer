@@ -4,7 +4,9 @@ import com.hp.sla.analyser.model.util.AuditParser;
 import com.hp.sla.analyser.model.util.ExcelReader;
 import com.hp.sla.analyser.model.util.ExcelWritter;
 import com.hp.sla.analyser.model.util.IncidentParser;
+import static com.hp.sla.analyser.util.LoggerUtil.debugIfEnabled;
 import com.hp.sla.analyser.util.ResourcesUtil;
+import static com.hp.sla.analyser.util.StringsUtil.isNullOrEmpty;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
@@ -28,16 +30,17 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 public class SlaReportGenerator {
 
     final static Logger logger = Logger.getLogger(SlaReportGenerator.class);
-    private String destination = null;
+    private String destination = "C:\\temp\\";
 
     public void generateReport(String incidentsFile, String auditsFile, String destinationPath) throws SlaReportGenerationException {
-
         destination = destinationPath;
         logger.info("Report Generation Process initialized!");
-        if (incidentsFile.isEmpty() || auditsFile.isEmpty()) {
-            logger.debug("Incidents File: " + incidentsFile);
-            logger.debug("Audits File: " + auditsFile);
-            throw new SlaReportGenerationException("Please select an incident file and an audit file");
+        debugIfEnabled(logger, "Incidents File: " + incidentsFile);
+        debugIfEnabled(logger, "Audits File: " + auditsFile);
+        debugIfEnabled(logger, "Destination Path: " + destinationPath);
+        if (isNullOrEmpty(incidentsFile) || isNullOrEmpty(auditsFile) || isNullOrEmpty(destinationPath)) {
+
+            throw new SlaReportGenerationException("Input and Output data is required.");
         }
         //TODO: convert read method to static who receives a String with the filename  
         ExcelReader incidentExcel = new ExcelReader();
@@ -161,7 +164,6 @@ public class SlaReportGenerator {
     protected String generateFileName() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
         String fileNameSuffix = format.format(new Date());
-
-        return "C:\\temp\\" + "SLAAnalysisReport-" + fileNameSuffix;
+        return destination + "SLAAnalysisReport-" + fileNameSuffix;
     }
 }

@@ -13,7 +13,7 @@ public class ReportDetail {
     private boolean compliantWithSLA;
     private boolean burnedOut;
     private Exception detailException;
-    
+
     public final static String BURNED_OUT_COMPLIANCE_STRING = "yes";
     public final static String BURNED_OUT_NO_COMPLIANCE_STRING = "no";
     public final static String BURNED_OUT_INDETERMINED = "undetermined";

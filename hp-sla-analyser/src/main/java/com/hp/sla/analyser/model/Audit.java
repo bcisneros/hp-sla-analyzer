@@ -1,12 +1,14 @@
 package com.hp.sla.analyser.model;
-import java.util.Date;  
+
+import java.util.Date;
 import java.util.Objects;
 
 /**
  *
  * @author ramirmal
  */
-public class Audit implements Comparable<Audit>{
+public class Audit implements Comparable<Audit> {
+
     private String fieldDisplayName;
     private String fieldName;
     private String incidentID;
@@ -15,7 +17,7 @@ public class Audit implements Comparable<Audit>{
     private String previousValueText;
     private int recordNumber;
     private String systemModifiedUser;
-    private Date systemModifiedTime;     
+    private Date systemModifiedTime;
 
     public String getFieldDisplayName() {
         return fieldDisplayName;
@@ -133,18 +135,15 @@ public class Audit implements Comparable<Audit>{
         }
         return true;
     }
-    
-    
-      
+
     @Override
-    public String toString(){
-        return "["+incidentID+", "+systemModifiedTime+"]";
+    public String toString() {
+        return "[" + incidentID + ", " + systemModifiedTime + "]";
     }
 
     @Override
     public int compareTo(Audit o) {
         return this.incidentID.compareTo(o.getIncidentID());
     }
-    
-    
+
 }

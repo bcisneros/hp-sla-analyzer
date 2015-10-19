@@ -91,12 +91,12 @@ public class SlaAnalyzer {
         if (serviceLevelAgreement == null) {
             throw new SlaAnalysisException("No Service Level Agreement was found");
         }
-        
+
         Timestamp incidentBurnedOutDate = incident.calculateBurnedOutDate(serviceLevelAgreement);
         Timestamp incidentTimeToFixDeadline = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
-        
+
         boolean isBurnedOut = incidentBurnedOutDate.compareTo(incident.getLastAssignmentGroupAudit().getSystemModifiedTime()) < 0;
-        boolean isCompliantWithSLA = incidentTimeToFixDeadline.compareTo(incident.getCloseTimestamp() != null ? incident.getCloseTimestamp(): new Date()) > 0;
+        boolean isCompliantWithSLA = incidentTimeToFixDeadline.compareTo(incident.getCloseTimestamp() != null ? incident.getCloseTimestamp() : new Date()) > 0;
         ReportDetail detail = new ReportDetail();
         detail.setIncident(incident);
         detail.setCompliantWithSLA(isCompliantWithSLA);
