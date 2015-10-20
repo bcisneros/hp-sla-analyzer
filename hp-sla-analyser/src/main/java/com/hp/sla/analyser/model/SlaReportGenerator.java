@@ -9,25 +9,19 @@ import com.hp.sla.analyser.util.ResourcesUtil;
 import static com.hp.sla.analyser.util.StringsUtil.isNullOrEmpty;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.model.StylesTable;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 /**
@@ -36,13 +30,14 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
  */
 public class SlaReportGenerator {
 
-    final static Logger logger = Logger.getLogger(SlaReportGenerator.class);
+    private final static Logger logger = Logger.getLogger(SlaReportGenerator.class);
     private String destination = "C:\\temp\\";
-    Workbook workbookTemplate;
-    private CellStyle defaultCellStyle = null;
-    private CellStyle dateCellStyle = null;
-    private CellStyle doubleNumberCellStyle = null;
-    private CellStyle integerNumberCellStyle = null;
+    private Workbook workbookTemplate;
+    private CellStyle defaultCellStyle;
+    private CellStyle dateCellStyle;
+    private CellStyle doubleNumberCellStyle;
+    private CellStyle integerNumberCellStyle;
+    private SlaReportGeneratorObserver observer;
 
     public SlaReportGenerator() {
         try {
@@ -59,6 +54,8 @@ public class SlaReportGenerator {
             integerNumberCellStyle = workbookTemplate.createCellStyle();
             integerNumberCellStyle.cloneStyleFrom(defaultCellStyle);
             integerNumberCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("0"));
+            observer = new BaseSlaReportGeneratorObserver() {
+            };
         } catch (Exception ex) {
             logger.error("Error generating Cell Styles from template", ex);
             //TODO: Add logic to generate a runtime template
@@ -68,6 +65,7 @@ public class SlaReportGenerator {
     public void generateReport(String incidentsFile, String auditsFile, String destinationPath) throws SlaReportGenerationException {
         destination = destinationPath;
         logger.info("Report Generation Process initialized!");
+        observer.onStartReportGeneration(this);
         debugIfEnabled(logger, "Incidents File: " + incidentsFile);
         debugIfEnabled(logger, "Audits File: " + auditsFile);
         debugIfEnabled(logger, "Destination Path: " + destinationPath);
@@ -76,20 +74,31 @@ public class SlaReportGenerator {
             throw new SlaReportGenerationException("Input and Output data is required.");
         }
         try {
+            observer.notifyProcessPhase(this, "Reading incidents file: " + incidentsFile);
             XSSFSheet incidentSheet = (XSSFSheet) ExcelReader.read(new FileInputStream(new File(incidentsFile))).getSheetAt(0);
+            observer.notifyProcessPhase(this, "Incidents file was read correctly.");
+
+            observer.notifyProcessPhase(this, "Reading audits file: " + auditsFile);
             XSSFSheet auditSheet = (XSSFSheet) ExcelReader.read(new FileInputStream(new File(auditsFile))).getSheetAt(0);
+            observer.notifyProcessPhase(this, "Audits file was read correctly.");
 
             IncidentParser ip = new IncidentParser();
             AuditParser ap = new AuditParser();
 
+            observer.notifyProcessPhase(this, "Parsing incidents file: " + incidentsFile);
             List<Incident> incidents = ip.parseDocument(incidentSheet);
+            observer.notifyProcessPhase(this, "Incidents file was parsed correctly.");
+
+            observer.notifyProcessPhase(this, "Parsing audits file: " + auditsFile);
             List<Audit> audits = ap.parseDocument(auditSheet);
+            observer.notifyProcessPhase(this, "Audits file was read correctly.");
 
             SlaAnalyzer slaa = new SlaAnalyzer();
-            List<ReportDetail> report = slaa.analyze(integrateIncidents(incidents, audits));
+            List<ReportDetail> report = slaa.analyze(integrateIncidents(incidents, audits), observer);
             generateWorkbook(report);
 
             logger.info("Report Generation Process completed!");
+            observer.onFinalizeReportGeneration(this);
 
         } catch (Exception ex) {
             logger.error("Error during the generation of the report", ex);
@@ -198,5 +207,9 @@ public class SlaReportGenerator {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
         String fileNameSuffix = format.format(new Date());
         return destination + "SLAAnalysisReport-" + fileNameSuffix;
+    }
+
+    public void setObserver(SlaReportGeneratorObserver observer) {
+        this.observer = observer;
     }
 }

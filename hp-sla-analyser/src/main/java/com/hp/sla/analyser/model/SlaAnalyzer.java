@@ -1,9 +1,7 @@
 package com.hp.sla.analyser.model;
 
-import com.hp.sla.analyser.model.util.AuditSystemModifiedTimeComparator;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -39,15 +37,20 @@ public class SlaAnalyzer {
      *
      * @param incidents The list of <code>Incident</code> objects that are in
      * the input report
+     * @param observer
      * @return A <code>List</code> object of <code>ReportDetail</code>
      */
-    public List<ReportDetail> analyze(List<Incident> incidents) {
+    public List<ReportDetail> analyze(List<Incident> incidents, SlaReportGeneratorObserver observer) {
         if (incidents == null || incidents.isEmpty()) {
             throw new IllegalArgumentException("The list of incidents cannot be null or empty");
         }
+
+        observer.setTotalIncidents(incidents.size());
         List<ReportDetail> details = new ArrayList<>();
+        int incidentCount = 1;
         for (Incident incident : incidents) {
             try {
+                observer.reportCurrentIncident(incident, incidentCount++);
                 details.add(analizeIncident(incident));
             } catch (SlaAnalysisException ex) {
                 ReportDetail detailError = new ReportDetail();
@@ -148,5 +151,9 @@ public class SlaAnalyzer {
         }
 
         return serviceLevelAgreements[criticalityIndex][priorityIndex];
+    }
+
+    List<ReportDetail> analyze(List<Incident> integrateIncidents) {
+        return analyze(integrateIncidents, null);
     }
 }
