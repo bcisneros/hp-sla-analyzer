@@ -2,14 +2,17 @@ package com.hp.sla.analyser.model;
 
 import com.hp.sla.analyser.model.util.AuditParserTest;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -26,6 +29,7 @@ public class SlaReportGeneratorTest {
     }
 
     @Test
+    @Ignore
     public void testGenerateReport() {
         try {
             System.out.println("user.dir:");
@@ -35,6 +39,45 @@ public class SlaReportGeneratorTest {
         } catch (SlaReportGenerationException ex) {
             fail("This exception was not expected:" + ex.getMessage());
         }
+    }
+
+    @Test()
+    public void testPerformance() {
+        try {
+            long startTime, endTime, completeMillis, filteredMillis;
+            String complete, filtered;
+            String resourcesLocation = System.getProperty("user.dir") + "\\src\\test\\resources\\files\\";
+            startTime = System.currentTimeMillis();
+            instance.generateReport(resourcesLocation + "Incidenttickets-ALLGFITFAIT.xlsx", resourcesLocation + "SSITRTBAGassignmentaudit.xlsx", "C:\\temp\\");
+            endTime = System.currentTimeMillis();
+            completeMillis = endTime - startTime;
+            complete = timeFormat(startTime, endTime);
+            Logger.getLogger(AuditParserTest.class.getName()).log(Level.INFO, "Elapsed Time Complete Registers:{0}", complete);
+
+            startTime = System.currentTimeMillis();
+            instance.generateReport(resourcesLocation + "Incidenttickets-ALLGFITFAIT - Filtered.xlsx", resourcesLocation + "SSITRTBAGassignmentaudit - Filtered.xlsx", "C:\\temp\\");
+            endTime = System.currentTimeMillis();
+            filteredMillis = endTime - startTime;
+
+            filtered = timeFormat(startTime, endTime);
+            Logger.getLogger(AuditParserTest.class.getName()).log(Level.INFO, "Elapsed Time Filtered Registers: {0}", filtered);
+            Assert.assertTrue("Complete time is longer than filetered time: Complete time = " + complete + " | Filtered time = " + filtered, completeMillis > filteredMillis);
+        } catch (SlaReportGenerationException ex) {
+            fail("This exception was not expected:");
+            System.err.println(ex.getMessage());
+        }
+    }
+
+    private String timeFormat(long startTime, long endTime) {
+        /*nal DateTime dt = new DateTime(endTime-startTime);
+         long millis, second, minute, hour;
+         millis=endTime-startTime;
+         second = (millis / 1000) % 60;
+         minute = (millis / (1000 * 60)) % 60;
+         hour = (millis / (1000 * 60 * 60)) % 24;
+         return String.format("%02d:%02d:%02d:%d", hour, minute, second, millis);*/
+        SimpleDateFormat time = new SimpleDateFormat("mm:ss.SSS");
+        return time.format(new Date(endTime - startTime));
     }
 
     /**
