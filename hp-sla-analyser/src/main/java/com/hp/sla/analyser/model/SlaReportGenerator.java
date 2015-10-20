@@ -95,6 +95,7 @@ public class SlaReportGenerator {
 
             SlaAnalyzer slaa = new SlaAnalyzer();
             List<ReportDetail> report = slaa.analyze(integrateIncidents(incidents, audits), observer);
+            observer.notifyProcessPhase(this, "Generating the report");
             generateWorkbook(report);
 
             logger.info("Report Generation Process completed!");
@@ -141,7 +142,10 @@ public class SlaReportGenerator {
         loadData(determinedIncidentsSheet, determinedIncidents);
         loadData(undeterminedIncidentsSheet, undeterminedIncidents);
         ExcelWritter ew = new ExcelWritter();
-        ew.write(workbookTemplate, generateFileName());
+
+        String generatedFile = generateFileName();
+        ew.write(workbookTemplate, generatedFile);
+        observer.notifyProcessPhase(this, "File " + generatedFile + " was created!");
     }
 
     protected void loadData(Sheet sheet, List<ReportDetail> data) {

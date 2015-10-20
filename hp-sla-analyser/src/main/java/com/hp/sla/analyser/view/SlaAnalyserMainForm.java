@@ -3,18 +3,19 @@ package com.hp.sla.analyser.view;
 import com.hp.sla.analyser.model.BaseSlaReportGeneratorObserver;
 import com.hp.sla.analyser.model.Incident;
 import com.hp.sla.analyser.model.SlaReportGenerator;
-import com.hp.sla.analyser.model.SlaReportGenerationException;
 import com.hp.sla.analyser.model.SlaReportGeneratorObserver;
 import com.hp.sla.analyser.model.util.ExcelFilter;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 /**
  *
  * @author Benjamin Cisneros Barraza
  */
 public class SlaAnalyserMainForm extends javax.swing.JFrame {
-    
+
+    private final SlaReportGenerationProgressDialog progressDialog;
     private final SlaReportGeneratorObserver observer = new SwingSlaReportGenerator();
 
     /**
@@ -25,6 +26,7 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
         setResizable(false);
         initComponents();
         setLocationRelativeTo(null);
+        progressDialog = new SlaReportGenerationProgressDialog(this, true);
     }
 
     /**
@@ -200,7 +202,7 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
             incidentsFileTextField.setText(fileName);
         }
     }//GEN-LAST:event_browseIncidentsFileButtonActionPerformed
-    
+
     private void browseAssignmentAuditsFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseAssignmentAuditsFileButtonActionPerformed
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
@@ -209,17 +211,25 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
             assignmentAuditsTextField.setText(fileName);
         }
     }//GEN-LAST:event_browseAssignmentAuditsFileButtonActionPerformed
-    
+
     private void generateSLAButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateSLAButtonActionPerformed
-        SlaReportGenerator slaRG = new SlaReportGenerator();
-        try {
-            slaRG.setObserver(observer);
-            slaRG.generateReport(incidentsFileTextField.getText(), assignmentAuditsTextField.getText(), outputDirectoryTextField.getText());
-        } catch (SlaReportGenerationException SlaRGE) {
-            JOptionPane.showMessageDialog(this, SlaRGE.getLocalizedMessage(), "Error Generating Report", JOptionPane.ERROR_MESSAGE);
-        }
+        final SlaReportGenerator slaRG = new SlaReportGenerator();
+        slaRG.setObserver(observer);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.setVisible(true);
+            }
+        });
+        new SwingWorker<Object, Object>() {
+            @Override
+            protected Object doInBackground() throws Exception {
+                slaRG.generateReport(incidentsFileTextField.getText(), assignmentAuditsTextField.getText(), outputDirectoryTextField.getText());
+                return null;
+            }
+        }.execute();
     }//GEN-LAST:event_generateSLAButtonActionPerformed
-    
+
     private void browseOutputDirectoryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseOutputDirectoryButtonActionPerformed
         JFileChooser directoryChooser = new JFileChooser("C:\\temp\\");
         directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -245,29 +255,30 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
     private javax.swing.JTextField outputDirectoryTextField;
     // End of variables declaration//GEN-END:variables
 
-    private static class SwingSlaReportGenerator extends BaseSlaReportGeneratorObserver implements SlaReportGeneratorObserver {
-        
+    private class SwingSlaReportGenerator extends BaseSlaReportGeneratorObserver implements SlaReportGeneratorObserver {
+
         public SwingSlaReportGenerator() {
         }
-        
+
         @Override
         public void onStartReportGeneration(SlaReportGenerator slaReportGenerator) {
-            JOptionPane.showMessageDialog(null, "Starting");
+
         }
-        
+
         @Override
         public void onFinalizeReportGeneration(SlaReportGenerator slaReportGenerator) {
-            JOptionPane.showMessageDialog(null, "Finalizing");
+            progressDialog.doClose(SlaReportGenerationProgressDialog.RET_CANCEL);
         }
-        
+
         @Override
         public void notifyProcessPhase(SlaReportGenerator aThis, String string) {
-            JOptionPane.showMessageDialog(null, string);
+            progressDialog.appendMessage(string);
         }
-        
+
         @Override
         public void reportCurrentIncident(Incident incident, int i) {
-            //JOptionPane.showMessageDialog(null, "Starting");
+            progressDialog.appendMessage("Analyzing " + incident.getId() + " incident.");
+            progressDialog.showProgress(i, observer.getTotal());
         }
     }
 }

@@ -15,4 +15,6 @@ public interface SlaReportGeneratorObserver {
     public void setTotalIncidents(int size);
 
     public void reportCurrentIncident(Incident incident, int i);
+
+    public int getTotal();
 }
