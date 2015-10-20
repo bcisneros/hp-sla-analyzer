@@ -26,7 +26,7 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
         setResizable(false);
         initComponents();
         setLocationRelativeTo(null);
-        progressDialog = new SlaReportGenerationProgressDialog(this, true);
+        progressDialog = new SlaReportGenerationProgressDialog(null, true);
     }
 
     /**
@@ -262,7 +262,7 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
 
         @Override
         public void onStartReportGeneration(SlaReportGenerator slaReportGenerator) {
-
+            progressDialog.clearComponents();
         }
 
         @Override

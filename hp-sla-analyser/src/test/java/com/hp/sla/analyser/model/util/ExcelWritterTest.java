@@ -41,6 +41,7 @@ public class ExcelWritterTest {
      * Test of write method, of class ExcelWritter.
      */
     @Test
+    @Ignore
     public void testWrite() throws IllegalArgumentException, IllegalAccessException {
         ExcelWritter ew= new ExcelWritter();
         ew.write(null, "testExcelWritter");
