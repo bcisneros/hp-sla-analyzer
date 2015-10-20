@@ -33,7 +33,7 @@ public class SlaReportGeneratorTest {
             String resourcesLocation = System.getProperty("user.dir") + "\\src\\test\\resources\\files\\";
             instance.generateReport(resourcesLocation + "testIncidents.xlsx", resourcesLocation + "testAssignmentGroupAudits.xlsx", "C:\\temp\\");
         } catch (SlaReportGenerationException ex) {
-            fail("This exception was not expected " + ex.getMessage());
+            fail("This exception was not expected:" + ex.getMessage());
         }
     }
 

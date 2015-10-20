@@ -1,8 +1,7 @@
 package com.hp.sla.analyser.model.util;
 
 import com.hp.sla.analyser.model.Incident;
-import java.io.File;
-import java.io.FileInputStream;
+import com.hp.sla.analyser.util.ResourcesUtil;
 import java.sql.Timestamp;
 import java.util.List;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -24,11 +23,7 @@ public class IncidentParserTest {
      */
     @Test
     public void testParseDocument() throws Exception {
-        ExcelReader excelReader = new ExcelReader();
-        ClassLoader classLoader = getClass().getClassLoader();
-        FileInputStream testFile = new FileInputStream(new File(classLoader.getResource("files/Incidenttickets-ALLGFITFAIT.xlsx").getFile()));
-        excelReader.setInputFile(testFile);
-        XSSFSheet sheet = (XSSFSheet) excelReader.read().getSheetAt(0);
+        XSSFSheet sheet = (XSSFSheet) ExcelReader.read(ResourcesUtil.getResourceFromProjectClasspath("files/Incidenttickets-ALLGFITFAIT.xlsx")).getSheetAt(0);
         IncidentParser instance = new IncidentParser();
         List<Incident> result = instance.parseDocument(sheet);
         assertNotNull("This must return a not null value", result);

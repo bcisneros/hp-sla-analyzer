@@ -1,15 +1,13 @@
 package com.hp.sla.analyser.model.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import com.hp.sla.analyser.util.ResourcesUtil;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -36,17 +34,10 @@ public class ExcelReaderTest {
     public void tearDown() {
     }
 
-    /**
-     * Test of read method, of class ExcelReader.
-     */
     @Test
     public void testRead() throws Exception {
-        System.out.println("read");
-        ExcelReader excelReader = new ExcelReader();
-        ClassLoader classLoader = getClass().getClassLoader();
-        FileInputStream testFile = new FileInputStream(new File(classLoader.getResource("files/testWorkBook.xlsx").getFile()));
-        excelReader.setInputFile(testFile);
-        excelReader.read();
+        Workbook workBookFromClasspath = ExcelReader.read(ResourcesUtil.getResourceFromProjectClasspath("files/testWorkBook.xlsx"));
+        assertNotNull("This workbook object must be not null", workBookFromClasspath);
     }
 
 }

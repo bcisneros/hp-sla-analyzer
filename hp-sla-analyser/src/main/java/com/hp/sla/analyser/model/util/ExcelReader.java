@@ -12,15 +12,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class ExcelReader {
 
-    private FileInputStream inputFile;
     final static Logger logger = Logger.getLogger(ExcelReader.class);
 
-    public void setInputFile(FileInputStream inputFile) {
-        this.inputFile = inputFile;
-    }
-
-    public Workbook read() throws IOException {
-
+    public static Workbook read(FileInputStream inputFile) throws IOException {
         return new XSSFWorkbook(inputFile);
     }
 }

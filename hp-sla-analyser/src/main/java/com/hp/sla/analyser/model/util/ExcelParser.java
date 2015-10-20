@@ -5,12 +5,8 @@
  */
 package com.hp.sla.analyser.model.util;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.Sheet;
 
 /**
  *
@@ -19,5 +15,5 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
  */
 public abstract class ExcelParser<T> {
 
-    public abstract List<T> parseDocument(XSSFSheet sheet);
+    public abstract List<T> parseDocument(Sheet sheet);
 }

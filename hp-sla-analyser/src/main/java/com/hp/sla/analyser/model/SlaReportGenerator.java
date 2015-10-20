@@ -9,18 +9,25 @@ import com.hp.sla.analyser.util.ResourcesUtil;
 import static com.hp.sla.analyser.util.StringsUtil.isNullOrEmpty;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.model.StylesTable;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 /**
@@ -31,6 +38,32 @@ public class SlaReportGenerator {
 
     final static Logger logger = Logger.getLogger(SlaReportGenerator.class);
     private String destination = "C:\\temp\\";
+    Workbook workbookTemplate;
+    private CellStyle defaultCellStyle = null;
+    private CellStyle dateCellStyle = null;
+    private CellStyle doubleNumberCellStyle = null;
+    private CellStyle integerNumberCellStyle = null;
+
+    public SlaReportGenerator() {
+        try {
+            this.workbookTemplate = ExcelReader.read(ResourcesUtil.getResourceFromProjectClasspath("files/reportTemplate.xlsx"));
+            defaultCellStyle = workbookTemplate.createCellStyle();
+            defaultCellStyle.cloneStyleFrom(workbookTemplate.getSheetAt(0).getRow(1).getCell(0).getCellStyle());
+            dateCellStyle = workbookTemplate.createCellStyle();
+            dateCellStyle.cloneStyleFrom(defaultCellStyle);
+            final CreationHelper creationHelper = workbookTemplate.getCreationHelper();
+            dateCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("mm/dd/yyyy hh:mm:ss"));
+            doubleNumberCellStyle = workbookTemplate.createCellStyle();
+            doubleNumberCellStyle.cloneStyleFrom(defaultCellStyle);
+            doubleNumberCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("0.00"));
+            integerNumberCellStyle = workbookTemplate.createCellStyle();
+            integerNumberCellStyle.cloneStyleFrom(defaultCellStyle);
+            integerNumberCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("0"));
+        } catch (Exception ex) {
+            logger.error("Error generating Cell Styles from template", ex);
+            //TODO: Add logic to generate a runtime template
+        }
+    }
 
     public void generateReport(String incidentsFile, String auditsFile, String destinationPath) throws SlaReportGenerationException {
         destination = destinationPath;
@@ -42,15 +75,9 @@ public class SlaReportGenerator {
 
             throw new SlaReportGenerationException("Input and Output data is required.");
         }
-        //TODO: convert read method to static who receives a String with the filename  
-        ExcelReader incidentExcel = new ExcelReader();
-        ExcelReader auditExcel = new ExcelReader();
         try {
-            incidentExcel.setInputFile(new FileInputStream(new File(incidentsFile)));
-            auditExcel.setInputFile(new FileInputStream(new File(auditsFile)));
-
-            XSSFSheet incidentSheet = (XSSFSheet) incidentExcel.read().getSheetAt(0);
-            XSSFSheet auditSheet = (XSSFSheet) auditExcel.read().getSheetAt(0);
+            XSSFSheet incidentSheet = (XSSFSheet) ExcelReader.read(new FileInputStream(new File(incidentsFile))).getSheetAt(0);
+            XSSFSheet auditSheet = (XSSFSheet) ExcelReader.read(new FileInputStream(new File(auditsFile))).getSheetAt(0);
 
             IncidentParser ip = new IncidentParser();
             AuditParser ap = new AuditParser();
@@ -88,11 +115,10 @@ public class SlaReportGenerator {
     }
 
     protected void generateWorkbook(List<ReportDetail> data) throws Exception {
-        ExcelReader reader = new ExcelReader();
-        reader.setInputFile(ResourcesUtil.getResourceFromProjectClasspath("files/reportTemplate.xlsx"));
-        Workbook wb = reader.read();
-        Sheet sheet1 = wb.getSheetAt(0);
-        Sheet sheet2 = wb.getSheetAt(1);
+
+        Sheet determinedIncidentsSheet = workbookTemplate.getSheetAt(0);
+        Sheet undeterminedIncidentsSheet = workbookTemplate.getSheetAt(1);
+
         List<ReportDetail> determinedIncidents = new ArrayList<>();
         List<ReportDetail> undeterminedIncidents = new ArrayList<>();
 
@@ -103,61 +129,68 @@ public class SlaReportGenerator {
                 determinedIncidents.add(detail);
             }
         }
-        loadData(sheet1, determinedIncidents);
-        loadData(sheet2, undeterminedIncidents);
+        loadData(determinedIncidentsSheet, determinedIncidents);
+        loadData(undeterminedIncidentsSheet, undeterminedIncidents);
         ExcelWritter ew = new ExcelWritter();
-        ew.write(wb, generateFileName());
+        ew.write(workbookTemplate, generateFileName());
     }
 
     protected void loadData(Sheet sheet, List<ReportDetail> data) {
         sheet.createFreezePane(0, 1);
         Row row;
         int rownum = 1;
-        CellStyle dataStyle = sheet.getRow(0).getCell(0).getCellStyle();
-        dataStyle.setFillBackgroundColor(CellStyle.NO_FILL);
-        for (int i = 0; i < data.size(); i++, rownum++) {
-            row = sheet.createRow(rownum);
-            row.setRowStyle(dataStyle);
-            ReportDetail reportDetail = data.get(i);
-            row.createCell(0).setCellValue(reportDetail.getIncidentIdentifier());
-            row.getCell(0).setCellStyle(dataStyle);
-            createDateCellValue(reportDetail.getIncidentCreatedTimestamp(), row, sheet, 1);
-            createDateCellValue(reportDetail.getIncidentClosedTimestamp(), row, sheet, 2);
-            createDateCellValue(reportDetail.getIncidentAuditSystemModifiedTime(), row, sheet, 3);
-            row.createCell(4).setCellValue(reportDetail.getBurnedOutComplianceString());
-            row.createCell(5).setCellValue(reportDetail.getIncidentTimeToFixDurationHours());
-            row.createCell(6).setCellValue(reportDetail.getIncidentCurrentAssignmentGroupName());
-            row.createCell(7).setCellValue(reportDetail.getIncidentAuditNewValueText());
-            row.createCell(8).setCellValue(reportDetail.getConfigurationItemLogicalName());
-            row.createCell(9).setCellValue(reportDetail.getRelatedRootConfigurationItemBusinessFriendlyName());
-            row.createCell(10).setCellValue(reportDetail.getRelatedRootConfigurationItemApplicationPortfolioIdentifier());
-            row.createCell(11).setCellValue(reportDetail.getIncidentCriticalityDescription());
-            row.createCell(12).setCellValue(reportDetail.getIncidentPriorityDescription());
-            row.createCell(13).setCellValue(reportDetail.getIncidentCurrentStatusPhaseDescription());
-            row.createCell(14).setCellValue(reportDetail.getIncidentCurrentStatusDescription());
-            row.createCell(15).setCellValue(reportDetail.getIncidentAgingDurationInDays());
-            row.createCell(16).setCellValue(reportDetail.getIncidentOpenedByEmailName());
-            row.createCell(17).setCellValue(reportDetail.getIncidentAssigneeEmailName());
-            row.createCell(18).setCellValue(reportDetail.getIncidentAssigneeManagerEmailName());
-            row.createCell(19).setCellValue(reportDetail.getIncidentAssigneeOrganizationUnitName());
-            row.createCell(20).setCellValue(reportDetail.getIncidentCurrentAssignmentGroupSupportLevelDescription());
-            row.createCell(21).setCellValue(reportDetail.getIncidentClosedAssignmentGroupSupportLevelDescription());
-            row.createCell(22).setCellValue(reportDetail.getConfigurationItemStatusDescription());
-            row.createCell(23).setCellValue(reportDetail.getConfigurationItemEnvironmentDescription());
-            row.createCell(24).setCellValue(reportDetail.getIncidentConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name());
-            row.createCell(25).setCellValue(reportDetail.getErrorMessage());
+        for (ReportDetail reportDetail : data) {
+            row = sheet.createRow(rownum++);
+            createCellValue(reportDetail.getIncidentIdentifier(), row, 0);
+            createCellValue(reportDetail.getIncidentCreatedTimestamp(), row, 1);
+            createCellValue(reportDetail.getIncidentClosedTimestamp(), row, 2);
+            createCellValue(reportDetail.getIncidentAuditSystemModifiedTime(), row, 3);
+            createCellValue(reportDetail.getBurnedOutComplianceString(), row, 4);
+            createCellValue(reportDetail.getIncidentTimeToFixDurationHours(), row, 5);
+            createCellValue(reportDetail.getIncidentCurrentAssignmentGroupName(), row, 6);
+            createCellValue(reportDetail.getIncidentAuditNewValueText(), row, 7);
+            createCellValue(reportDetail.getConfigurationItemLogicalName(), row, 8);
+            createCellValue(reportDetail.getRelatedRootConfigurationItemBusinessFriendlyName(), row, 9);
+            createCellValue(reportDetail.getRelatedRootConfigurationItemApplicationPortfolioIdentifier(), row, 10);
+            createCellValue(reportDetail.getIncidentCriticalityDescription(), row, 11);
+            createCellValue(reportDetail.getIncidentPriorityDescription(), row, 12);
+            createCellValue(reportDetail.getIncidentCurrentStatusPhaseDescription(), row, 13);
+            createCellValue(reportDetail.getIncidentCurrentStatusDescription(), row, 14);
+            createCellValue(reportDetail.getIncidentAgingDurationInDays(), row, 15);
+            createCellValue(reportDetail.getIncidentOpenedByEmailName(), row, 16);
+            createCellValue(reportDetail.getIncidentAssigneeEmailName(), row, 17);
+            createCellValue(reportDetail.getIncidentAssigneeManagerEmailName(), row, 18);
+            createCellValue(reportDetail.getIncidentAssigneeOrganizationUnitName(), row, 19);
+            createCellValue(reportDetail.getIncidentCurrentAssignmentGroupSupportLevelDescription(), row, 20);
+            createCellValue(reportDetail.getIncidentClosedAssignmentGroupSupportLevelDescription(), row, 21);
+            createCellValue(reportDetail.getConfigurationItemStatusDescription(), row, 22);
+            createCellValue(reportDetail.getConfigurationItemEnvironmentDescription(), row, 23);
+            createCellValue(reportDetail.getIncidentConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name(), row, 24);
+            createCellValue(reportDetail.getErrorMessage(), row, 25);
         }
     }
 
-    protected void createDateCellValue(Date dateToStore, Row row, Sheet sheet, int cellIndex) {
-        if (dateToStore == null) {
-            row.createCell(cellIndex).setCellValue("");
+    protected void createCellValue(Object dataToStore, Row row, int cellIndex) {
+        Cell cell = row.createCell(cellIndex);
+        cell.setCellStyle(defaultCellStyle);
+        if (dataToStore == null) {
+            cell.setCellValue("");
+            return;
+        }
+        if (dataToStore instanceof Date) {
+            cell.setCellValue((Date) dataToStore);
+            cell.setCellStyle(dateCellStyle);
+        } else if (dataToStore instanceof Double) {
+            cell.setCellValue((Double) dataToStore);
+            cell.setCellStyle(doubleNumberCellStyle);
+        } else if (dataToStore instanceof Integer) {
+            cell.setCellValue((Integer) dataToStore);
+            cell.setCellStyle(integerNumberCellStyle);
+        } else if (dataToStore instanceof Long) {
+            cell.setCellValue((Long) dataToStore);
+            cell.setCellStyle(integerNumberCellStyle);
         } else {
-            CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
-            cellStyle.setDataFormat(sheet.getWorkbook().getCreationHelper().createDataFormat().getFormat("mm/dd/yyyy h:mm:ss"));
-            Cell cell = row.createCell(cellIndex);
-            cell.setCellValue(dateToStore);
-            cell.setCellStyle(cellStyle);
+            cell.setCellValue((String) dataToStore);
         }
     }
 

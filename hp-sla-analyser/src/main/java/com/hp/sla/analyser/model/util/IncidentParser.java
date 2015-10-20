@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.Sheet;
 
 /**
  *
@@ -21,7 +21,7 @@ public class IncidentParser extends ExcelParser<Incident> {
     private static final Logger logger = Logger.getLogger(IncidentParser.class);
 
     @Override
-    public List<Incident> parseDocument(XSSFSheet sheet) {
+    public List<Incident> parseDocument(Sheet sheet) {
         List<Incident> incidents = new ArrayList<>();
         // Get iterator to all the rows in current sheet 
         Iterator<Row> rowIterator = sheet.iterator();

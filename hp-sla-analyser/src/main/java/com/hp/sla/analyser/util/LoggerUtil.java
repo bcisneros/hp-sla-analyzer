@@ -7,11 +7,11 @@ import org.apache.log4j.Logger;
  * @author Benjamin Cisneros Barraza
  */
 public class LoggerUtil {
-    
+
     public static void debugIfEnabled(Logger logger, Object message) {
         debugIfEnabled(logger, message, null);
     }
-    
+
     public static void debugIfEnabled(Logger logger, Object message, Throwable t) {
         if (logger != null) {
             if (logger.isDebugEnabled()) {

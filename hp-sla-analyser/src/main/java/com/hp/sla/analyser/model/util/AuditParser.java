@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.Sheet;
 
 /**
  * This class parses the audit document to obtain an Audit List
@@ -16,7 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 public class AuditParser extends ExcelParser {
 
     @Override
-    public List<Audit> parseDocument(XSSFSheet sheet) {
+    public List<Audit> parseDocument(Sheet sheet) {
         List data = new ArrayList();
         // Get iterator to all the rows in current sheet 
         Iterator<Row> rowIterator = sheet.iterator();
