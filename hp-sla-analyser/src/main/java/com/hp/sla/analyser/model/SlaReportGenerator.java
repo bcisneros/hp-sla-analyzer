@@ -109,19 +109,18 @@ public class SlaReportGenerator {
     }
 
     protected List<Incident> integrateIncidents(List<Incident> incidents, List<Audit> audits) {
-        Collections.sort(incidents);
-        Collections.sort(audits);
-        List<Audit> inc_audits;
-        int index = 0;
+        List<Incident> integratedIncidentsList = new ArrayList<>();
         for (Incident incident : incidents) {
-            inc_audits = new LinkedList();
-            while (index < audits.size() && audits.get(index).getIncidentID().equals(incident.getId())) {
-                inc_audits.add(audits.get(index));
-                index++;
+            List<Audit> tempAudits = new ArrayList<>();
+            for (Audit audit : audits) {
+                if (incident.getId().equalsIgnoreCase(audit.getIncidentID())) {
+                    tempAudits.add(audit);
+                }
             }
-            incident.setAudits(inc_audits);
+            incident.setAudits(tempAudits);
+            integratedIncidentsList.add(incident);
         }
-        return incidents;
+        return integratedIncidentsList;
     }
 
     protected void generateWorkbook(List<ReportDetail> data) throws Exception {

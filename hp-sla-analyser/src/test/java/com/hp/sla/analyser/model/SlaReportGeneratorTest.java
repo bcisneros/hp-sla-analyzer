@@ -3,6 +3,7 @@ package com.hp.sla.analyser.model;
 import com.hp.sla.analyser.model.util.AuditParserTest;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -69,13 +72,6 @@ public class SlaReportGeneratorTest {
     }
 
     private String timeFormat(long startTime, long endTime) {
-        /*nal DateTime dt = new DateTime(endTime-startTime);
-         long millis, second, minute, hour;
-         millis=endTime-startTime;
-         second = (millis / 1000) % 60;
-         minute = (millis / (1000 * 60)) % 60;
-         hour = (millis / (1000 * 60 * 60)) % 24;
-         return String.format("%02d:%02d:%02d:%d", hour, minute, second, millis);*/
         SimpleDateFormat time = new SimpleDateFormat("mm:ss.SSS");
         return time.format(new Date(endTime - startTime));
     }
@@ -85,14 +81,39 @@ public class SlaReportGeneratorTest {
      */
     @Test
     public void testIntegrateIncidents() {
-        List<Audit> audits = testAudits();
-        List<Incident> incidents = testIncidents();
-        List<Incident> result = instance.integrateIncidents(incidents, audits);
+        Incident incidentWithOneAudit = new Incident();
+        incidentWithOneAudit.setId("OneAudit");
+        Audit auditOne = new Audit();
+        auditOne.setIncidentID("OneAudit");
 
-        Logger.getLogger(AuditParserTest.class.getName()).log(Level.INFO, "{0}Integrated Incidents: ", result);
-        assertEquals("Audits per incident " + result.get(0).getId(), result.get(0).getAudits().size(), 0);
-        assertEquals("Audits per incident " + result.get(1).getId(), result.get(1).getAudits().size(), 1);
-        assertEquals("Audits per incident " + result.get(2).getId(), result.get(2).getAudits().size(), 2);
+        Incident incidentWithZeroAudits = new Incident();
+        incidentWithZeroAudits.setId("ZeroAudits");
+
+        Incident incidentWithThreeAudits = new Incident();
+        incidentWithThreeAudits.setId("ThreeAudits");
+        Audit auditForIncidentWithThreeAudits = new Audit();
+        auditForIncidentWithThreeAudits.setIncidentID("ThreeAudits");
+
+        List<Incident> incidentsToIntegrate = new ArrayList<>();
+        List<Audit> auditsToIntegrate = new ArrayList<>();
+        incidentsToIntegrate.add(incidentWithOneAudit);
+        incidentsToIntegrate.add(incidentWithZeroAudits);
+        incidentsToIntegrate.add(incidentWithThreeAudits);
+
+        auditsToIntegrate.add(auditOne);
+        auditsToIntegrate.add(auditForIncidentWithThreeAudits);
+        auditsToIntegrate.add(auditForIncidentWithThreeAudits);
+        auditsToIntegrate.add(auditForIncidentWithThreeAudits);
+
+        List<Incident> integratedIncidents = instance.integrateIncidents(incidentsToIntegrate, auditsToIntegrate);
+        assertNotNull("The integrated incidents list must not be null.", integratedIncidents);
+        assertEquals("Must be 3 elements in the list.", 3, integratedIncidents.size());
+        assertSame("The first element must be the incident with one audit.", incidentWithOneAudit, integratedIncidents.get(0));
+        assertEquals("Must be exactly one audit for the first incident", 1, integratedIncidents.get(0).getAudits().size());
+        assertSame("The second element must be the incident with zero audits.", incidentWithZeroAudits, integratedIncidents.get(1));
+        assertEquals("Must be exactly zero audits for the second incident", 0, integratedIncidents.get(1).getAudits().size());
+        assertSame("The third element must be the incident with three audits.", incidentWithThreeAudits, integratedIncidents.get(2));
+        assertEquals("Must be exactly three audits for the third incident", 3, integratedIncidents.get(2).getAudits().size());
     }
 
     @Test
@@ -258,51 +279,6 @@ public class SlaReportGeneratorTest {
             }
 
         };
-    }
-
-    private List<Incident> testIncidents() {
-        List<Incident> incidents = new LinkedList();
-
-        Incident incident = new Incident();
-        incident.setId("IM0001");
-
-        incidents.add(incident);
-
-        incident = new Incident();
-        incident.setId("IM0010");
-
-        incidents.add(incident);
-
-        incident = new Incident();
-        incident.setId("IM0005");
-
-        incidents.add(incident);
-
-        return incidents;
-    }
-
-    private List<Audit> testAudits() {
-        List<Audit> audits = new LinkedList();
-
-        Audit audit = new Audit();
-        audit.setNewVaueText("ANOTHER-NON-APLYABLE-AG");
-        audit.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 00:30:00.00"));
-        audit.setIncidentID("IM0005");
-
-        audits.add(audit);
-
-        audit = new Audit();
-        audit.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 01:30:00.00"));
-        audit.setIncidentID("IM0010");
-
-        audits.add(audit);
-
-        audit = new Audit();
-        audit.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 07:56:00.00"));
-        audit.setIncidentID("IM0010");
-
-        audits.add(audit);
-        return audits;
     }
 
     private List<ReportDetail> dummyReportDetails() {
