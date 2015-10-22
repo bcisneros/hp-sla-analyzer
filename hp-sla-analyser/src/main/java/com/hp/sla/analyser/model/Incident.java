@@ -275,7 +275,7 @@ public class Incident implements Comparable<Incident> {
 
     @Override
     public String toString() {
-        return "Incident{" + "id=" + id + ", audits=" + audits + '}';
+        return "Incident{" + "id=" + id + ", priority=" + priority + ", criticallity= "+criticalityDescription+"}";
     }
 
     @Override

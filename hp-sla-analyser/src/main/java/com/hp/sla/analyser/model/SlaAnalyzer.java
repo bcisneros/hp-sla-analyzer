@@ -107,7 +107,7 @@ public class SlaAnalyzer {
         return detail;
     }
 
-    protected ServiceLevelAgreement getServiceLevelAgreementByIncident(Incident incident) throws SlaAnalysisException {
+    protected static ServiceLevelAgreement getServiceLevelAgreementByIncident(Incident incident) throws SlaAnalysisException {
         String criticality = incident.getCriticalityDescription();
 
         if (criticality == null) {
