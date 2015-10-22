@@ -12,11 +12,11 @@ import org.apache.poi.ss.usermodel.Cell;
  * @author ramirmal
  */
 public class IncidentParser extends ExcelParser<Incident> {
-    
-    public IncidentParser(){
+
+    public IncidentParser() {
         startColumnName = "Incident Identifier";
     }
-    
+
     @Override
     public Incident createObject(Iterator<Cell> cellIterator) {
         Incident incident = new Incident();

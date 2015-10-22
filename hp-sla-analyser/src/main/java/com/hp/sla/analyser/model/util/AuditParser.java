@@ -10,8 +10,8 @@ import org.apache.poi.ss.usermodel.Cell;
  * @author ramirmal
  */
 public class AuditParser extends ExcelParser<Audit> {
-    
-    public AuditParser(){
+
+    public AuditParser() {
         this.startColumnName = "Incident Audit Field Display Name";
     }
 
@@ -32,5 +32,5 @@ public class AuditParser extends ExcelParser<Audit> {
         au.setSystemModifiedUser(cellIterator.next().getStringCellValue());
         au.setSystemModifiedTime(cellIterator.next().getDateCellValue());
         return au;
-    }   
+    }
 }

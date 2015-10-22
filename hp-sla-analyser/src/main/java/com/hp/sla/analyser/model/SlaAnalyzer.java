@@ -41,6 +41,10 @@ public class SlaAnalyzer {
      * @return A <code>List</code> object of <code>ReportDetail</code>
      */
     public List<ReportDetail> analyze(List<Incident> incidents, SlaReportGeneratorObserver observer) {
+        if (observer == null) {
+            observer = new BaseSlaReportGeneratorObserver() {
+            };
+        }
         if (incidents == null || incidents.isEmpty()) {
             throw new IllegalArgumentException("The list of incidents cannot be null or empty");
         }

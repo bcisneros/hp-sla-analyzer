@@ -28,13 +28,17 @@ public abstract class ExcelParser<T> {
 
     /**
      * Create a new object from the contents in the row
-     * @param cellIterator the cell iterator of a row in a sheet that contain the data to create a new object
+     *
+     * @param cellIterator the cell iterator of a row in a sheet that contain
+     * the data to create a new object
      * @return a new object
      */
     public abstract T createObject(Iterator<Cell> cellIterator);
 
     /**
-     * This method takes an excel sheet and obtains the data contained in the rows that represent tickets or audits
+     * This method takes an excel sheet and obtains the data contained in the
+     * rows that represent tickets or audits
+     *
      * @param sheet the excel sheet from where the objects will be extracted
      * @return a list of objects (Tickets or Audits)
      */
@@ -78,6 +82,5 @@ public abstract class ExcelParser<T> {
         }
         return objects;
     }
-    
 
 }

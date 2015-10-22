@@ -32,11 +32,8 @@ public class SlaReportGeneratorTest {
     }
 
     @Test
-    @Ignore
     public void testGenerateReport() {
         try {
-            System.out.println("user.dir:");
-            System.out.println(System.getProperty("user.dir"));
             String resourcesLocation = System.getProperty("user.dir") + "\\src\\test\\resources\\files\\";
             instance.generateReport(resourcesLocation + "testIncidents.xlsx", resourcesLocation + "testAssignmentGroupAudits.xlsx", "C:\\temp\\");
         } catch (SlaReportGenerationException ex) {
