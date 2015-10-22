@@ -111,7 +111,7 @@ public class SlaAnalyzerTest {
     }
 
     @Test
-    public void testAnalizeIncidentWithNullValuesOnNotRequiredFields() throws Exception {
+    public void testAnalizeIncidentWithNullValuesOnNotRequiredFields() {
         Incident incident = getCompliantIncidents().get(0);
         incident.setCloseTimestamp(null);
         try {
@@ -120,6 +120,14 @@ public class SlaAnalyzerTest {
         } catch (Exception exception) {
             fail("This test must not throw an exception: " + exception);
         }
+    }
+
+    @Test(expected = SlaAnalysisException.class)
+    public void testAnalizeIncidentWithNullServiceLevelAgreement() throws SlaAnalysisException {
+        Incident incident = getCompliantIncidents().get(0);
+        incident.setCriticalityDescription(Incident.ENTITITY_ESSENTIAL_CRITICALITY);
+        incident.setPriority(Incident.TOP_PRIORITY);
+        instance.analizeIncident(incident);
     }
 
     @Test
@@ -202,6 +210,15 @@ public class SlaAnalyzerTest {
         return testIncidentValues(false, true);
     }
 
+    public static List<Incident> getIncidentsWithNullServiceLevelAgreement() {
+        List<Incident> incidents = new ArrayList<>();
+        incidents.add(generateIncident(null, null, true, true));
+        incidents.add(generateIncident(Incident.ENTITITY_ESSENTIAL_CRITICALITY, Incident.TOP_PRIORITY, true, true));
+        incidents.add(generateIncident(Incident.NORMAL_CRITICALITY, Incident.TOP_PRIORITY, true, true));
+        incidents.add(generateIncident(Incident.NORMAL_CRITICALITY, Incident.HIGH_PRIORITY, true, true));
+        return incidents;
+    }
+
     /**
      * Obtains a Collection of incident cases that has a certain value of
      * burnedOut and compliant
@@ -213,26 +230,15 @@ public class SlaAnalyzerTest {
      * @throws SlaAnalysisException
      */
     private static List<Incident> testIncidentValues(boolean burnedOut, boolean compliant) {
-        String[] priority = {"top", "high", "medium", "low"};
-        String[] criticallity = {"Mission Critical", "Entity Essential", "Normal"};
+        String[] priorities = {Incident.TOP_PRIORITY, Incident.HIGH_PRIORITY, Incident.MEDIUM_PRIORITY, Incident.LOW_PRIORITY};
+        String[] criticalities = {Incident.MISSION_CRITICAL_CRITICALITY, Incident.ENTITITY_ESSENTIAL_CRITICALITY, Incident.NORMAL_CRITICALITY};
         List values = new ArrayList();
-        for (int i = 0; i < priority.length; i++) {
-            for (int j = 0; j <= i && j < criticallity.length; j++) {
-                Incident incident = generateIncident(criticallity[j], priority[i], burnedOut, compliant);
-
-                ServiceLevelAgreement sla1 = null;
-                try {
-                    sla1 = SlaAnalyzer.getServiceLevelAgreementByIncident(incident);
-                } catch (SlaAnalysisException ex) {
-                    java.util.logging.Logger.getLogger(SlaAnalyzerTest.class.getName()).log(Level.SEVERE, null, ex);
+        for (int i = 0; i < priorities.length; i++) {
+            for (int j = 0; j <= i && j < criticalities.length; j++) {
+                Incident incident = generateIncident(criticalities[j], priorities[i], burnedOut, compliant);
+                if (incident.getCloseTimestamp() != null) {
+                    values.add(incident);
                 }
-                Timestamp burnedOutTimestamp = incident.calculateBurnedOutDate(sla1);
-                Timestamp complianceLimitTimestamp = incident.calculateTimeToFixDeadLine(sla1);
-
-                logger.debug("Incident: " + incident);
-                logger.debug("  Is compliant:   " + incident.getCloseTimestamp().before(complianceLimitTimestamp));
-                logger.debug("  Is burned out:  " + incident.getAudits().get(1).getSystemModifiedTime().after(burnedOutTimestamp));
-                values.add(incident);
             }
         }
         return values;
@@ -272,11 +278,13 @@ public class SlaAnalyzerTest {
         incident.setPriority(priority);
         //Compute burned out time stamp
         incident.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00.00"));
-        ServiceLevelAgreement sla = null;
+        ServiceLevelAgreement sla;
         try {
             sla = SlaAnalyzer.getServiceLevelAgreementByIncident(incident);
         } catch (SlaAnalysisException ex) {
-            fail("This test must pass: " + ex);
+            // When we cannot calculate the service level we return an incident with provided values
+            logger.info("Skipping this error", ex);
+            return incident;
         }
         Timestamp burnedOutTimestamp = incident.calculateBurnedOutDate(sla);
         Timestamp complianceLimitTimestamp = incident.calculateTimeToFixDeadLine(sla);

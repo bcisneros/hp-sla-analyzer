@@ -6,10 +6,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Represents an Incident object that have all the details about an incident
@@ -19,6 +17,14 @@ import java.util.concurrent.TimeUnit;
  * @updatedby Benjamín Cisneros Barraza
  */
 public class Incident implements Comparable<Incident> {
+
+    public static String MISSION_CRITICAL_CRITICALITY = "Mission Critical";
+    public static String ENTITITY_ESSENTIAL_CRITICALITY = "Entity Essential";
+    public static String NORMAL_CRITICALITY = "Normal";
+    public static String TOP_PRIORITY = "top";
+    public static String HIGH_PRIORITY = "high";
+    public static String MEDIUM_PRIORITY = "medium";
+    public static String LOW_PRIORITY = "low";
 
     private String id;
     private Timestamp creationTimestamp;
