@@ -21,8 +21,8 @@ public class ServiceLevelAgreement {
     public static final ServiceLevelAgreement HP_IT_ENTITY_ESSENTIAL_LOW = new ServiceLevelAgreement(8F, 96F, 96F * 0.75F);
     public static final ServiceLevelAgreement HP_IT_NORMAL_TOP = null;
     public static final ServiceLevelAgreement HP_IT_NORMAL_HIGH = null;
-    public static final ServiceLevelAgreement HP_IT_NORMAL_MEDIUM = new ServiceLevelAgreement(4F, 72F, 72F * 0.75F);
-    public static final ServiceLevelAgreement HP_IT_NORMAL_LOW = new ServiceLevelAgreement(8F, 96F, 96F * 0.75F);
+    public static final ServiceLevelAgreement HP_IT_NORMAL_MEDIUM = new ServiceLevelAgreement(4F, 96F, 96F * 0.75F);
+    public static final ServiceLevelAgreement HP_IT_NORMAL_LOW = new ServiceLevelAgreement(8F, 114F, 114F * 0.75F);
 
     public ServiceLevelAgreement(Float timeToOwn, Float timeToFix, Float burnedOut) {
         this.timeToOwn = timeToOwn;
