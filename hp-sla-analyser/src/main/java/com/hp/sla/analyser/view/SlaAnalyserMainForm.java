@@ -2,10 +2,12 @@ package com.hp.sla.analyser.view;
 
 import com.hp.sla.analyser.model.BaseSlaReportGeneratorObserver;
 import com.hp.sla.analyser.model.Incident;
+import com.hp.sla.analyser.model.SlaReportGenerationException;
 import com.hp.sla.analyser.model.SlaReportGenerator;
 import com.hp.sla.analyser.model.SlaReportGeneratorObserver;
 import com.hp.sla.analyser.model.util.ExcelFilter;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
@@ -224,7 +226,14 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
         new SwingWorker<Object, Object>() {
             @Override
             protected Object doInBackground() throws Exception {
-                slaRG.generateReport(incidentsFileTextField.getText(), assignmentAuditsTextField.getText(), outputDirectoryTextField.getText());
+
+                try {
+                    slaRG.generateReport(incidentsFileTextField.getText(),
+                            assignmentAuditsTextField.getText(),
+                            outputDirectoryTextField.getText());
+                } catch (SlaReportGenerationException slaReportGenerationException) {
+                    JOptionPane.showMessageDialog(null, "Could not generate the report due: " + slaReportGenerationException, "SLA Report Generation Error", JOptionPane.ERROR_MESSAGE);
+                }
                 return null;
             }
         }.execute();
@@ -267,6 +276,9 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
 
         @Override
         public void onFinalizeReportGeneration(SlaReportGenerator slaReportGenerator) {
+            JOptionPane.showMessageDialog(progressDialog, "Report created correctly:\n"
+                    + slaReportGenerator.getGeneratedReportFile(), "Report Generation Process",
+                    JOptionPane.INFORMATION_MESSAGE);
             progressDialog.doClose(SlaReportGenerationProgressDialog.RET_CANCEL);
         }
 
@@ -279,6 +291,11 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
         public void reportCurrentIncident(Incident incident, int i) {
             progressDialog.appendMessage("Analyzing " + incident.getId() + " incident.");
             progressDialog.showProgress(i, observer.getTotal());
+        }
+
+        @Override
+        public void onReportGenerationError(Exception ex) {
+            progressDialog.doClose(SlaReportGenerationProgressDialog.RET_CANCEL);
         }
     }
 }

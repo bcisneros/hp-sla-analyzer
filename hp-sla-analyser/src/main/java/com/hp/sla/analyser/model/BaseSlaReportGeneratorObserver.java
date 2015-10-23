@@ -9,6 +9,11 @@ public abstract class BaseSlaReportGeneratorObserver implements SlaReportGenerat
     private int incidentsTotal;
 
     @Override
+    public void onReportGenerationError(Exception ex) {
+
+    }
+
+    @Override
     public int getTotal() {
         return incidentsTotal;
     }

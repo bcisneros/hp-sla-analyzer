@@ -17,4 +17,6 @@ public interface SlaReportGeneratorObserver {
     public void reportCurrentIncident(Incident incident, int i);
 
     public int getTotal();
+
+    public void onReportGenerationError(Exception ex);
 }

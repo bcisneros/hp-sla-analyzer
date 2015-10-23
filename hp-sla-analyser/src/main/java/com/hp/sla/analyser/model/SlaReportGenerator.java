@@ -36,6 +36,7 @@ public class SlaReportGenerator {
     private CellStyle doubleNumberCellStyle;
     private CellStyle integerNumberCellStyle;
     private SlaReportGeneratorObserver observer;
+    private String generatedReportFile;
 
     public SlaReportGenerator() {
         try {
@@ -101,6 +102,7 @@ public class SlaReportGenerator {
 
         } catch (Exception ex) {
             logger.error("Error during the generation of the report", ex);
+            observer.onReportGenerationError(ex);
             throw new SlaReportGenerationException(ex.getMessage());
         }
 
@@ -140,9 +142,8 @@ public class SlaReportGenerator {
         loadData(undeterminedIncidentsSheet, undeterminedIncidents);
         ExcelWritter ew = new ExcelWritter();
 
-        String generatedFile = generateFileName();
-        ew.write(workbookTemplate, generatedFile);
-        observer.notifyProcessPhase(this, "File " + generatedFile + " was created!");
+        generatedReportFile = ew.write(workbookTemplate, generateFileName());
+        observer.notifyProcessPhase(this, "File " + generatedReportFile + " was created!");
     }
 
     protected void loadData(Sheet sheet, List<ReportDetail> data) {
@@ -212,5 +213,9 @@ public class SlaReportGenerator {
 
     public void setObserver(SlaReportGeneratorObserver observer) {
         this.observer = observer;
+    }
+
+    public String getGeneratedReportFile() {
+        return generatedReportFile;
     }
 }
