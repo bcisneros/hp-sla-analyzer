@@ -1,24 +1,26 @@
 package com.hp.sla.analyser.model;
 
 import com.hp.sla.analyser.model.util.AuditParserTest;
-import java.sql.Timestamp;
+import com.hp.sla.analyser.model.util.ExcelReader;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
+ * Test class for SlaReportGenerator class
  *
  * @author ramirmal
  */
@@ -63,7 +65,7 @@ public class SlaReportGeneratorTest {
             Logger.getLogger(AuditParserTest.class.getName()).log(Level.INFO, "Elapsed Time Filtered Registers: {0}", filtered);
             Assert.assertTrue("Complete time is longer than filetered time: Complete time = " + complete + " | Filtered time = " + filtered, completeMillis > filteredMillis);
         } catch (SlaReportGenerationException ex) {
-            fail("This exception was not expected:");
+            fail("This exception was not expected:" + ex);
             System.err.println(ex.getMessage());
         }
     }
@@ -78,10 +80,10 @@ public class SlaReportGeneratorTest {
      */
     @Test
     public void testIntegrateIncidents() {
-        Incident incidentWithOneAudit = new Incident();
-        incidentWithOneAudit.setId("OneAudit");
+        final TestIncidentBuilder incidentBuilder = TestIncidentBuilder.getInstance();
+        Incident incidentWithOneAudit = incidentBuilder.id("OneAudit").build();
         Audit auditOne = new Audit();
-        auditOne.setIncidentID("OneAudit");
+        auditOne.setIncidentID(incidentWithOneAudit.getId());
 
         Incident incidentWithZeroAudits = new Incident();
         incidentWithZeroAudits.setId("ZeroAudits");
@@ -117,198 +119,19 @@ public class SlaReportGeneratorTest {
     public void testGenerateWorkbook() {
         try {
             instance.generateWorkbook(dummyReportDetails());
+            final Workbook workBook = ExcelReader.read(new FileInputStream(instance.getGeneratedReportFile()));
+            assertNotNull(workBook);
+            final Sheet firstSheet = workBook.getSheetAt(0);
+            assertNotNull(firstSheet);
+            final Sheet secondSheet = workBook.getSheetAt(1);
+            assertNotNull(secondSheet);
         } catch (Exception ex) {
             fail("No exception is expected here: " + ex.getMessage());
         }
     }
 
-    private ReportDetail getTestReportDetail1() {
-        return new ReportDetail() {
-
-            @Override
-            public String getErrorMessage() {
-                return null;
-            }
-
-            @Override
-            public Exception getDetailException() {
-                return null;
-            }
-
-            @Override
-            public String getIncidentConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name() {
-                return "L4";
-            }
-
-            @Override
-            public String getConfigurationItemEnvironmentDescription() {
-                return "test";
-            }
-
-            @Override
-            public String getConfigurationItemStatusDescription() {
-                return "active";
-            }
-
-            @Override
-            public String getIncidentClosedAssignmentGroupSupportLevelDescription() {
-                return "L1";
-            }
-
-            @Override
-            public String getIncidentCurrentAssignmentGroupSupportLevelDescription() {
-                return "L3";
-            }
-
-            @Override
-            public String getIncidentAssigneeOrganizationUnitName() {
-                return "Test Organization Unit Name";
-            }
-
-            @Override
-            public String getIncidentAssigneeManagerEmailName() {
-                return "test@test.com";
-            }
-
-            @Override
-            public String getIncidentAssigneeEmailName() {
-                return "test@test.com";
-            }
-
-            @Override
-            public String getIncidentOpenedByEmailName() {
-                return "test@test.com";
-            }
-
-            @Override
-            public double getIncidentAgingDurationInDays() {
-                return 100;
-            }
-
-            @Override
-            public String getIncidentCurrentStatusDescription() {
-                return "test status";
-            }
-
-            @Override
-            public String getIncidentCurrentStatusPhaseDescription() {
-                return "test status";
-            }
-
-            @Override
-            public String getIncidentPriorityDescription() {
-                return "high";
-            }
-
-            @Override
-            public String getIncidentCriticalityDescription() {
-                return "Mission Critical";
-            }
-
-            @Override
-            public long getRelatedRootConfigurationItemApplicationPortfolioIdentifier() {
-                return 120;
-            }
-
-            @Override
-            public String getRelatedRootConfigurationItemBusinessFriendlyName() {
-                return "test";
-            }
-
-            @Override
-            public String getConfigurationItemLogicalName() {
-                return "test-ci";
-            }
-
-            @Override
-            public String getIncidentAuditNewValueText() {
-                return "TEST-AG";
-            }
-
-            @Override
-            public String getIncidentCurrentAssignmentGroupName() {
-                return "TEST-AG";
-            }
-
-            @Override
-            public Double getIncidentTimeToFixDurationHours() {
-                return 0.12d;
-            }
-
-            @Override
-            public String getBurnedOutComplianceString() {
-                return "yes";
-            }
-
-            @Override
-            public Date getIncidentAuditSystemModifiedTime() {
-                return new Date(1234567890);
-            }
-
-            @Override
-            public Timestamp getIncidentClosedTimestamp() {
-                return Timestamp.valueOf("2015-01-01 00:00:00");
-            }
-
-            @Override
-            public Timestamp getIncidentCreatedTimestamp() {
-                return Timestamp.valueOf("2015-01-01 00:00:00");
-            }
-
-            @Override
-            public boolean isBurnedOut() {
-                return false;
-            }
-
-            @Override
-            public boolean isCompliantWithSLA() {
-                return true;
-            }
-
-            @Override
-            public String getIncidentIdentifier() {
-                return "IM0000001";
-            }
-
-            @Override
-            public Incident getIncident() {
-                return new Incident();
-            }
-
-        };
-    }
-
     private List<ReportDetail> dummyReportDetails() {
-        List<ReportDetail> data = new LinkedList();
-        ReportDetail rd = new ReportDetail();
-        rd.setBurnedOut(true);
-        Incident i = new Incident();
-        i.setId("IM0005");
-
-        i.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00"));
-        rd.setIncident(i);
-
-        data.add(getTestReportDetail1());
-
-        rd = new ReportDetail();
-        rd.setBurnedOut(true);
-        i = new Incident();
-        i.setId("IM0006");
-        i.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00"));
-        i.setCloseTimestamp(Timestamp.valueOf("2015-01-01 15:34:12"));
-        rd.setIncident(i);
-
-        data.add(rd);
-
-        rd = new ReportDetail();
-        rd.setBurnedOut(false);
-        i = new Incident();
-        i.setId("IM0007");
-        i.setCreationTimestamp(Timestamp.valueOf("2015-01-01 00:00:00"));
-        i.setCloseTimestamp(Timestamp.valueOf("2015-01-01 23:15:12"));
-        rd.setIncident(i);
-
-        data.add(rd);
+        List<ReportDetail> data = TestReportDetailBuilder.getInstance().buildList(1000);
         return data;
     }
 

@@ -13,10 +13,6 @@ import org.apache.poi.ss.usermodel.Cell;
  */
 public class IncidentParser extends ExcelParser<Incident> {
 
-    public IncidentParser() {
-        startColumnName = "Incident Identifier";
-    }
-
     @Override
     public Incident createObject(Iterator<Cell> cellIterator) {
         Incident incident = new Incident();
@@ -51,5 +47,10 @@ public class IncidentParser extends ExcelParser<Incident> {
         incident.setCurrentStatus(cellIterator.next().getStringCellValue());
         incident.setConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name(cellIterator.next().getStringCellValue());
         return incident;
+    }
+
+    @Override
+    public String getStartDataIndicator() {
+        return "Incident Identifier";
     }
 }

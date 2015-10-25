@@ -14,9 +14,9 @@ import java.util.Objects;
  * into the Incidents Report Spreadsheet
  *
  * @author ramirmal
- * @updatedby Benjamín Cisneros Barraza
+ * @updatedby Benjamin Cisneros Barraza
  */
-public class Incident implements Comparable<Incident> {
+public class Incident implements Comparable<Incident>, Cloneable {
 
     public static String MISSION_CRITICAL_CRITICALITY = "Mission Critical";
     public static String ENTITITY_ESSENTIAL_CRITICALITY = "Entity Essential";
@@ -308,6 +308,11 @@ public class Incident implements Comparable<Incident> {
         return this.id.compareTo(o.getId());
     }
 
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public Audit getLastAssignmentGroupAudit() {
         return lastAssignmentGroupAudit;
     }
@@ -337,7 +342,6 @@ public class Incident implements Comparable<Incident> {
                 }
             }
         }
-
     }
 
 }

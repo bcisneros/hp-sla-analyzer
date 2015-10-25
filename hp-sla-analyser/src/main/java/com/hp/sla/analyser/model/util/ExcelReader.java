@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
+ * Provide a method to read an Excel file from an InputStream
  *
  * @author Benjamin Cisneros Barraza
  */

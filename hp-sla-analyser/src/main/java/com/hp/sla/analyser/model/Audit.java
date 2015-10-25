@@ -1,5 +1,6 @@
 package com.hp.sla.analyser.model;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ public class Audit implements Comparable<Audit> {
     private String previousValueText;
     private int recordNumber;
     private String systemModifiedUser;
-    private Date systemModifiedTime;
+    private Timestamp systemModifiedTime;
 
     public String getFieldDisplayName() {
         return fieldDisplayName;
@@ -87,7 +88,7 @@ public class Audit implements Comparable<Audit> {
         return systemModifiedTime;
     }
 
-    public void setSystemModifiedTime(Date systemModifiedTime) {
+    public void setSystemModifiedTime(Timestamp systemModifiedTime) {
         this.systemModifiedTime = systemModifiedTime;
     }
 

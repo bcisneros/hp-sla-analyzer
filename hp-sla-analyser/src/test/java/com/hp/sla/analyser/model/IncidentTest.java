@@ -5,10 +5,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 /**
@@ -198,6 +202,17 @@ public class IncidentTest {
 
         assertNotNull("The last asssignment group audit must be not null", incident.getLastAssignmentGroupAudit());
         assertSame("The last asssignment group audit must be the same object as Audit 2", incident.getLastAssignmentGroupAudit(), audit1);
+    }
+
+    @Test
+    public void testClone() {
+        try {
+            Incident incident = new Incident();
+            assertEquals(incident, incident.clone());
+            assertNotSame(incident, incident.clone());
+        } catch (CloneNotSupportedException ex) {
+            fail("No exception was expected: " + ex);
+        }
     }
 
 }

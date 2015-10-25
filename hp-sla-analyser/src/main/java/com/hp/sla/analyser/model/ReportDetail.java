@@ -7,7 +7,7 @@ import java.util.Date;
  *
  * @author ramirmal
  */
-public class ReportDetail {
+public class ReportDetail implements Cloneable {
 
     private Incident incident;
     private boolean compliantWithSLA;
@@ -156,4 +156,10 @@ public class ReportDetail {
     public String getErrorMessage() {
         return detailException == null ? "" : detailException.getLocalizedMessage();
     }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
 }

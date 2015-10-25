@@ -1,14 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hp.sla.analyser.model.util;
 
-import com.hp.sla.analyser.model.Incident;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -24,7 +16,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 public abstract class ExcelParser<T> {
 
     protected static final Logger logger = Logger.getLogger(IncidentParser.class);
-    protected String startColumnName = "";
 
     /**
      * Create a new object from the contents in the row
@@ -36,13 +27,21 @@ public abstract class ExcelParser<T> {
     public abstract T createObject(Iterator<Cell> cellIterator);
 
     /**
+     * Defines the String header of data to parse
+     *
+     * @return
+     */
+    public abstract String getStartDataIndicator();
+
+    /**
      * This method takes an excel sheet and obtains the data contained in the
      * rows that represent tickets or audits
      *
      * @param sheet the excel sheet from where the objects will be extracted
      * @return a list of objects (Tickets or Audits)
+     * @throws com.hp.sla.analyser.model.util.ExcelParsingException
      */
-    public List<T> parseDocument(Sheet sheet) {
+    public List<T> parseDocument(Sheet sheet) throws ExcelParsingException {
         List<T> objects = new ArrayList<>();
         // Get iterator to all the rows in current sheet 
         Iterator<Row> rowIterator = sheet.iterator();
@@ -71,14 +70,14 @@ public abstract class ExcelParser<T> {
                 //logger.debug("Iterating the row " + rowCount++);
                 T obj = createObject(cellIterator);
                 objects.add(obj);
-            } else if (cellIterator.hasNext() && cellIterator.next().getStringCellValue().equals(startColumnName)) {
+            } else if (cellIterator.hasNext() && cellIterator.next().getStringCellValue().equals(getStartDataIndicator())) {
                 dataStart = true;
                 logger.debug("Data Starts");
             }
 
         }
         if (!dataStart) {
-            throw new UnsupportedOperationException("Required columns not found"); //To change body of generated methods, choose Tools | Templates.
+            throw new ExcelParsingException("Required columns not found");
         }
         return objects;
     }
