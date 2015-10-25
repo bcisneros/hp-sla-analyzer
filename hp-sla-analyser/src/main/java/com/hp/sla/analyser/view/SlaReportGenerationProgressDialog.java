@@ -30,6 +30,8 @@ public class SlaReportGenerationProgressDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form SlaReportGenerationProgressDialog
+     * @param parent
+     * @param modal
      */
     public SlaReportGenerationProgressDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -55,6 +57,7 @@ public class SlaReportGenerationProgressDialog extends javax.swing.JDialog {
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), cancelName);
         ActionMap actionMap = getRootPane().getActionMap();
         actionMap.put(cancelName, new AbstractAction() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 doClose(RET_CANCEL);
             }

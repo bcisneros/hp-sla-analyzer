@@ -1,7 +1,6 @@
 package com.hp.sla.analyser.model.util;
 
 import com.hp.sla.analyser.model.Audit;
-import java.sql.Date;
 import java.sql.Timestamp;
 import org.junit.After;
 import org.junit.AfterClass;

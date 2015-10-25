@@ -131,10 +131,7 @@ public class Audit implements Comparable<Audit> {
         if (!Objects.equals(this.systemModifiedUser, other.systemModifiedUser)) {
             return false;
         }
-        if (!Objects.equals(this.systemModifiedTime, other.systemModifiedTime)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.systemModifiedTime, other.systemModifiedTime);
     }
 
     @Override
