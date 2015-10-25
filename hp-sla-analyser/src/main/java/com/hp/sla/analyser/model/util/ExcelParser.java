@@ -15,7 +15,7 @@ import org.apache.poi.ss.usermodel.Sheet;
  */
 public abstract class ExcelParser<T> {
 
-    protected static final Logger logger = Logger.getLogger(IncidentParser.class);
+    private static final Logger logger = Logger.getLogger(IncidentParser.class);
 
     /**
      * Create a new object from the contents in the row

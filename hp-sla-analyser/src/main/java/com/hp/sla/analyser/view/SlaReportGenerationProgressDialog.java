@@ -150,6 +150,10 @@ public class SlaReportGenerationProgressDialog extends javax.swing.JDialog {
         doClose(RET_CANCEL);
     }//GEN-LAST:event_closeDialog
 
+    /**
+     * Closes the dialog form
+     * @param retStatus Integer value that specify the close code value
+     */
     protected void doClose(int retStatus) {
         returnStatus = retStatus;
         setVisible(false);

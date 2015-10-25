@@ -10,7 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- *
+ * Test class for ExcelReader class
  * @author Benjamin Cisneros Barraza
  */
 public class ExcelReaderTest {
