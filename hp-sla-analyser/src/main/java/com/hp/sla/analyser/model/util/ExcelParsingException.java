@@ -2,6 +2,7 @@ package com.hp.sla.analyser.model.util;
 
 /**
  * Represents an exception during the Excel Parsing Process
+ *
  * @author Benjamin Cisneros Barraza
  */
 class ExcelParsingException extends Exception {

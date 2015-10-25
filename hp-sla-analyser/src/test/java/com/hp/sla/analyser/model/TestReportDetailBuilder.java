@@ -10,23 +10,23 @@ import org.apache.log4j.Logger;
  * @author Benjamin Cisneros Barraza
  */
 public class TestReportDetailBuilder {
-    
+
     private ReportDetail reportDetail;
     private final static Logger logger = Logger.getLogger(TestReportDetailBuilder.class);
     private final static TestReportDetailBuilder INSTANCE = null;
     private static int reportDetailCounter = 0;
-    
+
     private TestReportDetailBuilder() {
         this.reportDetail = getDefaultReportDetail();
     }
-    
+
     public static TestReportDetailBuilder getInstance() {
         if (INSTANCE == null) {
             return new TestReportDetailBuilder();
         }
         return INSTANCE;
     }
-    
+
     public ReportDetail build() {
         try {
             Incident incident = TestIncidentBuilder.getInstance().build();
@@ -38,7 +38,7 @@ public class TestReportDetailBuilder {
         }
         return null;
     }
-    
+
     public List<ReportDetail> buildList(int size) {
         List<ReportDetail> list = new ArrayList<>();
         for (int i = 1; i <= size; i++) {
@@ -46,28 +46,28 @@ public class TestReportDetailBuilder {
         }
         return list;
     }
-    
+
     public TestReportDetailBuilder incident(Incident incident) {
         reportDetail.setIncident(incident);
         return this;
     }
-    
+
     public TestReportDetailBuilder burn(boolean burn) {
         reportDetail.setBurnedOut(burn);
         return this;
     }
-    
+
     public TestReportDetailBuilder compliant(boolean compliant) {
         reportDetail.setCompliantWithSLA(compliant);
         return this;
     }
-    
+
     public TestReportDetailBuilder reset() {
         reportDetail = getDefaultReportDetail();
         reportDetailCounter = 0;
         return this;
     }
-    
+
     private ReportDetail getDefaultReportDetail() {
         ReportDetail detail = new ReportDetail();
         detail.setBurnedOut(false);

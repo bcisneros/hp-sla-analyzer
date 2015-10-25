@@ -30,6 +30,7 @@ public class SlaReportGenerationProgressDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form SlaReportGenerationProgressDialog
+     *
      * @param parent
      * @param modal
      */
@@ -152,6 +153,7 @@ public class SlaReportGenerationProgressDialog extends javax.swing.JDialog {
 
     /**
      * Closes the dialog form
+     *
      * @param retStatus Integer value that specify the close code value
      */
     protected void doClose(int retStatus) {

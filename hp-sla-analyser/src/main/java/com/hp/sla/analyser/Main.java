@@ -12,6 +12,7 @@ public class Main {
 
     /**
      * Main method to launch the application
+     *
      * @param args
      */
     public static void main(String args[]) {

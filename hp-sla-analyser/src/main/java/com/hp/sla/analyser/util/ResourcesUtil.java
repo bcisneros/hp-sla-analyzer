@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 
 /**
  * Utility class to load files easily
+ *
  * @author Benjamin Cisneros Barraza
  */
 public class ResourcesUtil {
@@ -13,6 +14,7 @@ public class ResourcesUtil {
 
     /**
      * Returns a FileInputStream object stored in the project classpath
+     *
      * @param file
      * @return A FileInputStream object
      */
