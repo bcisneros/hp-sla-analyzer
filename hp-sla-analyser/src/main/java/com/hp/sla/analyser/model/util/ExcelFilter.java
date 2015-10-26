@@ -3,8 +3,8 @@ package com.hp.sla.analyser.model.util;
 import java.io.File;
 
 /**
- *
- * @author ramirmal
+ * This is a Filter to see just the excel files in a FileChooser
+ * @author Mallinali Ramirez Corona
  */
 public class ExcelFilter extends javax.swing.filechooser.FileFilter {
 

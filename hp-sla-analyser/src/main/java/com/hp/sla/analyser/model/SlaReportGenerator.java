@@ -10,6 +10,7 @@ import com.hp.sla.analyser.util.ResourcesUtil;
 import static com.hp.sla.analyser.util.StringsUtil.isNullOrEmpty;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -188,7 +189,13 @@ public class SlaReportGenerator {
         loadData(undeterminedIncidentsSheet, undeterminedIncidents);
         ExcelWritter ew = new ExcelWritter();
 
-        generatedReportFile = ew.write(workbookTemplate, generateFileName());
+        try{
+            generatedReportFile = ew.write(workbookTemplate, generateFileName());
+        }catch(FileNotFoundException fnfe){
+            throw SLAException("File not found");
+        }catch(IOException ioe){
+            throw SLAException("Error writting the file");
+        }
         observer.notifyProcessPhase(this, "File " + generatedReportFile + " was created!");
     }
 
@@ -279,6 +286,11 @@ public class SlaReportGenerator {
      * A default implementation of SlaReportGeneratorObserver
      */
     static class DefaultSlaReportObserver extends BaseSlaReportGeneratorObserver {
+        
+        @test
+        public void testCreateObject(){
+            
+        }
 
         @Override
         public void reportCurrentIncident(Incident incident, int i) {

@@ -3,7 +3,7 @@ package com.hp.sla.analyser.util;
 import java.sql.Timestamp;
 
 /**
- *
+ * Utility date time class to perform tests
  * @author Benjamin Cisneros Barraza
  */
 public class DateTimeUtil {

@@ -7,9 +7,9 @@ import java.util.Iterator;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * This class parses the audit document to obtain an Audit List
+ * This class parses the audit excel document to obtain an Audit List
  *
- * @author ramirmal
+ * @author Mallinali Ramirez Corona
  */
 public class AuditParser extends ExcelParser<Audit> {
 

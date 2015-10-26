@@ -11,8 +11,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
+ * This class writes a workbook to an excel file
  *
- * @author ramirmal
+ * @author Mallinali Ramirez Corona
  */
 public class ExcelWritter {
 
@@ -24,41 +25,26 @@ public class ExcelWritter {
      * @param wb The Workbook object to write
      * @param fileName the name of the file
      * @return
-     * @throws java.lang.IllegalAccessException
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.IOException
      */
-    public String write(Workbook wb, String fileName) throws IllegalArgumentException, IllegalAccessException {
-
-        // Write the output to a file
+    public String write(Workbook wb, String fileName) throws FileNotFoundException, IOException {
         FileOutputStream out = null;
         final String file = fileName + ".xlsx";
-        try {
-            logger.debug(file);
-            out = new FileOutputStream(file);
-            if (wb == null) {
-                wb = new XSSFWorkbook();
-                Sheet sheet = wb.createSheet("None");
-                Row headerRow = sheet.createRow(0);
-                Cell cell = headerRow.createCell(0);
-                cell.setCellValue("No data to display");
-            }
-            wb.write(out);
-
-        } catch (FileNotFoundException ex) {
-            logger.error("File not found.", ex);
-            return null;
-        } catch (IOException ex) {
-            logger.error("I/O Error.", ex);
-            return null;
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-
-            } catch (Exception ex) {
-                logger.error("Error closing the file", ex);
-            }
+        logger.debug(file);
+        out = new FileOutputStream(file);
+        if (wb == null) {
+            wb = new XSSFWorkbook();
+            Sheet sheet = wb.createSheet("None");
+            Row headerRow = sheet.createRow(0);
+            Cell cell = headerRow.createCell(0);
+            cell.setCellValue("No data to display");
         }
+        wb.write(out);
+        if (out != null) {
+            out.close();
+        }
+
         return file;
     }
 }

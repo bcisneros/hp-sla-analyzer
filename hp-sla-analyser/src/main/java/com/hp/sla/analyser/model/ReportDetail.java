@@ -5,8 +5,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- *
- * @author ramirmal
+ * This class represents the rows of data that will contain the SLA report
+ * @author Mallinali Ramirez Corona
  */
 public class ReportDetail implements Cloneable {
 

@@ -4,7 +4,6 @@ import com.hp.sla.analyser.model.util.AuditSystemModifiedTimeComparator;
 import com.hp.sla.analyser.util.DateTimeUtil;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -305,6 +304,12 @@ public class Incident implements Comparable<Incident>, Cloneable {
         this.lastAssignmentGroupAudit = lastAssignmentGroupAudit;
     }
 
+    /**
+     * Computes the timestamp when the Incident gets burned out
+     * @param serviceLevelAgreement the service level agreement that corresponds to this kind of incident
+     * @return the timestamp that correspond to the time when the incident gets burned out
+     * @throws SlaAnalysisException 
+     */
     public Timestamp calculateBurnedOutDate(ServiceLevelAgreement serviceLevelAgreement) throws SlaAnalysisException {
         if (serviceLevelAgreement.getBurnedOut() == null) {
             throw new SlaAnalysisException("It is not defined a Burned Out Rate for " + serviceLevelAgreement.getName() + " SLA.");
@@ -312,6 +317,12 @@ public class Incident implements Comparable<Incident>, Cloneable {
         return new Timestamp(creationTimestamp.getTime() + DateTimeUtil.hoursToMilliseconds(serviceLevelAgreement.getBurnedOut()));
     }
 
+    /**
+     * Computes the timestamp when the Incident needs to be fixed
+     * @param serviceLevelAgreement the service level agreement that corresponds to this kind of incident
+     * @return the timestamp that correspond to the time when the incident incident needs to be already fixed
+     * @throws SlaAnalysisException  when the time to fix is not defined for the combination of priority and criticality of the incident
+     */
     public Timestamp calculateTimeToFixDeadLine(ServiceLevelAgreement serviceLevelAgreement) throws SlaAnalysisException {
         if (serviceLevelAgreement.getTimeToFix() == null) {
             throw new SlaAnalysisException("It is not defined a Time to Fix for " + serviceLevelAgreement.getName() + " SLA.");
@@ -319,6 +330,10 @@ public class Incident implements Comparable<Incident>, Cloneable {
         return new Timestamp(creationTimestamp.getTime() + DateTimeUtil.hoursToMilliseconds(serviceLevelAgreement.getTimeToFix()));
     }
 
+    /**
+     * Search for the last (in time) assigment group  of interest in the audits that belong to the incident
+     * @param assignmentGroupsListToAnalize the list of the assigment groups of interest
+     */
     void searchAndSetLastAssignmentGroupAudit(List<String> assignmentGroupsListToAnalize) {
         lastAssignmentGroupAudit = null;
 
