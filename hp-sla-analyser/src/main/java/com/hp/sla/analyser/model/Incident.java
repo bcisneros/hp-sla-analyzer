@@ -18,14 +18,6 @@ import java.util.Objects;
  */
 public class Incident implements Comparable<Incident>, Cloneable {
 
-    public static String MISSION_CRITICAL_CRITICALITY = "Mission Critical";
-    public static String ENTITITY_ESSENTIAL_CRITICALITY = "Entity Essential";
-    public static String NORMAL_CRITICALITY = "Normal";
-    public static String TOP_PRIORITY = "top";
-    public static String HIGH_PRIORITY = "high";
-    public static String MEDIUM_PRIORITY = "medium";
-    public static String LOW_PRIORITY = "low";
-
     private String id;
     private Timestamp creationTimestamp;
     private Timestamp closeTimestamp;
@@ -269,14 +261,6 @@ public class Incident implements Comparable<Incident>, Cloneable {
 
     public void setAudits(List<Audit> audits) {
         this.audits = audits;
-    }
-
-    public Timestamp getTimeToFix(ServiceLevelAgreement sla) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(creationTimestamp);
-        c.add(Calendar.HOUR,
-                2);
-        return new Timestamp(c.getTime().getTime());
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.hp.sla.analyser.model;
 
+import com.hp.sla.analyser.model.util.Criticality;
 import com.hp.sla.analyser.model.util.IncidentParser;
+import com.hp.sla.analyser.model.util.Priority;
 import com.hp.sla.analyser.util.DateTimeUtil;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -125,8 +127,8 @@ public class SlaAnalyzerTest {
     @Test(expected = SlaAnalysisException.class)
     public void testAnalizeIncidentWithNullServiceLevelAgreement() throws SlaAnalysisException {
         Incident incident = getCompliantIncidents().get(0);
-        incident.setCriticalityDescription(Incident.ENTITITY_ESSENTIAL_CRITICALITY);
-        incident.setPriority(Incident.TOP_PRIORITY);
+        incident.setCriticalityDescription(Criticality.ENTITY_ESSENTIAL.getName());
+        incident.setPriority(Priority.TOP.getName());
         instance.analizeIncident(incident);
     }
 
@@ -213,9 +215,9 @@ public class SlaAnalyzerTest {
     public static List<Incident> getIncidentsWithNullServiceLevelAgreement() {
         List<Incident> incidents = new ArrayList<>();
         incidents.add(generateIncident(null, null, true, true));
-        incidents.add(generateIncident(Incident.ENTITITY_ESSENTIAL_CRITICALITY, Incident.TOP_PRIORITY, true, true));
-        incidents.add(generateIncident(Incident.NORMAL_CRITICALITY, Incident.TOP_PRIORITY, true, true));
-        incidents.add(generateIncident(Incident.NORMAL_CRITICALITY, Incident.HIGH_PRIORITY, true, true));
+        incidents.add(generateIncident(Criticality.ENTITY_ESSENTIAL.getName(), Priority.TOP.getName(), true, true));
+        incidents.add(generateIncident(Criticality.NORMAL.getName(), Priority.TOP.getName(), true, true));
+        incidents.add(generateIncident(Criticality.NORMAL.getName(), Priority.HIGH.getName(), true, true));
         return incidents;
     }
 
@@ -230,8 +232,8 @@ public class SlaAnalyzerTest {
      * @throws SlaAnalysisException
      */
     private static List<Incident> testIncidentValues(boolean burnedOut, boolean compliant) {
-        String[] priorities = {Incident.TOP_PRIORITY, Incident.HIGH_PRIORITY, Incident.MEDIUM_PRIORITY, Incident.LOW_PRIORITY};
-        String[] criticalities = {Incident.MISSION_CRITICAL_CRITICALITY, Incident.ENTITITY_ESSENTIAL_CRITICALITY, Incident.NORMAL_CRITICALITY};
+        String[] priorities = {Priority.TOP.getName(), Priority.HIGH.getName(),Priority.MEDIUM.getName(), Priority.LOW.getName()};
+        String[] criticalities = {Criticality.MISSION_CRITICAL.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Criticality.NORMAL.getName()};
         List values = new ArrayList();
         for (int i = 0; i < priorities.length; i++) {
             for (int j = 0; j <= i && j < criticalities.length; j++) {

@@ -1,5 +1,7 @@
 package com.hp.sla.analyser.model;
 
+import com.hp.sla.analyser.model.util.Criticality;
+import com.hp.sla.analyser.model.util.Priority;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,7 +16,7 @@ import org.apache.log4j.Logger;
  */
 public class SlaAnalyzer {
 
-    private final Logger logger = Logger.getLogger(SlaAnalyzer.class);
+    private static final Logger logger = Logger.getLogger(SlaAnalyzer.class);
     private static final ServiceLevelAgreement[][] serviceLevelAgreements
             = new ServiceLevelAgreement[][]{
                 new ServiceLevelAgreement[]{
@@ -67,6 +69,7 @@ public class SlaAnalyzer {
         return details;
     }
 
+    //TODO: Change to read from file
     protected List<String> getAssignmentGroupsListToAnalize() {
         List<String> assignmentGroups = new ArrayList<>();
         assignmentGroups.add("W-INCLV4-FAIT-AP-AR");
@@ -95,7 +98,7 @@ public class SlaAnalyzer {
             throw new SlaAnalysisException(errorMessage);
         }
         ServiceLevelAgreement serviceLevelAgreement = getServiceLevelAgreementByIncident(incident);
-        if (serviceLevelAgreement == null) {
+        if (serviceLevelAgreement.getTimeToOwn() == null) {
             throw new SlaAnalysisException("No Service Level Agreement was found");
         }
 
@@ -114,47 +117,21 @@ public class SlaAnalyzer {
     protected static ServiceLevelAgreement getServiceLevelAgreementByIncident(Incident incident) throws SlaAnalysisException {
         String criticality = incident.getCriticalityDescription();
 
-        if (criticality == null) {
-            throw new SlaAnalysisException("Incident Critically Description is required to get the SLA");
-        }
-
+        logger.debug("Criticality: " + criticality);
         Integer criticalityIndex;
-        criticalityIndex = null;
-        switch (criticality.toUpperCase(Locale.US)) {
-            case "MISSION CRITICAL":
-                criticalityIndex = 0;
-                break;
-            case "ENTITY ESSENTIAL":
-                criticalityIndex = 1;
-                break;
-            case "NORMAL":
-                criticalityIndex = 2;
-                break;
-            default:
-                throw new SlaAnalysisException("Criticatility \"" + criticality + "\" is not recognized as valid value.");
-        }
-        String priority = incident.getPriority();
-        if (priority == null) {
-            throw new SlaAnalysisException("Incident Priority Description is required to get the SLA");
-        }
-        Integer priorityIndex = null;
-        switch (priority.toUpperCase(Locale.US)) {
-            case "TOP":
-                priorityIndex = 0;
-                break;
-            case "HIGH":
-                priorityIndex = 1;
-                break;
-            case "MEDIUM":
-                priorityIndex = 2;
-                break;
-            case "LOW":
-                priorityIndex = 3;
-                break;
-            default:
-                throw new SlaAnalysisException("Priority \"" + priority + "\" is not recognized as valid value.");
+        try {
+            criticalityIndex = Criticality.valueOf(criticality.toUpperCase().replace(" ", "_")).ordinal();
+        } catch (NullPointerException | IllegalArgumentException npe) {
+            throw new SlaAnalysisException("Criticatility \"" + criticality + "\" is not recognized as valid value.");
         }
 
+        String priority = incident.getPriority();
+        Integer priorityIndex;
+        try {
+            priorityIndex = Priority.valueOf(priority.toUpperCase().replace(" ", "_")).ordinal();
+        } catch (NullPointerException | IllegalArgumentException npe) {
+            throw new SlaAnalysisException("Criticatility \"" + criticality + "\" is not recognized as valid value.");
+        }
         return serviceLevelAgreements[criticalityIndex][priorityIndex];
     }
 

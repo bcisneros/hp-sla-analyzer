@@ -1,6 +1,7 @@
 package com.hp.sla.analyser.model;
 
 import com.hp.sla.analyser.model.util.AuditParser;
+import com.hp.sla.analyser.model.util.BurnedOut;
 import com.hp.sla.analyser.model.util.ExcelReader;
 import com.hp.sla.analyser.model.util.ExcelWritter;
 import com.hp.sla.analyser.model.util.IncidentParser;
@@ -131,7 +132,7 @@ public class SlaReportGenerator {
         List<ReportDetail> undeterminedIncidents = new ArrayList<>();
 
         for (ReportDetail detail : data) {
-            if (ReportDetail.BURNED_OUT_INDETERMINED.equalsIgnoreCase(detail.getBurnedOutComplianceString())) {
+            if (BurnedOut.UNDETERMINED.name().equalsIgnoreCase(detail.getBurnedOutComplianceString())) {
                 undeterminedIncidents.add(detail);
             } else {
                 determinedIncidents.add(detail);

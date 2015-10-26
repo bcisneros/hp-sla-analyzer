@@ -1,5 +1,6 @@
 package com.hp.sla.analyser.model;
 
+import com.hp.sla.analyser.model.util.BurnedOut;
 import static com.hp.sla.analyser.util.DateTimeUtil.FIRST_DAY_2015_YEAR_TIMESTAMP;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -30,21 +31,21 @@ public class ReportDetailTest {
     public void testGetBurnedOutComplianceStringWithBurnedOutIncident() {
         ReportDetail instance = new ReportDetail();
         instance.setBurnedOut(true);
-        assertEquals(ReportDetail.BURNED_OUT_NO_COMPLIANCE_STRING, instance.getBurnedOutComplianceString());
+        assertEquals(BurnedOut.NON_COMPLIANCE.name(), instance.getBurnedOutComplianceString());
     }
 
     @Test
     public void testGetBurnedOutComplianceStringWithNotBurnedOutIncident() {
         ReportDetail instance = new ReportDetail();
         instance.setBurnedOut(false);
-        assertEquals(ReportDetail.BURNED_OUT_COMPLIANCE_STRING, instance.getBurnedOutComplianceString());
+        assertEquals(BurnedOut.COMPLIANCE.name(), instance.getBurnedOutComplianceString());
     }
 
     @Test
     public void testGetBurnedOutComplianceStringWithIndeterminatedBurnedOutIncidentStatus() {
         ReportDetail instance = new ReportDetail();
         instance.setDetailException(new Exception());
-        assertEquals(ReportDetail.BURNED_OUT_INDETERMINED, instance.getBurnedOutComplianceString());
+        assertEquals(BurnedOut.UNDETERMINED.name(), instance.getBurnedOutComplianceString());
     }
 
     private Incident getIncidentToTest() {

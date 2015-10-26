@@ -1,5 +1,6 @@
 package com.hp.sla.analyser.model;
 
+import com.hp.sla.analyser.model.util.BurnedOut;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -13,10 +14,6 @@ public class ReportDetail implements Cloneable {
     private boolean compliantWithSLA;
     private boolean burnedOut;
     private Exception detailException;
-
-    public final static String BURNED_OUT_COMPLIANCE_STRING = "yes";
-    public final static String BURNED_OUT_NO_COMPLIANCE_STRING = "no";
-    public final static String BURNED_OUT_INDETERMINED = "undetermined";
 
     public Incident getIncident() {
         return incident;
@@ -60,9 +57,9 @@ public class ReportDetail implements Cloneable {
 
     public String getBurnedOutComplianceString() {
         if (detailException != null) {
-            return BURNED_OUT_INDETERMINED;
+            return BurnedOut.UNDETERMINED.name();
         }
-        return isBurnedOut() ? BURNED_OUT_NO_COMPLIANCE_STRING : BURNED_OUT_COMPLIANCE_STRING;
+        return isBurnedOut() ? BurnedOut.NON_COMPLIANCE.name() : BurnedOut.COMPLIANCE.name();
     }
 
     public Double getIncidentTimeToFixDurationHours() {
