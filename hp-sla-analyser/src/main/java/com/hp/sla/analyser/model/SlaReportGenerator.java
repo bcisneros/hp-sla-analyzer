@@ -22,45 +22,69 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
+ * Performs all the process of generate a report file
  *
  * @author Benjamin Cisneros Barraza
  */
 public class SlaReportGenerator {
 
     private final static Logger logger = Logger.getLogger(SlaReportGenerator.class);
+    private final static Workbook workbookTemplate;
+    private final static CellStyle defaultCellStyle;
+    private final static CellStyle dateCellStyle;
+    private final static CellStyle doubleNumberCellStyle;
+    private final static CellStyle integerNumberCellStyle;
+
+    static {
+        workbookTemplate = getWorkBook();
+        defaultCellStyle = workbookTemplate.createCellStyle();
+        defaultCellStyle.cloneStyleFrom(workbookTemplate.getSheetAt(0).getRow(1).getCell(0).getCellStyle());
+        dateCellStyle = workbookTemplate.createCellStyle();
+        dateCellStyle.cloneStyleFrom(defaultCellStyle);
+        final CreationHelper creationHelper = workbookTemplate.getCreationHelper();
+        dateCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("mm/dd/yyyy hh:mm:ss"));
+        doubleNumberCellStyle = workbookTemplate.createCellStyle();
+        doubleNumberCellStyle.cloneStyleFrom(defaultCellStyle);
+        doubleNumberCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("0.00"));
+        integerNumberCellStyle = workbookTemplate.createCellStyle();
+        integerNumberCellStyle.cloneStyleFrom(defaultCellStyle);
+        integerNumberCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("0"));
+    }
+
+    static Workbook getWorkBook() {
+        Workbook w = new XSSFWorkbook();
+        try {
+            w = ExcelReader.read(ResourcesUtil.getResourceFromProjectClasspath("files/reportTemplate.xlsx"));
+        } catch (Exception ex) {
+            logger.error("No template were used. A blank report would be used insted of.", ex);
+        }
+        return w;
+    }
     private String destination = "C:\\temp\\";
-    private Workbook workbookTemplate;
-    private CellStyle defaultCellStyle;
-    private CellStyle dateCellStyle;
-    private CellStyle doubleNumberCellStyle;
-    private CellStyle integerNumberCellStyle;
     private SlaReportGeneratorObserver observer;
     private String generatedReportFile;
 
+    /**
+     * Creates a SlaReportGenerator with a default SlaReporGenerationObserver
+     * implementation
+     */
     public SlaReportGenerator() {
-        try {
-            this.workbookTemplate = ExcelReader.read(ResourcesUtil.getResourceFromProjectClasspath("files/reportTemplate.xlsx"));
-            defaultCellStyle = workbookTemplate.createCellStyle();
-            defaultCellStyle.cloneStyleFrom(workbookTemplate.getSheetAt(0).getRow(1).getCell(0).getCellStyle());
-            dateCellStyle = workbookTemplate.createCellStyle();
-            dateCellStyle.cloneStyleFrom(defaultCellStyle);
-            final CreationHelper creationHelper = workbookTemplate.getCreationHelper();
-            dateCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("mm/dd/yyyy hh:mm:ss"));
-            doubleNumberCellStyle = workbookTemplate.createCellStyle();
-            doubleNumberCellStyle.cloneStyleFrom(defaultCellStyle);
-            doubleNumberCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("0.00"));
-            integerNumberCellStyle = workbookTemplate.createCellStyle();
-            integerNumberCellStyle.cloneStyleFrom(defaultCellStyle);
-            integerNumberCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("0"));
-            observer = new TestObserver();
-        } catch (Exception ex) {
-            logger.error("Error generating Cell Styles from template", ex);
-            //TODO: Add logic to generate a runtime template
-        }
+        observer = new DefaultSlaReportObserver();
     }
 
+    /**
+     * Takes the two files and parse, analyze and create the output report
+     *
+     * @param incidentsFile The path of the file who contains the list of
+     * incidents
+     * @param auditsFile The path of the file who contains the list of audits
+     * @param destinationPath The output destination path
+     * @throws SlaReportGenerationException If there is an error during this
+     * process
+     */
     public void generateReport(String incidentsFile, String auditsFile, String destinationPath) throws SlaReportGenerationException {
         destination = destinationPath;
         logger.info("Report Generation Process initialized!");
@@ -108,6 +132,22 @@ public class SlaReportGenerator {
 
     }
 
+    public void setObserver(SlaReportGeneratorObserver observer) {
+        this.observer = observer;
+    }
+
+    public String getGeneratedReportFile() {
+        return generatedReportFile;
+
+    }
+
+    /**
+     * Combine the list of incidents with the list of audits
+     *
+     * @param incidents The list of incidents
+     * @param audits The list of audits
+     * @return A combined list of incidents with audits included
+     */
     protected List<Incident> integrateIncidents(List<Incident> incidents, List<Audit> audits) {
         List<Incident> integratedIncidentsList = new ArrayList<>();
         for (Incident incident : incidents) {
@@ -123,6 +163,12 @@ public class SlaReportGenerator {
         return integratedIncidentsList;
     }
 
+    /**
+     * Create the final excel file taking a list of ReporDetail objects
+     *
+     * @param data The list of details (records) of the report
+     * @throws Exception If there is an exception during this process
+     */
     protected void generateWorkbook(List<ReportDetail> data) throws Exception {
 
         Sheet determinedIncidentsSheet = workbookTemplate.getSheetAt(0);
@@ -146,6 +192,12 @@ public class SlaReportGenerator {
         observer.notifyProcessPhase(this, "File " + generatedReportFile + " was created!");
     }
 
+    /**
+     * Load a list of ReportDetail objects in a determined Sheet object
+     *
+     * @param sheet The Sheet object to load data
+     * @param data The list of report details who need to be loaded in the sheet
+     */
     protected void loadData(Sheet sheet, List<ReportDetail> data) {
         sheet.createFreezePane(0, 1);
         Row row;
@@ -181,6 +233,13 @@ public class SlaReportGenerator {
         }
     }
 
+    /**
+     * Create a cell in a determined row and index
+     *
+     * @param dataToStore The data object to store
+     * @param row The row where the cell is going to be created
+     * @param cellIndex The cell index number where yo need to create the value
+     */
     protected void createCellValue(Object dataToStore, Row row, int cellIndex) {
         Cell cell = row.createCell(cellIndex);
         cell.setCellStyle(defaultCellStyle);
@@ -205,21 +264,47 @@ public class SlaReportGenerator {
         }
     }
 
+    /**
+     * Generate a filename taking the current timestamp
+     *
+     * @return The name of the next generated report
+     */
     protected String generateFileName() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
         String fileNameSuffix = format.format(new Date());
         return destination + "SLAAnalysisReport-" + fileNameSuffix;
     }
 
-    public void setObserver(SlaReportGeneratorObserver observer) {
-        this.observer = observer;
-    }
+    /**
+     * A default implementation of SlaReportGeneratorObserver
+     */
+    static class DefaultSlaReportObserver extends BaseSlaReportGeneratorObserver {
 
-    public String getGeneratedReportFile() {
-        return generatedReportFile;
-    }
+        @Override
+        public void reportCurrentIncident(Incident incident, int i) {
+            logger.info("Current Incident is: " + incident);
+            logger.info(i + " incidents analized of " + getTotal());
+        }
 
-    static class TestObserver extends BaseSlaReportGeneratorObserver {
+        @Override
+        public void notifyProcessPhase(SlaReportGenerator aThis, String string) {
+            logger.info(string);
+        }
+
+        @Override
+        public void onFinalizeReportGeneration(SlaReportGenerator slaReportGenerator) {
+            logger.info("Report created: " + slaReportGenerator.getGeneratedReportFile());
+        }
+
+        @Override
+        public void onStartReportGeneration(SlaReportGenerator slaReportGenerator) {
+            logger.info("Starting process...");
+        }
+
+        @Override
+        public void onReportGenerationError(Exception ex) {
+            logger.error("Error during the creation of the file", ex);
+        }
 
     }
 }
