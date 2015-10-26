@@ -1,5 +1,7 @@
 package com.hp.sla.analyser.model;
 
+import com.hp.sla.analyser.model.util.Criticality;
+import com.hp.sla.analyser.model.util.Priority;
 import com.hp.sla.analyser.util.DateTimeUtil;
 import java.text.DecimalFormat;
 import org.apache.log4j.Logger;
@@ -56,7 +58,7 @@ public class TestIncidentBuilder {
         defaultIncident.setConfigurationItemLogicalName("hpit:whatever");
         defaultIncident.setCurrentStatusPhaseDescription("Closed");
         defaultIncident.setProductionActive(true);
-        defaultIncident.setPriority(Incident.MEDIUM_PRIORITY);
+        defaultIncident.setPriority(Priority.MEDIUM.getName());
         defaultIncident.setAgingDurationInDays(10);
         defaultIncident.setClosureCodeDescription("Closure Code Description");
         defaultIncident.setOpenedByEmailName("openby@test.com");
@@ -64,7 +66,7 @@ public class TestIncidentBuilder {
         defaultIncident.setAssigneeManagerEmailName("assigneemanager@test.com");
         defaultIncident.setAssigneeOrganizationUnitName("Assignee Organization Unit Name");
         defaultIncident.setCurrentAssignmentGroup("TEST-AG");
-        defaultIncident.setCriticalityDescription(Incident.NORMAL_CRITICALITY);
+        defaultIncident.setCriticalityDescription(Criticality.NORMAL.getName());
         defaultIncident.setCurrentAssignmentGroupSupportLevelDescription("L3");
         defaultIncident.setClosedAssignmentGroupSupportLevelDescription("L3");
         defaultIncident.setConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel4Name("not avail");
