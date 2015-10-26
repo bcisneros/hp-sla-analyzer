@@ -6,29 +6,37 @@ package com.hp.sla.analyser.model;
  *
  * @author Benjamin Cisneros Barraza
  */
-public class ServiceLevelAgreement {
+public enum ServiceLevelAgreement {
 
-    public static final ServiceLevelAgreement HP_IT_MISSION_CRITICAL_TOP = new ServiceLevelAgreement(0.25F, 3F, 3F, "HP-IT Mission Critical - Top");
-    public static final ServiceLevelAgreement HP_IT_MISSION_CRITICAL_HIGH = new ServiceLevelAgreement(1F, 6F, 6F, "HP-IT Mission Critical - High");
-    public static final ServiceLevelAgreement HP_IT_MISSION_CRITICAL_MEDIUM = new ServiceLevelAgreement(4F, 72F, 72F * 0.75F, "HP-IT Mission Critical - Medium");
-    public static final ServiceLevelAgreement HP_IT_MISSION_CRITICAL_LOW = new ServiceLevelAgreement(8F, 96F, 96F * 0.75F, "HP-IT Mission Critical - Low");
-    public static final ServiceLevelAgreement HP_IT_ENTITY_ESSENTIAL_TOP = null;
-    public static final ServiceLevelAgreement HP_IT_ENTITY_ESSENTIAL_HIGH = new ServiceLevelAgreement(1F, 6F, 6F, "HP-IT Entity Essential - High");
-    public static final ServiceLevelAgreement HP_IT_ENTITY_ESSENTIAL_MEDIUM = new ServiceLevelAgreement(4F, 72F, 72F * 0.75F, "HP-IT Entity Essential - Medium");
-    public static final ServiceLevelAgreement HP_IT_ENTITY_ESSENTIAL_LOW = new ServiceLevelAgreement(8F, 96F, 96F * 0.75F, "HP-IT Entity Essential - Low");
-    public static final ServiceLevelAgreement HP_IT_NORMAL_TOP = null;
-    public static final ServiceLevelAgreement HP_IT_NORMAL_HIGH = null;
-    public static final ServiceLevelAgreement HP_IT_NORMAL_MEDIUM = new ServiceLevelAgreement(4F, 96F, 96F * 0.75F, "HP-IT Normal - Medium");
-    public static final ServiceLevelAgreement HP_IT_NORMAL_LOW = new ServiceLevelAgreement(8F, 144F, 144F * 0.75F, "HP-IT Normal - Medium");
+    HP_IT_MISSION_CRITICAL_TOP(0.25F, 3F, 3F, "HP-IT Mission Critical - Top"),
+    HP_IT_MISSION_CRITICAL_HIGH(1F, 6F, 6F, "HP-IT Mission Critical - High"),
+    HP_IT_MISSION_CRITICAL_MEDIUM(4F, 72F, 72F * 0.75F, "HP-IT Mission Critical - Medium"),
+    HP_IT_MISSION_CRITICAL_LOW(8F, 96F, 96F * 0.75F, "HP-IT Mission Critical - Low"),
+    HP_IT_ENTITY_ESSENTIAL_TOP("HP-IT Entity Essential - Top"),
+    HP_IT_ENTITY_ESSENTIAL_HIGH(1F, 6F, 6F, "HP-IT Entity Essential - High"),
+    HP_IT_ENTITY_ESSENTIAL_MEDIUM(4F, 72F, 72F * 0.75F, "HP-IT Entity Essential - Medium"),
+    HP_IT_ENTITY_ESSENTIAL_LOW(8F, 96F, 96F * 0.75F, "HP-IT Entity Essential - Low"),
+    HP_IT_NORMAL_TOP("HP-IT Normal - Top"),
+    HP_IT_NORMAL_HIGH("HP-IT Normal - High"),
+    HP_IT_NORMAL_MEDIUM(4F, 96F, 96F * 0.75F, "HP-IT Normal - Medium"),
+    HP_IT_NORMAL_LOW(8F, 144F, 144F * 0.75F, "HP-IT Normal - Medium");
+
     private final Float timeToOwn;
     private final Float timeToFix;
     private final Float burnedOut;
     private final String name;
 
-    public ServiceLevelAgreement(Float timeToOwn, Float timeToFix, Float burnedOut, String name) {
+    ServiceLevelAgreement(Float timeToOwn, Float timeToFix, Float burnedOut, String name) {
         this.timeToOwn = timeToOwn;
         this.timeToFix = timeToFix;
         this.burnedOut = burnedOut;
+        this.name = name;
+    }
+
+    ServiceLevelAgreement(String name) {
+        this.timeToOwn = null;
+        this.timeToFix = null;
+        this.burnedOut = null;
         this.name = name;
     }
 

@@ -23,8 +23,6 @@ public class Audit implements Comparable<Audit> {
     public Audit() {
         incidentID = "";
     }
-    
-    
 
     public String getFieldDisplayName() {
         return fieldDisplayName;
