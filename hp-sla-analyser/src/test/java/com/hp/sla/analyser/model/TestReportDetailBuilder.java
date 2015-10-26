@@ -14,7 +14,7 @@ public class TestReportDetailBuilder {
     private ReportDetail reportDetail;
     private final static Logger logger = Logger.getLogger(TestReportDetailBuilder.class);
     private final static TestReportDetailBuilder INSTANCE = null;
-    private static int reportDetailCounter = 0;
+    private int reportDetailCounter = 0;
 
     private TestReportDetailBuilder() {
         this.reportDetail = getDefaultReportDetail();

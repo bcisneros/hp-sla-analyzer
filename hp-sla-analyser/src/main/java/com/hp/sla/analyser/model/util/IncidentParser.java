@@ -40,7 +40,7 @@ public class IncidentParser extends ExcelParser<Incident> {
         incident.setClosedAssignmentGroupSupportLevelDescription(cellIterator.next().getStringCellValue());
         incident.setConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel4Name(cellIterator.next().getStringCellValue());
         incident.setTitle(cellIterator.next().getStringCellValue());
-        incident.setRelatedRootConfigurationItemApplicationPortfolioIdentifier(new Double(cellIterator.next().getNumericCellValue()).longValue());
+        incident.setRelatedRootConfigurationItemApplicationPortfolioIdentifier(Double.valueOf(cellIterator.next().getNumericCellValue()).longValue());
         incident.setRelatedRootConfigurationItemBusinessFriendlyName(cellIterator.next().getStringCellValue());
         incident.setConfigurationItemStatus(cellIterator.next().getStringCellValue());
         incident.setConfigurationItemEnvironment(cellIterator.next().getStringCellValue());

@@ -53,8 +53,7 @@ public class SlaReportGenerator {
             integerNumberCellStyle = workbookTemplate.createCellStyle();
             integerNumberCellStyle.cloneStyleFrom(defaultCellStyle);
             integerNumberCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("0"));
-            observer = new BaseSlaReportGeneratorObserver() {
-            };
+            observer = new TestObserver();
         } catch (Exception ex) {
             logger.error("Error generating Cell Styles from template", ex);
             //TODO: Add logic to generate a runtime template
@@ -217,5 +216,9 @@ public class SlaReportGenerator {
 
     public String getGeneratedReportFile() {
         return generatedReportFile;
+    }
+    
+    static class TestObserver extends BaseSlaReportGeneratorObserver {
+        
     }
 }

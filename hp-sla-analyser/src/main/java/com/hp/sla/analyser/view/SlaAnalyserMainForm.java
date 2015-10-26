@@ -18,7 +18,7 @@ import javax.swing.SwingWorker;
 public class SlaAnalyserMainForm extends javax.swing.JFrame {
 
     private final SlaReportGenerationProgressDialog progressDialog;
-    private final SlaReportGeneratorObserver observer = new SwingSlaReportGenerator();
+    private final transient SlaReportGeneratorObserver observer = new SwingSlaReportGenerator();
 
     /**
      * Creates new form SlaAnalyserMainForm
@@ -264,7 +264,7 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
     private javax.swing.JTextField outputDirectoryTextField;
     // End of variables declaration//GEN-END:variables
 
-    private class SwingSlaReportGenerator extends BaseSlaReportGeneratorObserver implements SlaReportGeneratorObserver {
+    private class SwingSlaReportGenerator extends BaseSlaReportGeneratorObserver{
 
         public SwingSlaReportGenerator() {
         }

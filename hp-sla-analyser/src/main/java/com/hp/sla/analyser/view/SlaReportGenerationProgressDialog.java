@@ -38,13 +38,6 @@ public class SlaReportGenerationProgressDialog extends javax.swing.JDialog {
         super(parent, modal);
         setLocationRelativeTo(parent);
         setUndecorated(false);
-        addWindowListener(new WindowAdapter() {
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.out.println("Closing the dialog");
-            }
-        });
         initComponents();
         final Toolkit toolkit = Toolkit.getDefaultToolkit();
         final Dimension screenSize = toolkit.getScreenSize();

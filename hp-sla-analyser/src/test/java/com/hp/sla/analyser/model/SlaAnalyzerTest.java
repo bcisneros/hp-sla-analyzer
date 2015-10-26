@@ -1,6 +1,7 @@
 package com.hp.sla.analyser.model;
 
 import com.hp.sla.analyser.model.util.IncidentParser;
+import com.hp.sla.analyser.util.DateTimeUtil;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -289,7 +290,7 @@ public class SlaAnalyzerTest {
         Timestamp complianceLimitTimestamp = incident.calculateTimeToFixDeadLine(sla);
 
         //El incidente se cierra 1 min antes/despues del tiempo en que cumple el fixed time
-        incident.setCloseTimestamp(new Timestamp(complianceLimitTimestamp.getTime() + timeCompliant * 60 * 1000));
+        incident.setCloseTimestamp(DateTimeUtil.addHours(complianceLimitTimestamp, timeCompliant * 1.0 / 60));
 
         //Add the audits
         List<Audit> audits = new ArrayList<>();
@@ -303,7 +304,7 @@ public class SlaAnalyzerTest {
         audit2.setIncidentID(incident.getId());
         audit2.setNewVaueText("W-INCLV4-FAIT-CTE");
         //Lo toma el AG de interes 1 min antes/despues de tiempo en que se quema
-        audit2.setSystemModifiedTime(new Timestamp(burnedOutTimestamp.getTime() + timeBurnedOut * 60 * 1000));
+        audit2.setSystemModifiedTime(DateTimeUtil.addHours(burnedOutTimestamp, timeBurnedOut * 1.0 / 60));
         audits.add(audit2);
         incident.setAudits(audits);
 

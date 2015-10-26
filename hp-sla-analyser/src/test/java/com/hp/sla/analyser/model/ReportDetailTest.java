@@ -10,7 +10,7 @@ import org.junit.Test;
  */
 public class ReportDetailTest {
 
-    final String AUDIT_VALUE = "ANY VALUE";
+    final static String AUDIT_VALUE = "ANY VALUE";
 
     @Test
     public void testGetIncidentAuditNewValueText() {

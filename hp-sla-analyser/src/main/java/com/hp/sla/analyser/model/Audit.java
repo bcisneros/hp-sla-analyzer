@@ -20,6 +20,12 @@ public class Audit implements Comparable<Audit> {
     private String systemModifiedUser;
     private Timestamp systemModifiedTime;
 
+    public Audit() {
+        incidentID = "";
+    }
+    
+    
+
     public String getFieldDisplayName() {
         return fieldDisplayName;
     }
@@ -84,7 +90,7 @@ public class Audit implements Comparable<Audit> {
         this.systemModifiedUser = systemModifiedUser;
     }
 
-    public Date getSystemModifiedTime() {
+    public Timestamp getSystemModifiedTime() {
         return systemModifiedTime;
     }
 

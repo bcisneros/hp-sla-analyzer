@@ -6,13 +6,16 @@
 package com.hp.sla.analyser.model.util;
 
 import com.hp.sla.analyser.model.Audit;
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  *
  * @author ramirmal
  */
-public class AuditComparator implements Comparator<Audit> {
+public class AuditComparator implements Comparator<Audit>, Serializable {
+
+    private static final long serialVersionUID = -694901727200397002L;
 
     @Override
     public int compare(Audit o1, Audit o2) {

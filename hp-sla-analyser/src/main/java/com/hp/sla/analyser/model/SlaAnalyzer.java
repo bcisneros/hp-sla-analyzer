@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import org.apache.log4j.Logger;
 
 /**
@@ -42,8 +43,7 @@ public class SlaAnalyzer {
      */
     public List<ReportDetail> analyze(List<Incident> incidents, SlaReportGeneratorObserver observer) {
         if (observer == null) {
-            observer = new BaseSlaReportGeneratorObserver() {
-            };
+            observer = new DefaultReportGeneratorObserver();
         }
         if (incidents == null || incidents.isEmpty()) {
             throw new IllegalArgumentException("The list of incidents cannot be null or empty");
@@ -118,8 +118,9 @@ public class SlaAnalyzer {
             throw new SlaAnalysisException("Incident Critically Description is required to get the SLA");
         }
 
-        Integer criticalityIndex = null;
-        switch (criticality.toUpperCase()) {
+        Integer criticalityIndex;
+        criticalityIndex = null;
+        switch (criticality.toUpperCase(Locale.US)) {
             case "MISSION CRITICAL":
                 criticalityIndex = 0;
                 break;
@@ -137,7 +138,7 @@ public class SlaAnalyzer {
             throw new SlaAnalysisException("Incident Priority Description is required to get the SLA");
         }
         Integer priorityIndex = null;
-        switch (priority.toUpperCase()) {
+        switch (priority.toUpperCase(Locale.US)) {
             case "TOP":
                 priorityIndex = 0;
                 break;
@@ -159,5 +160,9 @@ public class SlaAnalyzer {
 
     List<ReportDetail> analyze(List<Incident> integrateIncidents) {
         return analyze(integrateIncidents, null);
+    }
+
+    private static class DefaultReportGeneratorObserver extends BaseSlaReportGeneratorObserver {
+
     }
 }
