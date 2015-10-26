@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import org.apache.log4j.Logger;
 
 /**
@@ -40,7 +39,8 @@ public class SlaAnalyzer {
      *
      * @param incidents The list of <code>Incident</code> objects that are in
      * the input report
-     * @param observer
+     * @param observer A SlaReportGeneratorObserver to notify the actions
+     * performed during Analysis Process
      * @return A <code>List</code> object of <code>ReportDetail</code>
      */
     public List<ReportDetail> analyze(List<Incident> incidents, SlaReportGeneratorObserver observer) {
@@ -70,6 +70,12 @@ public class SlaAnalyzer {
     }
 
     //TODO: Change to read from file
+    /**
+     * Get a List of String objects that represent the AG to consider for
+     * analysis
+     *
+     * @return The list with the AG to analyze
+     */
     protected List<String> getAssignmentGroupsListToAnalize() {
         List<String> assignmentGroups = new ArrayList<>();
         assignmentGroups.add("W-INCLV4-FAIT-AP-AR");
@@ -88,6 +94,15 @@ public class SlaAnalyzer {
         return assignmentGroups;
     }
 
+    /**
+     * Analyze an incident to determine if it is burned out, is compliance with
+     * the specified SLA or not
+     *
+     * @param incident The Incident object to be analyzed
+     * @return A ReportDetail object with analysis data result
+     * @throws SlaAnalysisException When it is not possible to determine if the
+     * incident is burned out or if it is compliance with the SLA
+     */
     protected ReportDetail analizeIncident(Incident incident) throws SlaAnalysisException {
         logger.info("Analyzing the incident " + incident.getId());
         incident.searchAndSetLastAssignmentGroupAudit(getAssignmentGroupsListToAnalize());
@@ -114,6 +129,14 @@ public class SlaAnalyzer {
         return detail;
     }
 
+    /**
+     * Get the specified SLA object from the Incident data
+     *
+     * @param incident The incident to determine its applicable SLA
+     * @return A ServiceLevelAgreement accordingly incident data
+     * @throws SlaAnalysisException If there is a logical inconsistency for not
+     * valid data
+     */
     protected static ServiceLevelAgreement getServiceLevelAgreementByIncident(Incident incident) throws SlaAnalysisException {
         String criticality = incident.getCriticalityDescription();
 
@@ -135,6 +158,13 @@ public class SlaAnalyzer {
         return serviceLevelAgreements[criticalityIndex][priorityIndex];
     }
 
+    /**
+     * Overloaded method that does not receive an Observer object
+     *
+     * @param integrateIncidents The list of <code>Incident</code> objects that
+     * are in the input report
+     * @return A <code>List</code> object of <code>ReportDetail</code>
+     */
     List<ReportDetail> analyze(List<Incident> integrateIncidents) {
         return analyze(integrateIncidents, null);
     }

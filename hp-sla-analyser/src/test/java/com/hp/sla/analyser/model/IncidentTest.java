@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.log4j.Logger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -12,11 +14,13 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author cisnerob
  */
+@RunWith(JUnitParamsRunner.class)
 public class IncidentTest {
 
     private final static Logger logger = Logger.getLogger(SlaReportGenerator.class);
@@ -26,73 +30,83 @@ public class IncidentTest {
      */
     @Test
     public void testCalculateBurnedOutDate() {
-        Timestamp startTime = Timestamp.valueOf("2015-01-01 00:00:00.00");
-        //TOP
-        ServiceLevelAgreement serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP;
-        Incident incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        Timestamp expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(3));
-        Timestamp result = incident.calculateBurnedOutDate(serviceLevelAgreement);
-        assertEquals(expResult, result);
+        try {
+            Timestamp startTime = Timestamp.valueOf("2015-01-01 00:00:00.00");
+            //TOP
+            ServiceLevelAgreement serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP;
+            Incident incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            Timestamp expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(3));
+            Timestamp result = incident.calculateBurnedOutDate(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        //HIGH
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(6));
-        result = incident.calculateBurnedOutDate(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            //HIGH
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(6));
+            result = incident.calculateBurnedOutDate(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(6));
-        result = incident.calculateBurnedOutDate(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(6));
+            result = incident.calculateBurnedOutDate(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        //MEDIUM
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + DateTimeUtil.hoursToMilliseconds(72 * 0.75));
-        result = incident.calculateBurnedOutDate(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            //MEDIUM
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + DateTimeUtil.hoursToMilliseconds(72 * 0.75));
+            result = incident.calculateBurnedOutDate(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + DateTimeUtil.hoursToMilliseconds(72 * 0.75));
-        result = incident.calculateBurnedOutDate(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + DateTimeUtil.hoursToMilliseconds(72 * 0.75));
+            result = incident.calculateBurnedOutDate(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + DateTimeUtil.hoursToMilliseconds(96 * 0.75));
-        result = incident.calculateBurnedOutDate(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + DateTimeUtil.hoursToMilliseconds(96 * 0.75));
+            result = incident.calculateBurnedOutDate(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        //LOW
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + DateTimeUtil.hoursToMilliseconds(96 * 0.75));
-        result = incident.calculateBurnedOutDate(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            //LOW
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + DateTimeUtil.hoursToMilliseconds(96 * 0.75));
+            result = incident.calculateBurnedOutDate(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + DateTimeUtil.hoursToMilliseconds(96 * 0.75));
-        result = incident.calculateBurnedOutDate(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + DateTimeUtil.hoursToMilliseconds(96 * 0.75));
+            result = incident.calculateBurnedOutDate(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_NORMAL_LOW;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + DateTimeUtil.hoursToMilliseconds(144 * 0.75));
-        result = incident.calculateBurnedOutDate(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_NORMAL_LOW;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + DateTimeUtil.hoursToMilliseconds(144 * 0.75));
+            result = incident.calculateBurnedOutDate(serviceLevelAgreement);
+            assertEquals(expResult, result);
+        } catch (SlaAnalysisException ex) {
+            fail("No exception is expected: " + ex);
+        }
+    }
+
+    @Test(expected = SlaAnalysisException.class)
+    @Parameters(method = "getServiceLevelAgreementsWithNullValues")
+    public void testCalulateBurnedOutDateWithNullBurnedOutValue(ServiceLevelAgreement sla) throws SlaAnalysisException {
+        new Incident().calculateBurnedOutDate(sla);
     }
 
     /**
@@ -100,72 +114,76 @@ public class IncidentTest {
      */
     @Test
     public void testCalculateTimeToFixDeadLine() {
-        Timestamp startTime = DateTimeUtil.FIRST_DAY_2015_YEAR_TIMESTAMP;
-        //TOP
-        ServiceLevelAgreement serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP;
-        Incident incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        Timestamp expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(3));
-        Timestamp result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
-        assertEquals(expResult, result);
+        try {
+            Timestamp startTime = DateTimeUtil.FIRST_DAY_2015_YEAR_TIMESTAMP;
+            //TOP
+            ServiceLevelAgreement serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP;
+            Incident incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            Timestamp expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(3));
+            Timestamp result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        //HIGH
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(6));
-        result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            //HIGH
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(6));
+            result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(6));
-        result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(6));
+            result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        //MEDIUM
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(72));
-        result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            //MEDIUM
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(72));
+            result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(72));
-        result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(72));
+            result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(96));
-        result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(96));
+            result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        //LOW
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(96));
-        result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            //LOW
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(96));
+            result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        serviceLevelAgreement = ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW;
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(96));
-        result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
-        assertEquals(expResult, result);
+            serviceLevelAgreement = ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW;
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(96));
+            result = incident.calculateTimeToFixDeadLine(serviceLevelAgreement);
+            assertEquals(expResult, result);
 
-        incident = new Incident();
-        incident.setCreationTimestamp(startTime);
-        expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(144));
-        result = incident.calculateTimeToFixDeadLine(ServiceLevelAgreement.HP_IT_NORMAL_LOW);
-        assertEquals("The deadline for a HP IT Normal - Low Incidents must be 144 hours (4 business days)", expResult, result);
+            incident = new Incident();
+            incident.setCreationTimestamp(startTime);
+            expResult = new Timestamp(startTime.getTime() + TimeUnit.HOURS.toMillis(144));
+            result = incident.calculateTimeToFixDeadLine(ServiceLevelAgreement.HP_IT_NORMAL_LOW);
+            assertEquals("The deadline for a HP IT Normal - Low Incidents must be 144 hours (4 business days)", expResult, result);
+        } catch (SlaAnalysisException ex) {
+            fail("No exception is expected: " + ex);
+        }
     }
 
     @Test
@@ -211,6 +229,14 @@ public class IncidentTest {
         } catch (CloneNotSupportedException ex) {
             fail("No exception was expected: " + ex);
         }
+    }
+
+    protected List<ServiceLevelAgreement> getServiceLevelAgreementsWithNullValues() {
+        List<ServiceLevelAgreement> list = new ArrayList<>();
+        list.add(ServiceLevelAgreement.HP_IT_NORMAL_TOP);
+        list.add(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_TOP);
+        list.add(ServiceLevelAgreement.HP_IT_NORMAL_HIGH);
+        return list;
     }
 
 }

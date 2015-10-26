@@ -305,11 +305,17 @@ public class Incident implements Comparable<Incident>, Cloneable {
         this.lastAssignmentGroupAudit = lastAssignmentGroupAudit;
     }
 
-    public Timestamp calculateBurnedOutDate(ServiceLevelAgreement serviceLevelAgreement) {
+    public Timestamp calculateBurnedOutDate(ServiceLevelAgreement serviceLevelAgreement) throws SlaAnalysisException {
+        if (serviceLevelAgreement.getBurnedOut() == null) {
+            throw new SlaAnalysisException("It is not defined a Burned Out Rate for " + serviceLevelAgreement.getName() + " SLA.");
+        }
         return new Timestamp(creationTimestamp.getTime() + DateTimeUtil.hoursToMilliseconds(serviceLevelAgreement.getBurnedOut()));
     }
 
-    public Timestamp calculateTimeToFixDeadLine(ServiceLevelAgreement serviceLevelAgreement) {
+    public Timestamp calculateTimeToFixDeadLine(ServiceLevelAgreement serviceLevelAgreement) throws SlaAnalysisException {
+        if (serviceLevelAgreement.getTimeToFix() == null) {
+            throw new SlaAnalysisException("It is not defined a Time to Fix for " + serviceLevelAgreement.getName() + " SLA.");
+        }
         return new Timestamp(creationTimestamp.getTime() + DateTimeUtil.hoursToMilliseconds(serviceLevelAgreement.getTimeToFix()));
     }
 

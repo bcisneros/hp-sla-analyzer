@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.log4j.Logger;
@@ -288,8 +289,14 @@ public class SlaAnalyzerTest {
             logger.info("Skipping this error", ex);
             return incident;
         }
-        Timestamp burnedOutTimestamp = incident.calculateBurnedOutDate(sla);
-        Timestamp complianceLimitTimestamp = incident.calculateTimeToFixDeadLine(sla);
+        Timestamp burnedOutTimestamp = null;
+        Timestamp complianceLimitTimestamp = null;
+        try {
+            burnedOutTimestamp = incident.calculateBurnedOutDate(sla);
+            complianceLimitTimestamp = incident.calculateTimeToFixDeadLine(sla);
+        } catch (SlaAnalysisException ex) {
+            fail("No exception is expected: " + ex);
+        }
 
         //El incidente se cierra 1 min antes/despues del tiempo en que cumple el fixed time
         incident.setCloseTimestamp(DateTimeUtil.addHours(complianceLimitTimestamp, timeCompliant * 1.0 / 60));
