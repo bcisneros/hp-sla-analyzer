@@ -264,7 +264,7 @@ public class SlaAnalyserMainForm extends javax.swing.JFrame {
     private javax.swing.JTextField outputDirectoryTextField;
     // End of variables declaration//GEN-END:variables
 
-    private class SwingSlaReportGenerator extends BaseSlaReportGeneratorObserver{
+    private class SwingSlaReportGenerator extends BaseSlaReportGeneratorObserver {
 
         public SwingSlaReportGenerator() {
         }
