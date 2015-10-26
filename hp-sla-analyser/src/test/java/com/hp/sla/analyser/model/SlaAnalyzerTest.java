@@ -232,7 +232,7 @@ public class SlaAnalyzerTest {
      * @throws SlaAnalysisException
      */
     private static List<Incident> testIncidentValues(boolean burnedOut, boolean compliant) {
-        String[] priorities = {Priority.TOP.getName(), Priority.HIGH.getName(),Priority.MEDIUM.getName(), Priority.LOW.getName()};
+        String[] priorities = {Priority.TOP.getName(), Priority.HIGH.getName(), Priority.MEDIUM.getName(), Priority.LOW.getName()};
         String[] criticalities = {Criticality.MISSION_CRITICAL.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Criticality.NORMAL.getName()};
         List values = new ArrayList();
         for (int i = 0; i < priorities.length; i++) {

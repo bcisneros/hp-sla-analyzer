@@ -218,8 +218,8 @@ public class SlaReportGenerator {
     public String getGeneratedReportFile() {
         return generatedReportFile;
     }
-    
+
     static class TestObserver extends BaseSlaReportGeneratorObserver {
-        
+
     }
 }
