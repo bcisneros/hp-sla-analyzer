@@ -2,6 +2,7 @@ package com.hp.sla.analyser.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
 /**
  * Utility class to load files easily
@@ -18,11 +19,11 @@ public class ResourcesUtil {
      * @param file
      * @return A FileInputStream object
      */
-    public static FileInputStream getResourceFromProjectClasspath(String file) {
+    public static InputStream getResourceFromProjectClasspath(String file) {
         ClassLoader classLoader = ResourcesUtil.class.getClassLoader();
-        FileInputStream testFile = null;
+        InputStream testFile = null;
         try {
-            testFile = new FileInputStream(new File(classLoader.getResource(file).getFile()));
+            testFile = classLoader.getResourceAsStream(file);
         } catch (Exception ex) {
             logger.error("Error while getting the file " + file, ex);
         }
