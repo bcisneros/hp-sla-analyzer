@@ -18,6 +18,8 @@ import javax.swing.SwingWorker;
  */
 public class SlaAnalyserMainForm extends javax.swing.JFrame {
 
+    private static final long serialVersionUID = -2842884685345041448L;
+
     private final SlaReportGenerationProgressDialog progressDialog;
     private final transient SlaReportGeneratorObserver observer = new SwingSlaReportGenerator();
 
