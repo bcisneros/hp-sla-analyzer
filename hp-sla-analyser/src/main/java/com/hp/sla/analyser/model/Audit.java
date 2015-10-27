@@ -1,12 +1,12 @@
 package com.hp.sla.analyser.model;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Objects;
 
 /**
- *
- * @author ramirmal
+ * Represents an Audit object that have all the details about an audit
+ * of an incident
+ * @author Mallinali Ramirez Corona
  */
 public class Audit implements Comparable<Audit> {
 

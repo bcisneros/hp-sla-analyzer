@@ -7,7 +7,7 @@ import org.junit.Test;
 
 /**
  *
- * @author ramirmal
+ * @author Mallinali Ramirez Corona
  */
 public class ExcelWritterTest {
 

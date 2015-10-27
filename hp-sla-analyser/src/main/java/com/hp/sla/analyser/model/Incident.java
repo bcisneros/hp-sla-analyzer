@@ -12,7 +12,7 @@ import java.util.Objects;
  * Represents an Incident object that have all the details about an incident
  * into the Incidents Report Spreadsheet
  *
- * @author ramirmal
+ * @author Mallinali Ramirez Corona
  * @updatedby Benjamin Cisneros Barraza
  */
 public class Incident implements Comparable<Incident>, Cloneable {

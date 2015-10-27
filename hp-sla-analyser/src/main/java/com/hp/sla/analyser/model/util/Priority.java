@@ -8,7 +8,7 @@ package com.hp.sla.analyser.model.util;
 /**
  * The kinds of priority of a ticket
  *
- * @author ramirmal
+ * @author Mallinali Ramirez Corona
  */
 public enum Priority {
 

@@ -22,7 +22,7 @@ import org.junit.Test;
 /**
  * Test class for SlaReportGenerator class
  *
- * @author ramirmal
+ * @author Mallinali Ramirez Corona
  */
 public class SlaReportGeneratorTest {
 

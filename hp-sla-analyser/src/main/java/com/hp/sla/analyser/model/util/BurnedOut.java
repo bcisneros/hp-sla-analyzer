@@ -6,8 +6,8 @@
 package com.hp.sla.analyser.model.util;
 
 /**
- *
- * @author ramirmal
+ * Represents the status of the incident with respect of the burned out state
+ * @author Mallinali Ramirez Corona
  */
 public enum BurnedOut {
 
