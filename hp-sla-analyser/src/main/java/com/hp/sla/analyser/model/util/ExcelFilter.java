@@ -4,6 +4,7 @@ import java.io.File;
 
 /**
  * This is a Filter to see just the excel files in a FileChooser
+ *
  * @author Mallinali Ramirez Corona
  */
 public class ExcelFilter extends javax.swing.filechooser.FileFilter {

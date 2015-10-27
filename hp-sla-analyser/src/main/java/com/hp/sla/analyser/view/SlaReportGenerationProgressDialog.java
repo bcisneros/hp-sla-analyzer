@@ -15,6 +15,7 @@ import javax.swing.text.DefaultCaret;
 
 /**
  * Form to show the progress of the SLA analysis
+ *
  * @author cisnerob
  */
 public class SlaReportGenerationProgressDialog extends javax.swing.JDialog {

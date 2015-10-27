@@ -20,7 +20,7 @@ public class ExcelWritterTest {
             String result = ew.write(null, filename);
             assertNotNull("The result must be not null", result);
             assertEquals("The resulting file must be written at this location", expected, result);
-        } catch (IllegalArgumentException | IllegalAccessException ex) {
+        } catch (Exception ex) {
             fail("No exception is expected here: " + ex);
         }
     }

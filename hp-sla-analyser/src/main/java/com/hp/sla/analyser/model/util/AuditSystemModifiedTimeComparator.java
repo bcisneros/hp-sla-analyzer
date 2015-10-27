@@ -6,6 +6,7 @@ import java.util.Comparator;
 
 /**
  * This class compares two Audit objects based in the field ModifiedTime
+ *
  * @author Benjamin Cisneros Barraza
  */
 public class AuditSystemModifiedTimeComparator implements Comparator<Audit>, Serializable {

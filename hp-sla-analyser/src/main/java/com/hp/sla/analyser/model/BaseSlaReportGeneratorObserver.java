@@ -2,7 +2,7 @@ package com.hp.sla.analyser.model;
 
 /**
  * Reports the state of the SLA Report Generation process
- * 
+ *
  * @author Benjamin Cisneros Barraza
  */
 public abstract class BaseSlaReportGeneratorObserver implements SlaReportGeneratorObserver {

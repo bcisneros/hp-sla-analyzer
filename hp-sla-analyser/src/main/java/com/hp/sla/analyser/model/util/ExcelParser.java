@@ -9,9 +9,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
 /**
- * This is a generic class to parse an Excel document and convert its data rows to 
- * Audit or Incident Lists.
- * 
+ * This is a generic class to parse an Excel document and convert its data rows
+ * to Audit or Incident Lists.
+ *
  * @author Mallinali Ramirez Corona
  * @param <T> AuditParser or IncidentParser
  */

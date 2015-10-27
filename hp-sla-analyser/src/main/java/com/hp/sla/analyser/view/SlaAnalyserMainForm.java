@@ -13,6 +13,7 @@ import javax.swing.SwingWorker;
 
 /**
  * The main form to perform an SLA analysis
+ *
  * @author Benjamin Cisneros Barraza
  */
 public class SlaAnalyserMainForm extends javax.swing.JFrame {

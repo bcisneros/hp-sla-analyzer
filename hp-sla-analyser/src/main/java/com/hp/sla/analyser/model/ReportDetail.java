@@ -6,6 +6,7 @@ import java.util.Date;
 
 /**
  * This class represents the rows of data that will contain the SLA report
+ *
  * @author Mallinali Ramirez Corona
  */
 public class ReportDetail implements Cloneable {

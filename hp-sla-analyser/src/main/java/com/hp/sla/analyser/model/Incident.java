@@ -306,9 +306,12 @@ public class Incident implements Comparable<Incident>, Cloneable {
 
     /**
      * Computes the timestamp when the Incident gets burned out
-     * @param serviceLevelAgreement the service level agreement that corresponds to this kind of incident
-     * @return the timestamp that correspond to the time when the incident gets burned out
-     * @throws SlaAnalysisException 
+     *
+     * @param serviceLevelAgreement the service level agreement that corresponds
+     * to this kind of incident
+     * @return the timestamp that correspond to the time when the incident gets
+     * burned out
+     * @throws SlaAnalysisException
      */
     public Timestamp calculateBurnedOutDate(ServiceLevelAgreement serviceLevelAgreement) throws SlaAnalysisException {
         if (serviceLevelAgreement.getBurnedOut() == null) {
@@ -319,9 +322,13 @@ public class Incident implements Comparable<Incident>, Cloneable {
 
     /**
      * Computes the timestamp when the Incident needs to be fixed
-     * @param serviceLevelAgreement the service level agreement that corresponds to this kind of incident
-     * @return the timestamp that correspond to the time when the incident incident needs to be already fixed
-     * @throws SlaAnalysisException  when the time to fix is not defined for the combination of priority and criticality of the incident
+     *
+     * @param serviceLevelAgreement the service level agreement that corresponds
+     * to this kind of incident
+     * @return the timestamp that correspond to the time when the incident
+     * incident needs to be already fixed
+     * @throws SlaAnalysisException when the time to fix is not defined for the
+     * combination of priority and criticality of the incident
      */
     public Timestamp calculateTimeToFixDeadLine(ServiceLevelAgreement serviceLevelAgreement) throws SlaAnalysisException {
         if (serviceLevelAgreement.getTimeToFix() == null) {
@@ -331,8 +338,11 @@ public class Incident implements Comparable<Incident>, Cloneable {
     }
 
     /**
-     * Search for the last (in time) assigment group  of interest in the audits that belong to the incident
-     * @param assignmentGroupsListToAnalize the list of the assigment groups of interest
+     * Search for the last (in time) assigment group of interest in the audits
+     * that belong to the incident
+     *
+     * @param assignmentGroupsListToAnalize the list of the assigment groups of
+     * interest
      */
     void searchAndSetLastAssignmentGroupAudit(List<String> assignmentGroupsListToAnalize) {
         lastAssignmentGroupAudit = null;
