@@ -58,9 +58,9 @@ public class ReportDetail implements Cloneable {
 
     public String getBurnedOutComplianceString() {
         if (detailException != null) {
-            return BurnedOut.UNDETERMINED.name();
+            return BurnedOut.UNDETERMINED.getName();
         }
-        return isBurnedOut() ? BurnedOut.NON_COMPLIANCE.name() : BurnedOut.COMPLIANCE.name();
+        return isBurnedOut() ? BurnedOut.NON_COMPLIANCE.getName() : BurnedOut.COMPLIANCE.getName();
     }
 
     public Double getIncidentTimeToFixDurationHours() {

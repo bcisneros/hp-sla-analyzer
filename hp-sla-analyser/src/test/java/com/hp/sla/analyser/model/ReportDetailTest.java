@@ -31,21 +31,21 @@ public class ReportDetailTest {
     public void testGetBurnedOutComplianceStringWithBurnedOutIncident() {
         ReportDetail instance = new ReportDetail();
         instance.setBurnedOut(true);
-        assertEquals(BurnedOut.NON_COMPLIANCE.name(), instance.getBurnedOutComplianceString());
+        assertEquals(BurnedOut.NON_COMPLIANCE.getName(), instance.getBurnedOutComplianceString());
     }
 
     @Test
     public void testGetBurnedOutComplianceStringWithNotBurnedOutIncident() {
         ReportDetail instance = new ReportDetail();
         instance.setBurnedOut(false);
-        assertEquals(BurnedOut.COMPLIANCE.name(), instance.getBurnedOutComplianceString());
+        assertEquals(BurnedOut.COMPLIANCE.getName(), instance.getBurnedOutComplianceString());
     }
 
     @Test
     public void testGetBurnedOutComplianceStringWithIndeterminatedBurnedOutIncidentStatus() {
         ReportDetail instance = new ReportDetail();
         instance.setDetailException(new Exception());
-        assertEquals(BurnedOut.UNDETERMINED.name(), instance.getBurnedOutComplianceString());
+        assertEquals(BurnedOut.UNDETERMINED.getName(), instance.getBurnedOutComplianceString());
     }
 
     private Incident getIncidentToTest() {
