@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -28,6 +26,7 @@ public class SlaReportGenerationProgressDialog extends javax.swing.JDialog {
      * A return status code - returned if OK button has been pressed
      */
     public static final int RET_OK = 1;
+    private static final long serialVersionUID = 7725875762735642227L;
 
     /**
      * Creates new form SlaReportGenerationProgressDialog
@@ -52,6 +51,8 @@ public class SlaReportGenerationProgressDialog extends javax.swing.JDialog {
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), cancelName);
         ActionMap actionMap = getRootPane().getActionMap();
         actionMap.put(cancelName, new AbstractAction() {
+            private static final long serialVersionUID = -5644390861803492172L;
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 doClose(RET_CANCEL);
