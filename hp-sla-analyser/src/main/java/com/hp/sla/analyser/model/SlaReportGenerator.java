@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -39,6 +40,8 @@ public class SlaReportGenerator {
     private final static CellStyle dateCellStyle;
     private final static CellStyle doubleNumberCellStyle;
     private final static CellStyle integerNumberCellStyle;
+    private final static CellStyle greenCellStyle;
+    private final static CellStyle redCellStyle;
 
     static {
         workbookTemplate = getWorkBook();
@@ -54,6 +57,14 @@ public class SlaReportGenerator {
         integerNumberCellStyle = workbookTemplate.createCellStyle();
         integerNumberCellStyle.cloneStyleFrom(defaultCellStyle);
         integerNumberCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("0"));
+        greenCellStyle = workbookTemplate.createCellStyle();
+        greenCellStyle.cloneStyleFrom(defaultCellStyle);
+        greenCellStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        greenCellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        redCellStyle = workbookTemplate.createCellStyle();
+        redCellStyle.cloneStyleFrom(defaultCellStyle);
+        redCellStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
+        redCellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
     }
 
     static Workbook getWorkBook() {
@@ -246,7 +257,7 @@ public class SlaReportGenerator {
      *
      * @param dataToStore The data object to store
      * @param row The row where the cell is going to be created
-     * @param cellIndex The cell index number where yo need to create the value
+     * @param cellIndex The cell index number where you need to create the value
      */
     protected void createCellValue(Object dataToStore, Row row, int cellIndex) {
         Cell cell = row.createCell(cellIndex);
@@ -269,6 +280,12 @@ public class SlaReportGenerator {
             cell.setCellStyle(integerNumberCellStyle);
         } else {
             cell.setCellValue((String) dataToStore);
+            if(cellIndex==4){
+                if(dataToStore.equals("yes"))
+                    cell.setCellStyle(greenCellStyle);
+                else if (dataToStore.equals("no"))
+                    cell.setCellStyle(redCellStyle);
+            }
         }
     }
 
