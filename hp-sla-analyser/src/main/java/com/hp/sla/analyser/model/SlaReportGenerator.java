@@ -280,11 +280,12 @@ public class SlaReportGenerator {
             cell.setCellStyle(integerNumberCellStyle);
         } else {
             cell.setCellValue((String) dataToStore);
-            if(cellIndex==4){
-                if(dataToStore.equals("yes"))
+            if (cellIndex == 4) {
+                if (dataToStore.equals("yes")) {
                     cell.setCellStyle(greenCellStyle);
-                else if (dataToStore.equals("no"))
+                } else if (dataToStore.equals("no")) {
                     cell.setCellStyle(redCellStyle);
+                }
             }
         }
     }

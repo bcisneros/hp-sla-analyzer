@@ -4,8 +4,9 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 /**
- * Represents an Audit object that have all the details about an audit
- * of an incident
+ * Represents an Audit object that have all the details about an audit of an
+ * incident
+ *
  * @author Mallinali Ramirez Corona
  */
 public class Audit implements Comparable<Audit> {

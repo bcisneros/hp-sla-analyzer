@@ -82,7 +82,7 @@ public class AuditParserTest extends ExcelParserTest<Audit> {
         Audit auditExpected = getDefaultAudit();
         AuditParser auditParser = (AuditParser) this.getInstance();
 
-        XSSFWorkbook  wb = new XSSFWorkbook (); 
+        XSSFWorkbook wb = new XSSFWorkbook();
         XSSFCreationHelper createHelper = wb.getCreationHelper();
         XSSFCellStyle cellStyle = wb.createCellStyle();
         cellStyle.setDataFormat(
