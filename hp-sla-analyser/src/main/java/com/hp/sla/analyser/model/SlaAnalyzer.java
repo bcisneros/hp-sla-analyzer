@@ -1,5 +1,6 @@
 package com.hp.sla.analyser.model;
 
+import com.hp.sla.analyser.model.util.OrganizationLevel1Name;
 import com.hp.sla.analyser.model.util.Criticality;
 import com.hp.sla.analyser.model.util.Priority;
 import java.sql.Timestamp;
@@ -16,23 +17,60 @@ import org.apache.log4j.Logger;
 public class SlaAnalyzer {
 
     private static final Logger logger = Logger.getLogger(SlaAnalyzer.class);
-    private static final ServiceLevelAgreement[][] serviceLevelAgreements
-            = new ServiceLevelAgreement[][]{
-                new ServiceLevelAgreement[]{
-                    ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP,
-                    ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH,
-                    ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM,
-                    ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW},
-                new ServiceLevelAgreement[]{
-                    ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_TOP,
-                    ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH,
-                    ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM,
-                    ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW},
-                new ServiceLevelAgreement[]{
-                    ServiceLevelAgreement.HP_IT_NORMAL_TOP,
-                    ServiceLevelAgreement.HP_IT_NORMAL_HIGH,
-                    ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM,
-                    ServiceLevelAgreement.HP_IT_NORMAL_LOW}};
+    private static final ServiceLevelAgreement[][][] serviceLevelAgreements
+            = new ServiceLevelAgreement[][][]{
+                new ServiceLevelAgreement[][]{
+                    new ServiceLevelAgreement[]{
+                        ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP,
+                        ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH,
+                        ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM,
+                        ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW},
+                    new ServiceLevelAgreement[]{
+                        ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_TOP,
+                        ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH,
+                        ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM,
+                        ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW},
+                    new ServiceLevelAgreement[]{
+                        ServiceLevelAgreement.HP_IT_NORMAL_TOP,
+                        ServiceLevelAgreement.HP_IT_NORMAL_HIGH,
+                        ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM,
+                        ServiceLevelAgreement.HP_IT_NORMAL_LOW}
+                },
+                new ServiceLevelAgreement[][]{
+                    new ServiceLevelAgreement[]{
+                        ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_TOP,
+                        ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_HIGH,
+                        ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_MEDIUM,
+                        ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_LOW},
+                    new ServiceLevelAgreement[]{
+                        ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_TOP,
+                        ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_HIGH,
+                        ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_MEDIUM,
+                        ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_LOW},
+                    new ServiceLevelAgreement[]{
+                        ServiceLevelAgreement.HPI_IT_NORMAL_TOP,
+                        ServiceLevelAgreement.HPI_IT_NORMAL_HIGH,
+                        ServiceLevelAgreement.HPI_IT_NORMAL_MEDIUM,
+                        ServiceLevelAgreement.HPI_IT_NORMAL_LOW}
+                },
+                new ServiceLevelAgreement[][]{
+                    new ServiceLevelAgreement[]{
+                        ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_TOP,
+                        ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_HIGH,
+                        ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_MEDIUM,
+                        ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_LOW},
+                    new ServiceLevelAgreement[]{
+                        ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_TOP,
+                        ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_HIGH,
+                        ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_MEDIUM,
+                        ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_LOW},
+                    new ServiceLevelAgreement[]{
+                        ServiceLevelAgreement.HPE_IT_NORMAL_TOP,
+                        ServiceLevelAgreement.HPE_IT_NORMAL_HIGH,
+                        ServiceLevelAgreement.HPE_IT_NORMAL_MEDIUM,
+                        ServiceLevelAgreement.HPE_IT_NORMAL_LOW}
+                }
+            };
     private static final List<String> assignmentGroups = new ArrayList<>();
 
     static {
@@ -60,6 +98,14 @@ public class SlaAnalyzer {
      * valid data
      */
     protected static ServiceLevelAgreement getServiceLevelAgreementByIncident(Incident incident) throws SlaAnalysisException {
+        Integer companyIndex;
+        String organizationLevel1Name = incident.getConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name();
+        try {
+            companyIndex = OrganizationLevel1Name.valueOf(organizationLevel1Name.toUpperCase().replace(" ", "_").replaceFirst("-", "_")).ordinal();
+        } catch (NullPointerException | IllegalArgumentException npe) {
+            throw new SlaAnalysisException("Organization Level 1 Name \"" + organizationLevel1Name + "\" is not recognized as valid value.");
+        }
+
         String criticality = incident.getCriticalityDescription();
 
         logger.debug("Criticality: " + criticality);
@@ -77,7 +123,8 @@ public class SlaAnalyzer {
         } catch (NullPointerException | IllegalArgumentException npe) {
             throw new SlaAnalysisException("Criticatility \"" + criticality + "\" is not recognized as valid value.");
         }
-        return serviceLevelAgreements[criticalityIndex][priorityIndex];
+
+        return serviceLevelAgreements[companyIndex][criticalityIndex][priorityIndex];
     }
 
     /**

@@ -2,14 +2,17 @@ package com.hp.sla.analyser.model;
 
 import com.hp.sla.analyser.model.util.Criticality;
 import com.hp.sla.analyser.model.util.IncidentParser;
+import com.hp.sla.analyser.model.util.OrganizationLevel1Name;
 import com.hp.sla.analyser.model.util.Priority;
 import com.hp.sla.analyser.util.DateTimeUtil;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 import junitparams.JUnitParamsRunner;
+import static junitparams.JUnitParamsRunner.$;
 import junitparams.Parameters;
 import org.apache.log4j.Logger;
 import static org.junit.Assert.assertEquals;
@@ -134,37 +137,46 @@ public class SlaAnalyzerTest {
     }
 
     @Test
-    public void testGetServiceLevelAgreementByIncident() throws Exception {
-        Incident incident = new Incident();
-        incident.setCriticalityDescription("Mission Critical");
-        incident.setPriority("top");
-        assertSame(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
-        incident.setPriority("high");
-        assertSame(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
-        incident.setPriority("medium");
-        assertSame(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
-        incident.setPriority("low");
-        assertSame(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
-
-        incident.setCriticalityDescription("Entity Essential");
-        incident.setPriority("top");
-        assertSame(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_TOP, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
-        incident.setPriority("high");
-        assertSame(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
-        incident.setPriority("medium");
-        assertSame(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
-        incident.setPriority("low");
-        assertSame(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
-
-        incident.setCriticalityDescription("Normal");
-        incident.setPriority("top");
-        assertSame(ServiceLevelAgreement.HP_IT_NORMAL_TOP, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
-        incident.setPriority("high");
-        assertSame(ServiceLevelAgreement.HP_IT_NORMAL_HIGH, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
-        incident.setPriority("medium");
-        assertSame(ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
-        incident.setPriority("low");
-        assertSame(ServiceLevelAgreement.HP_IT_NORMAL_LOW, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+    @Parameters(method = "getExpectedServiceLevelAgreementByIncident")
+    public void testGetServiceLevelAgreementByIncident(Incident incident, ServiceLevelAgreement expectedServiceLevelAgreement) throws Exception {
+        assertSame(expectedServiceLevelAgreement, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//        Incident incident = new Incident();
+//        incident.setCriticalityDescription("Mission Critical");
+//        incident.setPriority("top");
+//        incident.setConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name("hpe-it");
+//        assertSame(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_TOP, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//        incident.setPriority("high");
+//        assertSame(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_HIGH, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//        incident.setPriority("medium");
+//        assertSame(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_MEDIUM, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//        incident.setPriority("low");
+//        assertSame(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_LOW, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//
+//        incident.setCriticalityDescription("Entity Essential");
+//        incident.setPriority("top");
+//        assertSame(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_TOP, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//        incident.setPriority("high");
+//        assertSame(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_HIGH, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//        incident.setPriority("medium");
+//        assertSame(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_MEDIUM, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//        incident.setPriority("low");
+//        assertSame(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_LOW, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//
+//        incident.setCriticalityDescription("Normal");
+//        incident.setPriority("top");
+//        assertSame(ServiceLevelAgreement.HPE_IT_NORMAL_TOP, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//        incident.setPriority("high");
+//        assertSame(ServiceLevelAgreement.HPE_IT_NORMAL_HIGH, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//        incident.setPriority("medium");
+//        assertSame(ServiceLevelAgreement.HPE_IT_NORMAL_MEDIUM, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//        incident.setPriority("low");
+//        assertSame(ServiceLevelAgreement.HPE_IT_NORMAL_LOW, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
+//        
+//        // Test HPI SLA's
+//        incident.setCriticalityDescription("Mission Critical");
+//        incident.setPriority("top");
+//        incident.setConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name("hpi-it");
+//        assertSame(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_TOP, SlaAnalyzer.getServiceLevelAgreementByIncident(incident));
     }
 
     @Test(expected = SlaAnalysisException.class)
@@ -215,11 +227,54 @@ public class SlaAnalyzerTest {
 
     public static List<Incident> getIncidentsWithNullServiceLevelAgreement() {
         List<Incident> incidents = new ArrayList<>();
-        incidents.add(generateIncident(null, null, true, true));
-        incidents.add(generateIncident(Criticality.ENTITY_ESSENTIAL.getName(), Priority.TOP.getName(), true, true));
-        incidents.add(generateIncident(Criticality.NORMAL.getName(), Priority.TOP.getName(), true, true));
-        incidents.add(generateIncident(Criticality.NORMAL.getName(), Priority.HIGH.getName(), true, true));
+        incidents.add(generateIncident(null, null, true, true, null));
+        incidents.add(generateIncident(Criticality.ENTITY_ESSENTIAL.getName(), Priority.TOP.getName(), true, true, null));
+        incidents.add(generateIncident(Criticality.NORMAL.getName(), Priority.TOP.getName(), true, true, null));
+        incidents.add(generateIncident(Criticality.NORMAL.getName(), Priority.HIGH.getName(), true, true, null));
         return incidents;
+    }
+
+    public static Collection<Object[]> getExpectedServiceLevelAgreementByIncident() {
+        return Arrays.asList(new Object[][]{
+            //HP Parameters
+            {new Incident(OrganizationLevel1Name.HP_IT.getName(), Criticality.MISSION_CRITICAL.getName(), Priority.TOP.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP},
+            {new Incident(OrganizationLevel1Name.HP_IT.getName(), Criticality.MISSION_CRITICAL.getName(), Priority.HIGH.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH},
+            {new Incident(OrganizationLevel1Name.HP_IT.getName(), Criticality.MISSION_CRITICAL.getName(), Priority.MEDIUM.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM},
+            {new Incident(OrganizationLevel1Name.HP_IT.getName(), Criticality.MISSION_CRITICAL.getName(), Priority.LOW.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW},
+            {new Incident(OrganizationLevel1Name.HP_IT.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Priority.TOP.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_TOP},
+            {new Incident(OrganizationLevel1Name.HP_IT.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Priority.HIGH.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH},
+            {new Incident(OrganizationLevel1Name.HP_IT.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Priority.MEDIUM.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM},
+            {new Incident(OrganizationLevel1Name.HP_IT.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Priority.LOW.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW},
+            {new Incident(OrganizationLevel1Name.HP_IT.getName(), Criticality.NORMAL.getName(), Priority.TOP.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HP_IT_NORMAL_TOP},
+            {new Incident(OrganizationLevel1Name.HP_IT.getName(), Criticality.NORMAL.getName(), Priority.HIGH.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HP_IT_NORMAL_HIGH},
+            {new Incident(OrganizationLevel1Name.HP_IT.getName(), Criticality.NORMAL.getName(), Priority.MEDIUM.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM},
+            {new Incident(OrganizationLevel1Name.HP_IT.getName(), Criticality.NORMAL.getName(), Priority.LOW.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HP_IT_NORMAL_LOW},
+            //HPI Parameters
+            {new Incident(OrganizationLevel1Name.HPI_IT.getName(), Criticality.MISSION_CRITICAL.getName(), Priority.TOP.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_TOP},
+            {new Incident(OrganizationLevel1Name.HPI_IT.getName(), Criticality.MISSION_CRITICAL.getName(), Priority.HIGH.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_HIGH},
+            {new Incident(OrganizationLevel1Name.HPI_IT.getName(), Criticality.MISSION_CRITICAL.getName(), Priority.MEDIUM.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_MEDIUM},
+            {new Incident(OrganizationLevel1Name.HPI_IT.getName(), Criticality.MISSION_CRITICAL.getName(), Priority.LOW.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_LOW},
+            {new Incident(OrganizationLevel1Name.HPI_IT.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Priority.TOP.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_TOP},
+            {new Incident(OrganizationLevel1Name.HPI_IT.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Priority.HIGH.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_HIGH},
+            {new Incident(OrganizationLevel1Name.HPI_IT.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Priority.MEDIUM.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_MEDIUM},
+            {new Incident(OrganizationLevel1Name.HPI_IT.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Priority.LOW.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_LOW},
+            {new Incident(OrganizationLevel1Name.HPI_IT.getName(), Criticality.NORMAL.getName(), Priority.TOP.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPI_IT_NORMAL_TOP},
+            {new Incident(OrganizationLevel1Name.HPI_IT.getName(), Criticality.NORMAL.getName(), Priority.HIGH.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPI_IT_NORMAL_HIGH},
+            {new Incident(OrganizationLevel1Name.HPI_IT.getName(), Criticality.NORMAL.getName(), Priority.MEDIUM.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPI_IT_NORMAL_MEDIUM},
+            {new Incident(OrganizationLevel1Name.HPI_IT.getName(), Criticality.NORMAL.getName(), Priority.LOW.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPI_IT_NORMAL_LOW},
+            //HPE Parameters
+            {new Incident(OrganizationLevel1Name.HPE_IT.getName(), Criticality.MISSION_CRITICAL.getName(), Priority.TOP.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_TOP},
+            {new Incident(OrganizationLevel1Name.HPE_IT.getName(), Criticality.MISSION_CRITICAL.getName(), Priority.HIGH.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_HIGH},
+            {new Incident(OrganizationLevel1Name.HPE_IT.getName(), Criticality.MISSION_CRITICAL.getName(), Priority.MEDIUM.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_MEDIUM},
+            {new Incident(OrganizationLevel1Name.HPE_IT.getName(), Criticality.MISSION_CRITICAL.getName(), Priority.LOW.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_LOW},
+            {new Incident(OrganizationLevel1Name.HPE_IT.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Priority.TOP.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_TOP},
+            {new Incident(OrganizationLevel1Name.HPE_IT.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Priority.HIGH.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_HIGH},
+            {new Incident(OrganizationLevel1Name.HPE_IT.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Priority.MEDIUM.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_MEDIUM},
+            {new Incident(OrganizationLevel1Name.HPE_IT.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Priority.LOW.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_LOW},
+            {new Incident(OrganizationLevel1Name.HPE_IT.getName(), Criticality.NORMAL.getName(), Priority.TOP.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPE_IT_NORMAL_TOP},
+            {new Incident(OrganizationLevel1Name.HPE_IT.getName(), Criticality.NORMAL.getName(), Priority.HIGH.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPE_IT_NORMAL_HIGH},
+            {new Incident(OrganizationLevel1Name.HPE_IT.getName(), Criticality.NORMAL.getName(), Priority.MEDIUM.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPE_IT_NORMAL_MEDIUM},
+            {new Incident(OrganizationLevel1Name.HPE_IT.getName(), Criticality.NORMAL.getName(), Priority.LOW.getName()), (ServiceLevelAgreement) ServiceLevelAgreement.HPE_IT_NORMAL_LOW},});
     }
 
     /**
@@ -233,14 +288,17 @@ public class SlaAnalyzerTest {
      * @throws SlaAnalysisException
      */
     private static List<Incident> testIncidentValues(boolean burnedOut, boolean compliant) {
+        String[] organizationLevel1Name = {OrganizationLevel1Name.HP_IT.getName(), OrganizationLevel1Name.HPI_IT.getName(), OrganizationLevel1Name.HPE_IT.getName()};
         String[] priorities = {Priority.TOP.getName(), Priority.HIGH.getName(), Priority.MEDIUM.getName(), Priority.LOW.getName()};
         String[] criticalities = {Criticality.MISSION_CRITICAL.getName(), Criticality.ENTITY_ESSENTIAL.getName(), Criticality.NORMAL.getName()};
         List values = new ArrayList();
-        for (int i = 0; i < priorities.length; i++) {
-            for (int j = 0; j <= i && j < criticalities.length; j++) {
-                Incident incident = generateIncident(criticalities[j], priorities[i], burnedOut, compliant);
-                if (incident.getCloseTimestamp() != null) {
-                    values.add(incident);
+        for (String organizationLevel1Name1 : organizationLevel1Name) {
+            for (int j = 0; j < priorities.length; j++) {
+                for (int k = 0; k <= j && k < criticalities.length; k++) {
+                    Incident incident = generateIncident(criticalities[k], priorities[j], burnedOut, compliant, organizationLevel1Name1);
+                    if (incident.getCloseTimestamp() != null) {
+                        values.add(incident);
+                    }
                 }
             }
         }
@@ -257,7 +315,7 @@ public class SlaAnalyzerTest {
      * @return an Incident with the values input in the parameters
      * @throws SlaAnalysisException
      */
-    private static Incident generateIncident(String criticality, String priority, boolean burnedOut, boolean compliant) {
+    private static Incident generateIncident(String criticality, String priority, boolean burnedOut, boolean compliant, String organizationLevel1Name) {
         //If is burned out will surpase the expected burnedout time by one minute else will be below by one minute
         int timeBurnedOut;
         if (burnedOut) {
@@ -277,6 +335,7 @@ public class SlaAnalyzerTest {
         Incident incident = new Incident();
         incident.setId("IM00" + randomGenerator.nextInt(100) + randomGenerator.nextInt(100));
         //Setcriticallity and priority
+        incident.setConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name(organizationLevel1Name);
         incident.setCriticalityDescription(criticality);
         incident.setPriority(priority);
         //Compute burned out time stamp

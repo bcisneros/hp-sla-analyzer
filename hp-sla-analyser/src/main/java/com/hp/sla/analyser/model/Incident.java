@@ -46,6 +46,17 @@ public class Incident implements Comparable<Incident>, Cloneable {
     private List<Audit> audits = new ArrayList<>();
     private Audit lastAssignmentGroupAudit;
 
+    public Incident() {
+
+    }
+
+    public Incident(String organizationLevel1Name, String criticality, String priorityString) {
+        configurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name = organizationLevel1Name;
+        criticalityDescription = criticality;
+        this.priority = priorityString;
+
+    }
+
     public String getId() {
         return id;
     }

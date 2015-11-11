@@ -8,6 +8,7 @@ package com.hp.sla.analyser.model;
  */
 public enum ServiceLevelAgreement {
 
+    //HP SLA's
     HP_IT_MISSION_CRITICAL_TOP(0.25F, 3F, 3F, "HP-IT Mission Critical - Top"),
     HP_IT_MISSION_CRITICAL_HIGH(1F, 6F, 6F, "HP-IT Mission Critical - High"),
     HP_IT_MISSION_CRITICAL_MEDIUM(4F, 72F, 72F * 0.75F, "HP-IT Mission Critical - Medium"),
@@ -19,7 +20,34 @@ public enum ServiceLevelAgreement {
     HP_IT_NORMAL_TOP("HP-IT Normal - Top"),
     HP_IT_NORMAL_HIGH("HP-IT Normal - High"),
     HP_IT_NORMAL_MEDIUM(4F, 96F, 96F * 0.75F, "HP-IT Normal - Medium"),
-    HP_IT_NORMAL_LOW(8F, 144F, 144F * 0.75F, "HP-IT Normal - Medium");
+    HP_IT_NORMAL_LOW(8F, 144F, 144F * 0.75F, "HP-IT Normal - Medium"),
+    //HPI SLA's
+    //TODO: Change to real values
+    HPI_IT_MISSION_CRITICAL_TOP(0.25F, 3F, 3F, "HPI-IT Mission Critical - Top"),
+    HPI_IT_MISSION_CRITICAL_HIGH(1F, 6F, 6F, "HPI-IT Mission Critical - High"),
+    HPI_IT_MISSION_CRITICAL_MEDIUM(4F, 72F, 72F * 0.75F, "HPI-IT Mission Critical - Medium"),
+    HPI_IT_MISSION_CRITICAL_LOW(8F, 96F, 96F * 0.75F, "HPI-IT Mission Critical - Low"),
+    HPI_IT_ENTITY_ESSENTIAL_TOP("HPI-IT Entity Essential - Top"),
+    HPI_IT_ENTITY_ESSENTIAL_HIGH(1F, 6F, 6F, "HPI-IT Entity Essential - High"),
+    HPI_IT_ENTITY_ESSENTIAL_MEDIUM(4F, 72F, 72F * 0.75F, "HPI-IT Entity Essential - Medium"),
+    HPI_IT_ENTITY_ESSENTIAL_LOW(8F, 96F, 96F * 0.75F, "HPI-IT Entity Essential - Low"),
+    HPI_IT_NORMAL_TOP("HPI-IT Normal - Top"),
+    HPI_IT_NORMAL_HIGH("HPI-IT Normal - High"),
+    HPI_IT_NORMAL_MEDIUM(4F, 96F, 96F * 0.75F, "HPI-IT Normal - Medium"),
+    HPI_IT_NORMAL_LOW(8F, 144F, 144F * 0.75F, "HPI-IT Normal - Medium"),
+    //HPE SLA's
+    HPE_IT_MISSION_CRITICAL_TOP(0.25F, 3F, 3F, "HPE-IT Mission Critical - Top"),
+    HPE_IT_MISSION_CRITICAL_HIGH(1F, 6F, 6F, "HPE-IT Mission Critical - High"),
+    HPE_IT_MISSION_CRITICAL_MEDIUM(4F, 72F, 72F * 0.75F, "HPE-IT Mission Critical - Medium"),
+    HPE_IT_MISSION_CRITICAL_LOW(8F, 96F, 96F * 0.75F, "HPE-IT Mission Critical - Low"),
+    HPE_IT_ENTITY_ESSENTIAL_TOP("HPE-IT Entity Essential - Top"),
+    HPE_IT_ENTITY_ESSENTIAL_HIGH(1F, 6F, 6F, "HPE-IT Entity Essential - High"),
+    HPE_IT_ENTITY_ESSENTIAL_MEDIUM(4F, 72F, 72F * 0.75F, "HPE-IT Entity Essential - Medium"),
+    HPE_IT_ENTITY_ESSENTIAL_LOW(8F, 96F, 96F * 0.75F, "HPE-IT Entity Essential - Low"),
+    HPE_IT_NORMAL_TOP("HPE-IT Normal - Top"),
+    HPE_IT_NORMAL_HIGH("HPE-IT Normal - High"),
+    HPE_IT_NORMAL_MEDIUM(4F, 96F, 96F * 0.75F, "HPE-IT Normal - Medium"),
+    HPE_IT_NORMAL_LOW(8F, 144F, 144F * 0.75F, "HPE-IT Normal - Medium"),;
 
     private final Float timeToOwn;
     private final Float timeToFix;
