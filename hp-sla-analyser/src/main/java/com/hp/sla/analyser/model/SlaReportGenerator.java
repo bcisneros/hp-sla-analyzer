@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -106,25 +107,40 @@ public class SlaReportGenerator {
         debugIfEnabled(logger, "Audits File: " + auditsFile);
         debugIfEnabled(logger, "Destination Path: " + destinationPath);
         if (isNullOrEmpty(incidentsFile) || isNullOrEmpty(auditsFile) || isNullOrEmpty(destinationPath)) {
-
+            debugIfEnabled(logger, "Input and output data is required: ");
             throw new SlaReportGenerationException("Input and Output data is required.");
         }
         try {
+            File file;
+            
+            debugIfEnabled(logger, "Reading incidents file: " + incidentsFile);
             observer.notifyProcessPhase(this, "Reading incidents file: " + incidentsFile);
-            XSSFSheet incidentSheet = (XSSFSheet) ExcelReader.read(new FileInputStream(new File(incidentsFile))).getSheetAt(0);
+            file= new File(incidentsFile);
+            debugIfEnabled(logger, "Set read file");
+            Workbook wb=ExcelReader.read(new FileInputStream(file));
+            debugIfEnabled(logger, "Got workbook");
+            XSSFSheet incidentSheet = (XSSFSheet) wb.getSheetAt(0);
             observer.notifyProcessPhase(this, "Incidents file was read correctly.");
 
+            debugIfEnabled(logger, "Reading audits file: " + auditsFile);
             observer.notifyProcessPhase(this, "Reading audits file: " + auditsFile);
-            XSSFSheet auditSheet = (XSSFSheet) ExcelReader.read(new FileInputStream(new File(auditsFile))).getSheetAt(0);
+            file=new File(auditsFile);
+            debugIfEnabled(logger, "Created file: " + file.toString());
+            Workbook excel = ExcelReader.read(new FileInputStream(file));
+             debugIfEnabled(logger, "Read Excel: " + excel.toString());
+            XSSFSheet auditSheet = (XSSFSheet) excel.getSheetAt(0);
+             debugIfEnabled(logger, "Got sheet: " + auditSheet.toString());
             observer.notifyProcessPhase(this, "Audits file was read correctly.");
 
             IncidentParser ip = new IncidentParser();
             AuditParser ap = new AuditParser();
 
+            debugIfEnabled(logger,  "Parsing incidents file: " + incidentsFile);
             observer.notifyProcessPhase(this, "Parsing incidents file: " + incidentsFile);
             List<Incident> incidents = ip.parseDocument(incidentSheet);
             observer.notifyProcessPhase(this, "Incidents file was parsed correctly.");
 
+            debugIfEnabled(logger,  "Parsing audits file: " + auditsFile);
             observer.notifyProcessPhase(this, "Parsing audits file: " + auditsFile);
             List<Audit> audits = ap.parseDocument(auditSheet);
             observer.notifyProcessPhase(this, "Audits file was read correctly.");
@@ -189,7 +205,7 @@ public class SlaReportGenerator {
 
         List<ReportDetail> determinedIncidents = new ArrayList<>();
         List<ReportDetail> undeterminedIncidents = new ArrayList<>();
-
+        logger.info("Creating determine and undetermined lists");
         for (ReportDetail detail : data) {
             if (BurnedOut.UNDETERMINED.name().equalsIgnoreCase(detail.getBurnedOutComplianceString())) {
                 undeterminedIncidents.add(detail);
@@ -197,12 +213,16 @@ public class SlaReportGenerator {
                 determinedIncidents.add(detail);
             }
         }
+        logger.info("Filled determined and undetermined lists");
         loadData(determinedIncidentsSheet, determinedIncidents);
         loadData(undeterminedIncidentsSheet, undeterminedIncidents);
+        logger.info("Filled filled sheets");
         ExcelWritter ew = new ExcelWritter();
 
         try {
+            logger.info("Writing Report File");
             generatedReportFile = ew.write(workbookTemplate, generateFileName());
+            logger.info("Finished Writting Report File");
         } catch (FileNotFoundException fnfe) {
             throw new SlaReportGenerationException("File not found");
         } catch (IOException ioe) {

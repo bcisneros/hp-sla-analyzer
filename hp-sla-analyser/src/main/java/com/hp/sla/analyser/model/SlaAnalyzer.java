@@ -74,19 +74,53 @@ public class SlaAnalyzer {
     private static final List<String> assignmentGroups = new ArrayList<>();
 
     static {
+         /*assignmentGroups.add("W-INCLV4-FAIT-AP-AR");
+         assignmentGroups.add("W-INCLV4-FAIT-LEGAL");
+         assignmentGroups.add("W-INCLV4-FAIT-TAX");
+         assignmentGroups.add("W-INCLV4-FAIT-MASTERDATA");
+         assignmentGroups.add("W-INCLV4-FAIT-INTERCOMPANY");
+         assignmentGroups.add("W-INCLV4-FAIT-CREDITCOLLECTIONS-EEM");
+         assignmentGroups.add("W-INCLV4-FAIT-FP");
+         assignmentGroups.add("W-INCLV4-FAIT-CTE");
+         assignmentGroups.add("W-INCLV4-FAIT-INTERNALAUDIT");
+         assignmentGroups.add("W-INCLV4-FAIT-SAP-GL-FA");
+         assignmentGroups.add("W-INCLV4-FAIT-CFMS");
+         assignmentGroups.add("W-INCLV4-FAIT-CONSOLIDATION");
+         assignmentGroups.add("W-INCLV4-FAIT-GL");
+         assignmentGroups.add("W-INCLV4-FAIT-PLANNING");*/
+
+        //Assigment Groups Adan
+        assignmentGroups.add("W-HPI-INCLV4-FIT-4P-C&C");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-4P-EEM");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-4P-FINPLAN");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-4P-SUBLEDGER-AP");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-4P-SUBLEDGER-AR");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-4P-SUBLEDGER-IC");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-CF-IA");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-CF-TAX");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-CF-TREASURY");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-R2R-GL");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-R2R-IC");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-R2R-LOCLREP");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-R2R-MD");
+        assignmentGroups.add("W-HPI-INCLV4-FIT-R2R-RECON");
         assignmentGroups.add("W-INCLV4-FAIT-AP-AR");
-        assignmentGroups.add("W-INCLV4-FAIT-LEGAL");
-        assignmentGroups.add("W-INCLV4-FAIT-TAX");
-        assignmentGroups.add("W-INCLV4-FAIT-MASTERDATA");
-        assignmentGroups.add("W-INCLV4-FAIT-INTERCOMPANY");
-        assignmentGroups.add("W-INCLV4-FAIT-CREDITCOLLECTIONS-EEM");
-        assignmentGroups.add("W-INCLV4-FAIT-FP");
-        assignmentGroups.add("W-INCLV4-FAIT-CTE");
-        assignmentGroups.add("W-INCLV4-FAIT-INTERNALAUDIT");
-        assignmentGroups.add("W-INCLV4-FAIT-SAP-GL-FA");
         assignmentGroups.add("W-INCLV4-FAIT-CFMS");
         assignmentGroups.add("W-INCLV4-FAIT-CONSOLIDATION");
+        assignmentGroups.add("W-INCLV4-FAIT-CREDITCOLLECTIONS-EEM");
+        assignmentGroups.add("W-INCLV4-FAIT-CTE");
+        assignmentGroups.add("W-INCLV4-FAIT-FP");
+        assignmentGroups.add("W-INCLV4-FAIT-FPAC");
         assignmentGroups.add("W-INCLV4-FAIT-GL");
+        assignmentGroups.add("W-INCLV4-FAIT-INTERCOMPANY");
+        assignmentGroups.add("W-INCLV4-FAIT-LEGAL");
+        assignmentGroups.add("W-INCLV4-FAIT-MASTERDATA");
+        assignmentGroups.add("W-INCLV4-FAIT-PLANNING");
+        assignmentGroups.add("W-INCLV4-FAIT-SAP-GL-FA");
+        assignmentGroups.add("W-INCLV4-FAIT-TAX");
+        assignmentGroups.add("W-INCLV4-FAIT-TREASURY");
+        assignmentGroups.add("W-INCLV4-FAIT-WINDOWS-DEVELOPMENT");
+
     }
 
     /**

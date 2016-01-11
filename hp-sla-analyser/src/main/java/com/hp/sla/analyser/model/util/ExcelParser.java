@@ -69,7 +69,7 @@ public abstract class ExcelParser<T> {
                     break;
                 }
                 rowCount++;
-                //logger.debug("Iterating the row " + rowCount++);
+                logger.debug("Iterating the row " + rowCount);
                 T obj = createObject(cellIterator);
                 objects.add(obj);
             } else if (cellIterator.hasNext() && cellIterator.next().getStringCellValue().equals(getStartDataIndicator())) {

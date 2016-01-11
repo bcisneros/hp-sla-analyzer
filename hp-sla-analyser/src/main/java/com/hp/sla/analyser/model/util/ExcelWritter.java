@@ -40,7 +40,9 @@ public class ExcelWritter {
             Cell cell = headerRow.createCell(0);
             cell.setCellValue("No data to display");
         }
+        logger.info("Writting");
         wb.write(out);
+        logger.info("Wrote");
         if (out != null) {
             out.close();
         }
