@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import junitparams.JUnitParamsRunner;
-import static junitparams.JUnitParamsRunner.$;
 import junitparams.Parameters;
 import org.apache.log4j.Logger;
 import static org.junit.Assert.assertEquals;
