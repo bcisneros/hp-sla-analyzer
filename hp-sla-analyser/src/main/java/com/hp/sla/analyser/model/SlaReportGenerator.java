@@ -77,7 +77,7 @@ public class SlaReportGenerator {
 		try {
 			w = ExcelReader.read(ResourcesUtil.getResourceFromProjectClasspath("files/reportTemplate.xlsx"));
 		} catch (Exception ex) {
-			logger.error("No template were used. A blank report would be used insted of.", ex);
+			logger.warn("No template were used. A blank report would be used instead of.", ex);
 		}
 		return w;
 	}
