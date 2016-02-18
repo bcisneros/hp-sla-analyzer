@@ -1,6 +1,5 @@
 package com.hp.sla.analyser.model;
 
-import static com.hp.sla.analyser.util.LoggerUtil.debugIfEnabled;
 import static com.hp.sla.analyser.util.StringsUtil.isNullOrEmpty;
 
 import java.io.File;
@@ -10,7 +9,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -70,7 +71,8 @@ public class SlaReportGenerator {
         redCellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
     }
 
-    static Workbook getWorkBook() {
+    @SuppressWarnings("resource")
+	static Workbook getWorkBook() {
         Workbook w = new XSSFWorkbook();
         try {
             w = ExcelReader.read(ResourcesUtil.getResourceFromProjectClasspath("files/reportTemplate.xlsx"));
@@ -165,20 +167,21 @@ public class SlaReportGenerator {
      * @param audits The list of audits
      * @return A combined list of incidents with audits included
      */
-    protected List<Incident> integrateIncidents(List<Incident> incidents, List<Audit> audits) {
-        List<Incident> integratedIncidentsList = new ArrayList<>();
-        for (Incident incident : incidents) {
-            List<Audit> tempAudits = new ArrayList<>();
-            for (Audit audit : audits) {
-                if (incident.getId().equalsIgnoreCase(audit.getIncidentID())) {
-                    tempAudits.add(audit);
-                }
-            }
-            incident.setAudits(tempAudits);
-            integratedIncidentsList.add(incident);
-        }
-        return integratedIncidentsList;
-    }
+	protected List<Incident> integrateIncidents(List<Incident> incidents, List<Audit> audits) {
+		Map<String, Incident> maps = new HashMap<>();
+		for (Incident incident : incidents) {
+			maps.put(incident.getId(), incident);
+		}
+
+		for (Audit audit : audits) {
+			Incident incident = maps.get(audit.getIncidentID());
+			if (incident != null) {
+				incident.addAudit(audit);
+			}
+
+		}
+		return incidents;
+	}
 
     /**
      * Create the final excel file taking a list of ReporDetail objects

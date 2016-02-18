@@ -369,4 +369,9 @@ public class Incident implements Comparable<Incident>, Cloneable {
         }
     }
 
+	public void addAudit(Audit audit) {
+		audits.add(audit);
+		
+	}
+
 }

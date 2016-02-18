@@ -113,7 +113,7 @@ public class SlaReportGeneratorTest {
     }
 
     private List<ReportDetail> dummyReportDetails() {
-        List<ReportDetail> data = TestReportDetailBuilder.getInstance().buildList(1000);
+        List<ReportDetail> data = TestReportDetailBuilder.getInstance().buildList(10);
         return data;
     }
 
