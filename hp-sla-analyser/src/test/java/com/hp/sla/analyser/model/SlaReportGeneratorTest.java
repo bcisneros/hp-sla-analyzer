@@ -2,6 +2,10 @@ package com.hp.sla.analyser.model;
 
 import com.hp.sla.analyser.model.util.AuditParserTest;
 import com.hp.sla.analyser.model.util.ExcelReader;
+
+import static org.junit.Assert.*;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,11 +16,8 @@ import java.util.logging.Logger;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,50 +35,35 @@ public class SlaReportGeneratorTest {
     }
 
     @Test
-    public void testGenerateReport() {
-        try {
-            String resourcesLocation = System.getProperty("user.dir") + "\\src\\test\\resources\\files\\";
-            instance.generateReport(resourcesLocation + "testIncidents.xlsx", resourcesLocation + "testAssignmentGroupAudits.xlsx", "C:\\temp\\");
-        } catch (SlaReportGenerationException ex) {
-            fail("This exception was not expected:" + ex.getMessage());
-        }
+    public void generateReport_WithValidEntryReports_ShouldGenerateReportFile() throws Exception {
+    	String resourcesLocation = System.getProperty("user.dir") + "\\src\\test\\resources\\files\\";
+        String testDestinationPath = "C:\\temp\\";
+		instance.generateReport(resourcesLocation + "testIncidents.xlsx", resourcesLocation + "testAssignmentGroupAudits.xlsx", testDestinationPath);
+		File file = new File(instance.getGeneratedReportFile());
+		assertTrue(file.exists());
     }
+    
+    @Test(expected=SlaReportGenerationException.class)
+	public void generateReport_WithInvalidIncidentFiles_ShouldThrowAnException() throws Exception {
+		instance.generateReport(null, null, null);
+	}
+    
+    @Test(expected=SlaReportGenerationException.class)
+	public void generateReport_WithInvalidAuditFiles_ShouldThrowAnException() throws Exception {
+		instance.generateReport("incidents.xlsx", null, null);
+	}
+    
+    @Test(expected=SlaReportGenerationException.class)
+	public void generateReport_WithInvalidOutputDirectory_ShouldThrowAnException() throws Exception {
+		instance.generateReport("incidents.xlsx", "audits.xlsx", null);
+	}
+    
+    @Test(expected=SlaReportGenerationException.class)
+	public void generateReport_WithInvalidFiles_ShouldThrowAnException() throws Exception {
+		instance.generateReport("incidents.xlsx", "audits.xlsx", "C:\\temp\\");
+	}
+    
 
-    @Test()
-    public void testPerformance() {
-        try {
-            long startTime, endTime, completeMillis, filteredMillis;
-            String complete, filtered;
-            String resourcesLocation = System.getProperty("user.dir") + "\\src\\test\\resources\\files\\";
-            startTime = System.currentTimeMillis();
-            instance.generateReport(resourcesLocation + "Incidenttickets-ALLGFITFAIT.xlsx", resourcesLocation + "SSITRTBAGassignmentaudit.xlsx", "C:\\temp\\");
-            endTime = System.currentTimeMillis();
-            completeMillis = endTime - startTime;
-            complete = timeFormat(startTime, endTime);
-            Logger.getLogger(AuditParserTest.class.getName()).log(Level.INFO, "Elapsed Time Complete Registers:{0}", complete);
-
-            startTime = System.currentTimeMillis();
-            instance.generateReport(resourcesLocation + "Incidenttickets-ALLGFITFAIT - Filtered.xlsx", resourcesLocation + "SSITRTBAGassignmentaudit - Filtered.xlsx", "C:\\temp\\");
-            endTime = System.currentTimeMillis();
-            filteredMillis = endTime - startTime;
-
-            filtered = timeFormat(startTime, endTime);
-            Logger.getLogger(AuditParserTest.class.getName()).log(Level.INFO, "Elapsed Time Filtered Registers: {0}", filtered);
-            Assert.assertTrue("Complete time is longer than filetered time: Complete time = " + complete + " | Filtered time = " + filtered, completeMillis > filteredMillis);
-        } catch (SlaReportGenerationException ex) {
-            fail("This exception was not expected:" + ex);
-            System.err.println(ex.getMessage());
-        }
-    }
-
-    private String timeFormat(long startTime, long endTime) {
-        SimpleDateFormat time = new SimpleDateFormat("mm:ss.SSS");
-        return time.format(new Date(endTime - startTime));
-    }
-
-    /**
-     * Test of generateReport method, of class SlaReportGenerator.
-     */
     @Test
     public void testIntegrateIncidents() {
         final TestIncidentBuilder incidentBuilder = TestIncidentBuilder.getInstance();
@@ -116,18 +102,14 @@ public class SlaReportGeneratorTest {
     }
 
     @Test
-    public void testGenerateWorkbook() {
-        try {
-            instance.generateWorkbook(dummyReportDetails());
-            final Workbook workBook = ExcelReader.read(new FileInputStream(instance.getGeneratedReportFile()));
-            assertNotNull(workBook);
-            final Sheet firstSheet = workBook.getSheetAt(0);
-            assertNotNull(firstSheet);
-            final Sheet secondSheet = workBook.getSheetAt(1);
-            assertNotNull(secondSheet);
-        } catch (Exception ex) {
-            fail("No exception is expected here: " + ex.getMessage());
-        }
+    public void testGenerateWorkbook() throws Exception {
+    	instance.generateWorkbook(dummyReportDetails());
+    	final Workbook workBook = ExcelReader.read(new FileInputStream(instance.getGeneratedReportFile()));
+    	assertNotNull(workBook);
+    	final Sheet firstSheet = workBook.getSheetAt(0);
+    	assertNotNull(firstSheet);
+    	final Sheet secondSheet = workBook.getSheetAt(1);
+    	assertNotNull(secondSheet);
     }
 
     private List<ReportDetail> dummyReportDetails() {

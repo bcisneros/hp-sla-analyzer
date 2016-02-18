@@ -31,7 +31,6 @@ public class ExcelWritter {
     public String write(Workbook wb, String fileName) throws FileNotFoundException, IOException {
         FileOutputStream out = null;
         final String file = fileName + ".xlsx";
-        logger.debug(file);
         out = new FileOutputStream(file);
         if (wb == null) {
             wb = new XSSFWorkbook();

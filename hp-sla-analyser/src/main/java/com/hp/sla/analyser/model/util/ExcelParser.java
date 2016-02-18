@@ -48,7 +48,6 @@ public abstract class ExcelParser<T> {
         // Get iterator to all the rows in current sheet 
         Iterator<Row> rowIterator = sheet.iterator();
         logger.info("Start parsing document.");
-        logger.debug(this);
         boolean dataStart = false;
         // Traversing over each row of XLSX file 
         logger.info("Iterating the XLSX file.");
@@ -64,17 +63,13 @@ public abstract class ExcelParser<T> {
                  * On Incident parser it will end in the row that contains the word 'Grand Total' that is the penultimate row
                  */
                 if (row.getLastCellNum() <= 1 || row.getCell(0).getStringCellValue().equals("Grand Total")) {
-                    logger.debug("Last RowCount" + sheet.getLastRowNum());
-                    logger.debug("Last Line columns" + row.getLastCellNum());
                     break;
                 }
                 rowCount++;
-                logger.debug("Iterating the row " + rowCount);
                 T obj = createObject(cellIterator);
                 objects.add(obj);
             } else if (cellIterator.hasNext() && cellIterator.next().getStringCellValue().equals(getStartDataIndicator())) {
                 dataStart = true;
-                logger.debug("Data Starts");
             }
 
         }

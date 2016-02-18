@@ -363,7 +363,6 @@ public class Incident implements Comparable<Incident>, Cloneable {
             for (Audit tempAudit : audits) {
                 if (assignmentGroupsListToAnalize.contains(tempAudit.getNewVaueText())) {
                     lastAssignmentGroupAudit = tempAudit;
-                    //logger.debug("Last AG Audit: " + lastAssignmentGroupAudit.getNewVaueText());
                     break;
                 }
             }

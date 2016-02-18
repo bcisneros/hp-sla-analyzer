@@ -1,13 +1,8 @@
 package com.hp.sla.analyser.model;
 
-import com.hp.sla.analyser.model.util.AuditParser;
-import com.hp.sla.analyser.model.util.BurnedOut;
-import com.hp.sla.analyser.model.util.ExcelReader;
-import com.hp.sla.analyser.model.util.ExcelWritter;
-import com.hp.sla.analyser.model.util.IncidentParser;
 import static com.hp.sla.analyser.util.LoggerUtil.debugIfEnabled;
-import com.hp.sla.analyser.util.ResourcesUtil;
 import static com.hp.sla.analyser.util.StringsUtil.isNullOrEmpty;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,8 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -27,6 +22,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.hp.sla.analyser.model.util.AuditParser;
+import com.hp.sla.analyser.model.util.BurnedOut;
+import com.hp.sla.analyser.model.util.ExcelReader;
+import com.hp.sla.analyser.model.util.ExcelWritter;
+import com.hp.sla.analyser.model.util.IncidentParser;
+import com.hp.sla.analyser.util.ResourcesUtil;
 
 /**
  * Performs all the process of generate a report file
@@ -103,44 +105,30 @@ public class SlaReportGenerator {
         destination = destinationPath;
         logger.info("Report Generation Process initialized!");
         observer.onStartReportGeneration(this);
-        debugIfEnabled(logger, "Incidents File: " + incidentsFile);
-        debugIfEnabled(logger, "Audits File: " + auditsFile);
-        debugIfEnabled(logger, "Destination Path: " + destinationPath);
         if (isNullOrEmpty(incidentsFile) || isNullOrEmpty(auditsFile) || isNullOrEmpty(destinationPath)) {
-            debugIfEnabled(logger, "Input and output data is required: ");
             throw new SlaReportGenerationException("Input and Output data is required.");
         }
         try {
             File file;
-            
-            debugIfEnabled(logger, "Reading incidents file: " + incidentsFile);
             observer.notifyProcessPhase(this, "Reading incidents file: " + incidentsFile);
             file= new File(incidentsFile);
-            debugIfEnabled(logger, "Set read file");
             Workbook wb=ExcelReader.read(new FileInputStream(file));
-            debugIfEnabled(logger, "Got workbook");
             XSSFSheet incidentSheet = (XSSFSheet) wb.getSheetAt(0);
             observer.notifyProcessPhase(this, "Incidents file was read correctly.");
 
-            debugIfEnabled(logger, "Reading audits file: " + auditsFile);
             observer.notifyProcessPhase(this, "Reading audits file: " + auditsFile);
             file=new File(auditsFile);
-            debugIfEnabled(logger, "Created file: " + file.toString());
             Workbook excel = ExcelReader.read(new FileInputStream(file));
-             debugIfEnabled(logger, "Read Excel: " + excel.toString());
             XSSFSheet auditSheet = (XSSFSheet) excel.getSheetAt(0);
-             debugIfEnabled(logger, "Got sheet: " + auditSheet.toString());
             observer.notifyProcessPhase(this, "Audits file was read correctly.");
 
             IncidentParser ip = new IncidentParser();
             AuditParser ap = new AuditParser();
 
-            debugIfEnabled(logger,  "Parsing incidents file: " + incidentsFile);
             observer.notifyProcessPhase(this, "Parsing incidents file: " + incidentsFile);
             List<Incident> incidents = ip.parseDocument(incidentSheet);
             observer.notifyProcessPhase(this, "Incidents file was parsed correctly.");
 
-            debugIfEnabled(logger,  "Parsing audits file: " + auditsFile);
             observer.notifyProcessPhase(this, "Parsing audits file: " + auditsFile);
             List<Audit> audits = ap.parseDocument(auditSheet);
             observer.notifyProcessPhase(this, "Audits file was read correctly.");

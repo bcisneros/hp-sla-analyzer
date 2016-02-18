@@ -142,7 +142,6 @@ public class SlaAnalyzer {
 
         String criticality = incident.getCriticalityDescription();
 
-        logger.debug("Criticality: " + criticality);
         Integer criticalityIndex;
         try {
             criticalityIndex = Criticality.valueOf(criticality.toUpperCase().replace(" ", "_")).ordinal();
