@@ -114,6 +114,7 @@ public class SlaReportGeneratorTest {
 
     private List<ReportDetail> dummyReportDetails() {
         List<ReportDetail> data = TestReportDetailBuilder.getInstance().buildList(10);
+        data.get(0).setDetailException(new Exception("Dummy Exception"));
         return data;
     }
 

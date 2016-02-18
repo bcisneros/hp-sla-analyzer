@@ -115,7 +115,6 @@ public class SlaReportGenerator {
 			throw new SlaReportGenerationException("Input and Output data is required.");
 		}
 		try {
-			//File file;
 			observer.notifyProcessPhase(this, "Reading incidents file: " + incidentsFile);
 			File file = new File(incidentsFile);
 			Workbook wb = ExcelReader.read(new FileInputStream(file));
