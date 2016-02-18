@@ -73,7 +73,7 @@ public class AuditParserTest extends ExcelParserTest<Audit> {
     }
 
     @Override
-    protected ExcelParser getInstance() {
+    protected ExcelParser<?> getInstance() {
         return new AuditParser();
     }
 

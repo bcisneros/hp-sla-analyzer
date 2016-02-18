@@ -74,20 +74,6 @@ public class SlaAnalyzer {
     private static final List<String> assignmentGroups = new ArrayList<>();
 
     static {
-         /*assignmentGroups.add("W-INCLV4-FAIT-AP-AR");
-         assignmentGroups.add("W-INCLV4-FAIT-LEGAL");
-         assignmentGroups.add("W-INCLV4-FAIT-TAX");
-         assignmentGroups.add("W-INCLV4-FAIT-MASTERDATA");
-         assignmentGroups.add("W-INCLV4-FAIT-INTERCOMPANY");
-         assignmentGroups.add("W-INCLV4-FAIT-CREDITCOLLECTIONS-EEM");
-         assignmentGroups.add("W-INCLV4-FAIT-FP");
-         assignmentGroups.add("W-INCLV4-FAIT-CTE");
-         assignmentGroups.add("W-INCLV4-FAIT-INTERNALAUDIT");
-         assignmentGroups.add("W-INCLV4-FAIT-SAP-GL-FA");
-         assignmentGroups.add("W-INCLV4-FAIT-CFMS");
-         assignmentGroups.add("W-INCLV4-FAIT-CONSOLIDATION");
-         assignmentGroups.add("W-INCLV4-FAIT-GL");
-         assignmentGroups.add("W-INCLV4-FAIT-PLANNING");*/
 
         //Assigment Groups Adan
         assignmentGroups.add("W-HPI-INCLV4-FIT-4P-C&C");
@@ -132,15 +118,23 @@ public class SlaAnalyzer {
      * valid data
      */
     protected static ServiceLevelAgreement getServiceLevelAgreementByIncident(Incident incident) throws SlaAnalysisException {
-        Integer companyIndex;
         String organizationLevel1Name = incident.getConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name();
+        String criticality = incident.getCriticalityDescription();
+        String priority = incident.getPriority();
+        return getServiceLevelAgreement(organizationLevel1Name, criticality, priority);
+    }
+
+
+
+	protected static ServiceLevelAgreement getServiceLevelAgreement(String organizationLevel1Name, String criticality,
+			String priority) throws SlaAnalysisException {
+		Integer companyIndex;
         try {
             companyIndex = OrganizationLevel1Name.valueOf(organizationLevel1Name.toUpperCase().replace(" ", "_").replaceFirst("-", "_")).ordinal();
         } catch (NullPointerException | IllegalArgumentException npe) {
             throw new SlaAnalysisException("Organization Level 1 Name \"" + organizationLevel1Name + "\" is not recognized as valid value.");
         }
 
-        String criticality = incident.getCriticalityDescription();
 
         Integer criticalityIndex;
         try {
@@ -149,7 +143,6 @@ public class SlaAnalyzer {
             throw new SlaAnalysisException("Criticatility \"" + criticality + "\" is not recognized as valid value.");
         }
 
-        String priority = incident.getPriority();
         Integer priorityIndex;
         try {
             priorityIndex = Priority.valueOf(priority.toUpperCase().replace(" ", "_")).ordinal();
@@ -158,7 +151,9 @@ public class SlaAnalyzer {
         }
 
         return serviceLevelAgreements[companyIndex][criticalityIndex][priorityIndex];
-    }
+	}
+    
+    
 
     /**
      * For each incident provided determines if it is in compliance with the SLA

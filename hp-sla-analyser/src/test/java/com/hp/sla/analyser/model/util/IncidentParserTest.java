@@ -27,40 +27,40 @@ import org.junit.Test;
  */
 public class IncidentParserTest extends ExcelParserTest<Incident> {
 
-    @Override
-    protected Object getLastElementExpected() {
-        Incident incident = new Incident();
-        incident.setId("IM20958696");
-        return incident;
-    }
 
-    @Override
-    protected Object getFirstElementExpected() {
-        Incident incident = new Incident();
-        incident.setId("IM20840143");
-        return incident;
-    }
-
-    @Override
-    protected int getExpectedSize() {
-        return 4196;
-    }
-
-    @Override
-    protected Sheet getSheetToTest() {
-        try {
-            return (XSSFSheet) ExcelReader.read(ResourcesUtil.getResourceFromProjectClasspath("files/Incidenttickets-ALLGFITFAIT.xlsx")).getSheetAt(0);
-        } catch (IOException ex) {
-            fail("This exception is not expected: " + ex);
-        }
-        return null;
-    }
-
-    @Override
-    protected ExcelParser getInstance() {
-        return new IncidentParser();
-    }
-
+	@Override
+	protected int getExpectedSize() {
+		return 4196;
+	}
+	
+	@Override
+	protected Object getFirstElementExpected() {
+		Incident incident = new Incident();
+		incident.setId("IM20840143");
+		return incident;
+	}
+	
+	@Override
+	protected ExcelParser getInstance() {
+		return new IncidentParser();
+	}
+	
+	@Override
+	protected Object getLastElementExpected() {
+		Incident incident = new Incident();
+		incident.setId("IM20958696");
+		return incident;
+	}
+	
+	@Override
+	protected Sheet getSheetToTest() {
+		try {
+			return (XSSFSheet) ExcelReader.read(ResourcesUtil.getResourceFromProjectClasspath("files/Incidenttickets-ALLGFITFAIT.xlsx")).getSheetAt(0);
+		} catch (IOException ex) {
+			fail("This exception is not expected: " + ex);
+		}
+		return null;
+	}
     @Test
     public void testCreateObject() {
         Incident incidentExpected = TestIncidentBuilder.getInstance().build();
