@@ -1,25 +1,22 @@
 package com.hp.sla.analyser.model.util;
 
-import com.hp.sla.analyser.model.Audit;
-import com.hp.sla.analyser.util.ResourcesUtil;
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFCreationHelper;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import static com.hp.sla.analyser.model.AuditsBuilder.anAudit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Iterator;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
+
+import com.hp.sla.analyser.model.Audit;
+import com.hp.sla.analyser.util.ResourcesUtil;
 
 /**
  *
@@ -27,100 +24,78 @@ import org.junit.Test;
  */
 public class AuditParserTest extends ExcelParserTest<Audit> {
 
-    @Override
-    protected Object getLastElementExpected() {
-        Audit lastAudit = new Audit();
-        lastAudit.setFieldDisplayName("Assignment Group");
-        lastAudit.setFieldName("assignment");
-        lastAudit.setIncidentID("IM20929991");
-        lastAudit.setLogicalDeleteFlag(false);
-        lastAudit.setNewVaueText("W-INCFLS-HPIT-BIZAPPS-CORP-FUNCTIONS");
-        lastAudit.setPreviousValueText("null");
-        lastAudit.setRecordNumber(0);
-        lastAudit.setSystemModifiedUser("HPOO");
-        lastAudit.setSystemModifiedTime(Timestamp.valueOf("2015-09-16 00:08:23"));
-        return lastAudit;
-    }
+	private static final Timestamp DEFAULT_SYSTEM_MODIFIED_TIME = Timestamp.valueOf("2015-09-17 18:44:38");
+	private static final String DEFAULT_INCIDENT_ID = "IM20941354";
+	private static final String DEFAULT_PREVIOUS_ASSIGNMENT_GROUP = "W-INCFLS-HPIT-MONITORING-RESTORATION";
+	private static final String DEFAULT_CURRENT_ASSIGNMENT_GROUP = "W-INCLV3-HPIT-BLUES-APPLICATIONS";
 
-    @Override
-    protected Object getFirstElementExpected() {
-        Audit firstAudit = new Audit();
-        firstAudit.setFieldDisplayName("Assignment Group");
-        firstAudit.setFieldName("assignment");
-        firstAudit.setIncidentID("IM20941354");
-        firstAudit.setLogicalDeleteFlag(false);
-        firstAudit.setNewVaueText("W-INCLV3-HPIT-BLUES-APPLICATIONS");
-        firstAudit.setPreviousValueText("W-INCFLS-HPIT-MONITORING-RESTORATION");
-        firstAudit.setRecordNumber(0);
-        firstAudit.setSystemModifiedUser("HPOO");
-        firstAudit.setSystemModifiedTime(Timestamp.valueOf("2015-09-17 18:44:38"));
-        return firstAudit;
-    }
+	@Test
+	public void testCreateObject() throws Exception {
+		Audit auditExpected = getDefaultAudit();
+		AuditParser auditParser = (AuditParser) this.getInstance();
+		Iterator<Cell> iterator = createCellIterator(auditExpected);
+		Audit audit = auditParser.createObject(iterator);
+		assertNotNull(audit);
+		assertEquals(auditExpected, audit);
+	}
 
-    @Override
-    protected int getExpectedSize() {
-        return 3040;
-    }
+	@Override
+	protected Object getLastElementExpected() {
+		return anAudit().incidentID("IM20929991").currentAssignmentGroup("W-INCFLS-HPIT-BIZAPPS-CORP-FUNCTIONS")
+				.previousAssignmentGroup("null").systemTime(Timestamp.valueOf("2015-09-16 00:08:23")).build();
+	}
 
-    @Override
-    protected Sheet getSheetToTest() {
-        try {
-            return (XSSFSheet) ExcelReader.read(ResourcesUtil.getResourceFromProjectClasspath("files/SSITRTBAGassignmentaudit.xlsx")).getSheetAt(0);
-        } catch (IOException ex) {
-            fail("This exception is not expected: " + ex);
-        }
-        return null;
-    }
+	@Override
+	protected Object getFirstElementExpected() {
+		return getDefaultAudit();
+	}
 
-    @Override
-    protected ExcelParser<?> getInstance() {
-        return new AuditParser();
-    }
+	@Override
+	protected int getExpectedSize() {
+		return 3040;
+	}
 
-    @Test
-    public void testCreateObject() {
-        Audit auditExpected = getDefaultAudit();
-        AuditParser auditParser = (AuditParser) this.getInstance();
+	@Override
+	protected Sheet getSheetToTest() {
+		try {
+			return ExcelReader
+					.read(ResourcesUtil.getResourceFromProjectClasspath("files/SSITRTBAGassignmentaudit.xlsx"))
+					.getSheetAt(0);
+		} catch (IOException ex) {
+			fail("This exception is not expected: " + ex);
+		}
+		return null;
+	}
 
-        XSSFWorkbook wb = new XSSFWorkbook();
-        XSSFCreationHelper createHelper = wb.getCreationHelper();
-        XSSFCellStyle cellStyle = wb.createCellStyle();
-        cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("yyyy-mm-dd hh:mm:ss"));
+	@Override
+	protected ExcelParser<?> getInstance() {
+		return new AuditParser();
+	}
 
-        Row row = wb.createSheet().createRow(0);
-        int i = 0;
-        row.createCell(i++).setCellValue(auditExpected.getFieldDisplayName());
-        row.createCell(i++).setCellValue(auditExpected.getFieldName());
-        row.createCell(i++).setCellValue(auditExpected.getIncidentID());
-        if (auditExpected.getLogicalDeleteFlag()) {
-            row.createCell(i++).setCellValue("y");
-        } else {
-            row.createCell(i++).setCellValue("n");
-        }
-        row.createCell(i++).setCellValue(auditExpected.getNewVaueText());
-        row.createCell(i++).setCellValue(auditExpected.getPreviousValueText());
-        row.createCell(i++).setCellValue(0);
-        row.createCell(i++).setCellValue(auditExpected.getSystemModifiedUser());
-        row.createCell(i++).setCellValue(auditExpected.getSystemModifiedTime());
-        row.getCell(i - 1).setCellStyle(cellStyle);
+	private Audit getDefaultAudit() {
+		return anAudit().incidentID(DEFAULT_INCIDENT_ID).currentAssignmentGroup(DEFAULT_CURRENT_ASSIGNMENT_GROUP)
+				.previousAssignmentGroup(DEFAULT_PREVIOUS_ASSIGNMENT_GROUP).systemTime(DEFAULT_SYSTEM_MODIFIED_TIME)
+				.build();
+	}
 
-        Iterator<Cell> iterator = row.iterator();
-        Audit audit = auditParser.createObject(iterator);
-        assertNotNull(audit);
-        assertEquals(auditExpected, audit);
-    }
-
-    private Audit getDefaultAudit() {
-        Audit defaultAudit = new Audit();
-        defaultAudit.setFieldDisplayName("Assignment Group");
-        defaultAudit.setFieldName("assignment");
-        defaultAudit.setIncidentID("IM20941354");
-        defaultAudit.setLogicalDeleteFlag(false);
-        defaultAudit.setNewVaueText("W-INCLV3-HPIT-BLUES-APPLICATIONS");
-        defaultAudit.setPreviousValueText("W-INCFLS-HPIT-MONITORING-RESTORATION");
-        defaultAudit.setSystemModifiedUser("HPOO");
-        defaultAudit.setSystemModifiedTime(Timestamp.valueOf("2015-09-17 18:44:38"));
-        return defaultAudit;
-    }
+	private Iterator<Cell> createCellIterator(Audit auditExpected) throws Exception {
+		XSSFWorkbook wb = new XSSFWorkbook();
+		Row row = wb.createSheet().createRow(0);
+		int i = 0;
+		row.createCell(i++).setCellValue(auditExpected.getFieldDisplayName());
+		row.createCell(i++).setCellValue(auditExpected.getFieldName());
+		row.createCell(i++).setCellValue(auditExpected.getIncidentID());
+		if (auditExpected.getLogicalDeleteFlag()) {
+			row.createCell(i++).setCellValue("y");
+		} else {
+			row.createCell(i++).setCellValue("n");
+		}
+		row.createCell(i++).setCellValue(auditExpected.getNewVaueText());
+		row.createCell(i++).setCellValue(auditExpected.getPreviousValueText());
+		row.createCell(i++).setCellValue(0);
+		row.createCell(i++).setCellValue(auditExpected.getSystemModifiedUser());
+		row.createCell(i++).setCellValue(auditExpected.getSystemModifiedTime());
+		wb.close();
+		return row.iterator();
+	}
 }

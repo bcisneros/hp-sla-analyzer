@@ -415,8 +415,8 @@ public class SlaAnalyzerTest {
 				.criticality(criticality).priority(priority).creationTime(DateTimeUtil.FIRST_DAY_2015_YEAR_TIMESTAMP)
 				.closeTime(closeTime)
 				.withAudits(
-						AuditsBuilder.anAudit().ag("ANOTHER-NON-APLYABLE-AG").systemTime(systemModifiedTime).build(),
-						AuditsBuilder.anAudit().ag("W-INCLV4-FAIT-CTE").systemTime(burnedTime).build())
+						AuditsBuilder.anAudit().currentAssignmentGroup("ANOTHER-NON-APLYABLE-AG").systemTime(systemModifiedTime).build(),
+						AuditsBuilder.anAudit().currentAssignmentGroup("W-INCLV4-FAIT-CTE").systemTime(burnedTime).build())
 				.build();
 
 		return generatedIncident;
