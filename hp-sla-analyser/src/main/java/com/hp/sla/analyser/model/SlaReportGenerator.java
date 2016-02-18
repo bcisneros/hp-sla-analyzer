@@ -38,13 +38,14 @@ import com.hp.sla.analyser.util.ResourcesUtil;
  */
 public class SlaReportGenerator {
 
-	private final static Logger logger = Logger.getLogger(SlaReportGenerator.class);
+	final static Logger logger = Logger.getLogger(SlaReportGenerator.class);
 	private final static Workbook workbookTemplate;
 	private final static CellStyle defaultCellStyle;
 	private final static CellStyle dateCellStyle;
 	private final static CellStyle doubleNumberCellStyle;
 	private final static CellStyle integerNumberCellStyle;
 	private final static CellStyle greenCellStyle;
+
 	private final static CellStyle redCellStyle;
 
 	static {
@@ -81,9 +82,9 @@ public class SlaReportGenerator {
 		}
 		return w;
 	}
-
 	private String destination = "C:\\temp\\";
 	private SlaReportGeneratorObserver observer;
+
 	private String generatedReportFile;
 
 	/**
@@ -154,124 +155,13 @@ public class SlaReportGenerator {
 
 	}
 
-	public void setObserver(SlaReportGeneratorObserver observer) {
-		this.observer = observer;
-	}
-
 	public String getGeneratedReportFile() {
 		return generatedReportFile;
 
 	}
 
-	/**
-	 * Combine the list of incidents with the list of audits
-	 *
-	 * @param incidents
-	 *            The list of incidents
-	 * @param audits
-	 *            The list of audits
-	 * @return A combined list of incidents with audits included
-	 */
-	protected List<Incident> integrateIncidents(List<Incident> incidents, List<Audit> audits) {
-		Map<String, Incident> maps = new HashMap<>();
-		for (Incident incident : incidents) {
-			maps.put(incident.getId(), incident);
-		}
-
-		for (Audit audit : audits) {
-			Incident incident = maps.get(audit.getIncidentID());
-			if (incident != null) {
-				incident.addAudit(audit);
-			}
-
-		}
-		return incidents;
-	}
-
-	/**
-	 * Create the final excel file taking a list of ReporDetail objects
-	 *
-	 * @param data
-	 *            The list of details (records) of the report
-	 * @throws Exception
-	 *             If there is an exception during this process
-	 */
-	protected void generateWorkbook(List<ReportDetail> data) throws Exception {
-
-		Sheet determinedIncidentsSheet = workbookTemplate.getSheetAt(0);
-		Sheet undeterminedIncidentsSheet = workbookTemplate.getSheetAt(1);
-
-		List<ReportDetail> determinedIncidents = new ArrayList<>();
-		List<ReportDetail> undeterminedIncidents = new ArrayList<>();
-		logger.info("Creating determine and undetermined lists");
-		for (ReportDetail detail : data) {
-			if (BurnedOut.UNDETERMINED.name().equalsIgnoreCase(detail.getBurnedOutComplianceString())) {
-				undeterminedIncidents.add(detail);
-			} else {
-				determinedIncidents.add(detail);
-			}
-		}
-		logger.info("Filled determined and undetermined lists");
-		loadData(determinedIncidentsSheet, determinedIncidents);
-		loadData(undeterminedIncidentsSheet, undeterminedIncidents);
-		logger.info("Filled filled sheets");
-		ExcelWritter ew = new ExcelWritter();
-
-		try {
-			logger.info("Writing Report File");
-			generatedReportFile = ew.write(workbookTemplate, generateFileName());
-			logger.info("Finished Writting Report File");
-		} catch (FileNotFoundException fnfe) {
-			throw new SlaReportGenerationException("File not found");
-		} catch (IOException ioe) {
-			throw new SlaReportGenerationException("Error writting the file");
-		}
-		observer.notifyProcessPhase(this, "File " + generatedReportFile + " was created!");
-	}
-
-	/**
-	 * Load a list of ReportDetail objects in a determined Sheet object
-	 *
-	 * @param sheet
-	 *            The Sheet object to load data
-	 * @param data
-	 *            The list of report details who need to be loaded in the sheet
-	 */
-	protected void loadData(Sheet sheet, List<ReportDetail> data) {
-		sheet.createFreezePane(0, 1);
-		Row row;
-		int rownum = 1;
-		for (ReportDetail reportDetail : data) {
-			row = sheet.createRow(rownum++);
-			createCellValue(reportDetail.getIncidentIdentifier(), row, 0);
-			createCellValue(reportDetail.getIncidentCreatedTimestamp(), row, 1);
-			createCellValue(reportDetail.getIncidentClosedTimestamp(), row, 2);
-			createCellValue(reportDetail.getIncidentAuditSystemModifiedTime(), row, 3);
-			createCellValue(reportDetail.getBurnedOutComplianceString(), row, 4);
-			createCellValue(reportDetail.getIncidentTimeToFixDurationHours(), row, 5);
-			createCellValue(reportDetail.getIncidentCurrentAssignmentGroupName(), row, 6);
-			createCellValue(reportDetail.getIncidentAuditNewValueText(), row, 7);
-			createCellValue(reportDetail.getConfigurationItemLogicalName(), row, 8);
-			createCellValue(reportDetail.getRelatedRootConfigurationItemBusinessFriendlyName(), row, 9);
-			createCellValue(reportDetail.getRelatedRootConfigurationItemApplicationPortfolioIdentifier(), row, 10);
-			createCellValue(reportDetail.getIncidentCriticalityDescription(), row, 11);
-			createCellValue(reportDetail.getIncidentPriorityDescription(), row, 12);
-			createCellValue(reportDetail.getIncidentCurrentStatusPhaseDescription(), row, 13);
-			createCellValue(reportDetail.getIncidentCurrentStatusDescription(), row, 14);
-			createCellValue(reportDetail.getIncidentAgingDurationInDays(), row, 15);
-			createCellValue(reportDetail.getIncidentOpenedByEmailName(), row, 16);
-			createCellValue(reportDetail.getIncidentAssigneeEmailName(), row, 17);
-			createCellValue(reportDetail.getIncidentAssigneeManagerEmailName(), row, 18);
-			createCellValue(reportDetail.getIncidentAssigneeOrganizationUnitName(), row, 19);
-			createCellValue(reportDetail.getIncidentCurrentAssignmentGroupSupportLevelDescription(), row, 20);
-			createCellValue(reportDetail.getIncidentClosedAssignmentGroupSupportLevelDescription(), row, 21);
-			createCellValue(reportDetail.getConfigurationItemStatusDescription(), row, 22);
-			createCellValue(reportDetail.getConfigurationItemEnvironmentDescription(), row, 23);
-			createCellValue(
-					reportDetail.getIncidentConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name(), row,
-					24);
-			createCellValue(reportDetail.getErrorMessage(), row, 25);
-		}
+	public void setObserver(SlaReportGeneratorObserver observer) {
+		this.observer = observer;
 	}
 
 	/**
@@ -327,35 +217,113 @@ public class SlaReportGenerator {
 	}
 
 	/**
-	 * A default implementation of SlaReportGeneratorObserver
+	 * Create the final excel file taking a list of ReporDetail objects
+	 *
+	 * @param data
+	 *            The list of details (records) of the report
+	 * @throws Exception
+	 *             If there is an exception during this process
 	 */
-	static class DefaultSlaReportObserver extends BaseSlaReportGeneratorObserver {
+	protected void generateWorkbook(List<ReportDetail> data) throws Exception {
 
-		@Override
-		public void reportCurrentIncident(Incident incident, int i) {
-			logger.info("Current Incident is: " + incident);
-			logger.info(i + " incidents analized of " + getTotal());
+		Sheet determinedIncidentsSheet = workbookTemplate.getSheetAt(0);
+		Sheet undeterminedIncidentsSheet = workbookTemplate.getSheetAt(1);
+
+		List<ReportDetail> determinedIncidents = new ArrayList<>();
+		List<ReportDetail> undeterminedIncidents = new ArrayList<>();
+		logger.info("Creating determine and undetermined lists");
+		for (ReportDetail detail : data) {
+			if (BurnedOut.UNDETERMINED.name().equalsIgnoreCase(detail.getBurnedOutComplianceString())) {
+				undeterminedIncidents.add(detail);
+			} else {
+				determinedIncidents.add(detail);
+			}
+		}
+		logger.info("Filled determined and undetermined lists");
+		loadData(determinedIncidentsSheet, determinedIncidents);
+		loadData(undeterminedIncidentsSheet, undeterminedIncidents);
+		logger.info("Filled filled sheets");
+		ExcelWritter ew = new ExcelWritter();
+
+		try {
+			logger.info("Writing Report File");
+			generatedReportFile = ew.write(workbookTemplate, generateFileName());
+			logger.info("Finished Writting Report File");
+		} catch (FileNotFoundException fnfe) {
+			throw new SlaReportGenerationException("File not found");
+		} catch (IOException ioe) {
+			throw new SlaReportGenerationException("Error writting the file");
+		}
+		observer.notifyProcessPhase(this, "File " + generatedReportFile + " was created!");
+	}
+
+	/**
+	 * Combine the list of incidents with the list of audits
+	 *
+	 * @param incidents
+	 *            The list of incidents
+	 * @param audits
+	 *            The list of audits
+	 * @return A combined list of incidents with audits included
+	 */
+	protected List<Incident> integrateIncidents(List<Incident> incidents, List<Audit> audits) {
+		Map<String, Incident> maps = new HashMap<>();
+		for (Incident incident : incidents) {
+			maps.put(incident.getId(), incident);
 		}
 
-		@Override
-		public void notifyProcessPhase(SlaReportGenerator aThis, String string) {
-			logger.info(string);
-		}
+		for (Audit audit : audits) {
+			Incident incident = maps.get(audit.getIncidentID());
+			if (incident != null) {
+				incident.addAudit(audit);
+			}
 
-		@Override
-		public void onFinalizeReportGeneration(SlaReportGenerator slaReportGenerator) {
-			logger.info("Report created: " + slaReportGenerator.getGeneratedReportFile());
 		}
+		return incidents;
+	}
 
-		@Override
-		public void onStartReportGeneration(SlaReportGenerator slaReportGenerator) {
-			logger.info("Starting process...");
+	/**
+	 * Load a list of ReportDetail objects in a determined Sheet object
+	 *
+	 * @param sheet
+	 *            The Sheet object to load data
+	 * @param data
+	 *            The list of report details who need to be loaded in the sheet
+	 */
+	protected void loadData(Sheet sheet, List<ReportDetail> data) {
+		sheet.createFreezePane(0, 1);
+		Row row;
+		int rownum = 1;
+		for (ReportDetail reportDetail : data) {
+			row = sheet.createRow(rownum++);
+			createCellValue(reportDetail.getIncidentIdentifier(), row, 0);
+			createCellValue(reportDetail.getIncidentCreatedTimestamp(), row, 1);
+			createCellValue(reportDetail.getIncidentClosedTimestamp(), row, 2);
+			createCellValue(reportDetail.getIncidentAuditSystemModifiedTime(), row, 3);
+			createCellValue(reportDetail.getBurnedOutComplianceString(), row, 4);
+			createCellValue(reportDetail.getIncidentTimeToFixDurationHours(), row, 5);
+			createCellValue(reportDetail.getIncidentCurrentAssignmentGroupName(), row, 6);
+			createCellValue(reportDetail.getIncidentAuditNewValueText(), row, 7);
+			createCellValue(reportDetail.getConfigurationItemLogicalName(), row, 8);
+			createCellValue(reportDetail.getRelatedRootConfigurationItemBusinessFriendlyName(), row, 9);
+			createCellValue(reportDetail.getRelatedRootConfigurationItemApplicationPortfolioIdentifier(), row, 10);
+			createCellValue(reportDetail.getIncidentCriticalityDescription(), row, 11);
+			createCellValue(reportDetail.getIncidentPriorityDescription(), row, 12);
+			createCellValue(reportDetail.getIncidentCurrentStatusPhaseDescription(), row, 13);
+			createCellValue(reportDetail.getIncidentCurrentStatusDescription(), row, 14);
+			createCellValue(reportDetail.getIncidentAgingDurationInDays(), row, 15);
+			createCellValue(reportDetail.getIncidentOpenedByEmailName(), row, 16);
+			createCellValue(reportDetail.getIncidentAssigneeEmailName(), row, 17);
+			createCellValue(reportDetail.getIncidentAssigneeManagerEmailName(), row, 18);
+			createCellValue(reportDetail.getIncidentAssigneeOrganizationUnitName(), row, 19);
+			createCellValue(reportDetail.getIncidentCurrentAssignmentGroupSupportLevelDescription(), row, 20);
+			createCellValue(reportDetail.getIncidentClosedAssignmentGroupSupportLevelDescription(), row, 21);
+			createCellValue(reportDetail.getConfigurationItemStatusDescription(), row, 22);
+			createCellValue(reportDetail.getConfigurationItemEnvironmentDescription(), row, 23);
+			createCellValue(
+					reportDetail.getIncidentConfigurationItemITAssetOwnerAssignmentGroupOrganizationLevel1Name(), row,
+					24);
+			createCellValue(reportDetail.getErrorMessage(), row, 25);
 		}
-
-		@Override
-		public void onReportGenerationError(Exception ex) {
-			logger.error("Error during the creation of the file", ex);
-		}
-
 	}
 }
