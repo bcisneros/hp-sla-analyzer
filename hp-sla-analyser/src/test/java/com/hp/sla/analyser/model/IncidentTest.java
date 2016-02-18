@@ -1,19 +1,18 @@
 package com.hp.sla.analyser.model;
 
+import static com.hp.sla.analyser.model.AuditsBuilder.anAudit;
+import static com.hp.sla.analyser.model.IncidentBuilder.anIncident;
 import static com.hp.sla.analyser.util.DateTimeUtil.FIRST_DAY_2015_YEAR_TIMESTAMP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,107 +21,69 @@ import com.hp.sla.analyser.util.DateTimeUtil;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
-/**
- *
- * @author cisnerob
- */
 @RunWith(JUnitParamsRunner.class)
 public class IncidentTest {
 
-	private final static Logger logger = Logger.getLogger(SlaReportGenerator.class);
+	private static final double SEVENTY_FIVE_PERCENT = 0.75;
+	private static final int SIX_DAYS = 144;
+	private static final double SIX_HOURS = 6.0;
+	private static final double FOUR_DAYS = 96.0;
+	private static final double THREE_DAYS = 72.0;
+	private static final double ONE_DAY = 24.0;
+	private static final double EIGHT_HOURS = 8.0;
+	private static final double THREE_HOURS = 3.0;
 
-	/**
-	 * Test of calculateBurnedOutDate method, of class Incident.
-	 *
-	 * @param sla
-	 * @param incident
-	 * @param expectedTimeStamp
-	 */
 	@Test
 	@Parameters(method = "getIncidentsForCalculateBurnedOutDate")
-	public void testCalculateBurnedOutDate(ServiceLevelAgreement sla, Incident incident, Timestamp expectedTimeStamp) {
-		try {
-			assertEquals(expectedTimeStamp, incident.calculateBurnedOutDate(sla));
-		} catch (SlaAnalysisException ex) {
-			fail("No exception is expected: " + ex);
-		}
+	public void shouldCalculateTheExpectedBurnedOutDate(IncidentTestCase testcase) throws Exception {
+		assertEquals(testcase.getTimestamp(), anIncident().creationTime(FIRST_DAY_2015_YEAR_TIMESTAMP).build()
+				.calculateBurnedOutDate(testcase.getLevelAgreement()));
 	}
 
 	@Test(expected = SlaAnalysisException.class)
 	@Parameters(method = "getServiceLevelAgreementsWithNullValues")
-	public void testCalulateBurnedOutDateWithNullBurnedOutValue(ServiceLevelAgreement sla) throws SlaAnalysisException {
+	public void shouldThrowAnExceptionWhenBurnedOutDateCouldNotBeCalculated(ServiceLevelAgreement sla)
+			throws SlaAnalysisException {
 		new Incident().calculateBurnedOutDate(sla);
 	}
 
-	/**
-	 * Test of calculateTimeToFixDeadLine method, of class Incident.
-	 *
-	 * @param sla
-	 * @param incident
-	 * @param expectedTimeStamp
-	 */
 	@Test
 	@Parameters(method = "getIncidentsForCalculateTimeToFixDeadLine")
-	public void testCalculateTimeToFixDeadLine(IncidentTestCase testcase) {
-
-		Incident defaultIncident = new Incident();
-		defaultIncident.setCreationTimestamp(FIRST_DAY_2015_YEAR_TIMESTAMP);
-
-		try {
-			assertEquals(testcase.getTimestamp(),
-					defaultIncident.calculateTimeToFixDeadLine(testcase.getLevelAgreement()));
-		} catch (SlaAnalysisException ex) {
-			fail("No exception is expected: " + ex);
-		}
+	public void shouldCalculateTheExpectedTimeToFixDeadLine(IncidentTestCase testcase) throws Exception {
+		assertEquals(testcase.getTimestamp(), anIncident().creationTime(FIRST_DAY_2015_YEAR_TIMESTAMP).build()
+				.calculateTimeToFixDeadLine(testcase.getLevelAgreement()));
 	}
 
 	@Test
-	public void testSearchAndSetLastAssignmentGroupAudit() {
-		Incident incident = new Incident();
-		List<Audit> audits = new ArrayList<>();
+	public void shouldResolveWhatItsTheLastAuditByAssignmentGroup() {
+		final String FIRST_ASSIGNMENT_GROUP = "A";
+		final String SECOND_ASSIGNMENT_GROUP = "B";
+		final String THIRD_ASSIGNMENT_GROUP = "C";
+		final String NOT_IN_LIST_ASSIGNMENT_GROUP = "X";
 
-		Audit audit1 = new Audit();
-		audit1.setNewVaueText("A");
-		audit1.setSystemModifiedTime(Timestamp.valueOf("2015-01-01 00:00:00"));
-
-		Audit audit2 = new Audit();
-		audit2.setNewVaueText("B");
-		audit2.setSystemModifiedTime(Timestamp.valueOf("2015-01-15 00:00:00"));
-
-		Audit audit3 = new Audit();
-		audit3.setNewVaueText("X");
-		audit3.setSystemModifiedTime(Timestamp.valueOf("2015-01-29 00:00:00"));
-
-		audits.add(audit1);
-		audits.add(audit2);
-
-		incident.setAudits(audits);
-
-		List<String> assignmentGroups;
-		assignmentGroups = new ArrayList<>();
-		assignmentGroups.add("A");
-		assignmentGroups.add("B");
-		assignmentGroups.add("C");
-
-		incident.searchAndSetLastAssignmentGroupAudit(assignmentGroups);
-
+		Audit audit1 = anAudit().currentAssignmentGroup(FIRST_ASSIGNMENT_GROUP)
+				.systemTime(Timestamp.valueOf("2015-01-01 00:00:00")).build();
+		Audit audit2 = anAudit().currentAssignmentGroup(SECOND_ASSIGNMENT_GROUP)
+				.systemTime(Timestamp.valueOf("2015-01-15 00:00:00")).build();
+		Audit audit3 = anAudit().currentAssignmentGroup(NOT_IN_LIST_ASSIGNMENT_GROUP)
+				.systemTime(Timestamp.valueOf("2015-01-29 00:00:00")).build();
+		Incident incident = anIncident().withAudits(audit1, audit2, audit3).build();
+		String[] assignmentGroups = { FIRST_ASSIGNMENT_GROUP, SECOND_ASSIGNMENT_GROUP, THIRD_ASSIGNMENT_GROUP };
+		incident.searchAndSetLastAssignmentGroupAudit(new ArrayList<>(Arrays.asList(assignmentGroups)));
 		assertNotNull("The last asssignment group audit must be not null", incident.getLastAssignmentGroupAudit());
 		assertSame("The last asssignment group audit must be the same object as Audit 2",
 				incident.getLastAssignmentGroupAudit(), audit1);
 	}
 
 	@Test
-	public void testClone() {
-		try {
-			Incident incident = new Incident();
-			assertEquals(incident, incident.clone());
-			assertNotSame(incident, incident.clone());
-		} catch (CloneNotSupportedException ex) {
-			fail("No exception was expected: " + ex);
-		}
+	public void shouldCloneItself() throws Exception {
+		Incident incident = new Incident();
+		assertEquals(incident, incident.clone());
+		assertNotSame(incident, incident.clone());
 	}
 
-	protected List<ServiceLevelAgreement> getServiceLevelAgreementsWithNullValues() {
+	@SuppressWarnings("unused")
+	private List<ServiceLevelAgreement> getServiceLevelAgreementsWithNullValues() {
 		List<ServiceLevelAgreement> list = new ArrayList<>();
 		list.add(ServiceLevelAgreement.HP_IT_NORMAL_TOP);
 		list.add(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_TOP);
@@ -136,70 +97,6 @@ public class IncidentTest {
 		return list;
 	}
 
-	public static Collection<Object[]> getIncidentsForCalculateBurnedOutDate() {
-		Incident incident = new Incident();
-		incident.setCreationTimestamp(FIRST_DAY_2015_YEAR_TIMESTAMP);
-		return Arrays.asList(new Object[][] {
-				// HP-IT
-				{ ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 3.0) },
-				{ ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 6.0) },
-				{ ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 72 * 0.75) },
-				{ ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 96 * 0.75) },
-				{ ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 6.0) },
-				{ ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 72 * 0.75) },
-				{ ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 96 * 0.75) },
-				{ ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 96 * 0.75) },
-				{ ServiceLevelAgreement.HP_IT_NORMAL_LOW, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 144 * 0.75) },
-				// HPI-IT
-				{ ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_TOP, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 8 * 0.75) },
-				{ ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_HIGH, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 24 * 0.75) },
-				{ ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_MEDIUM, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 72 * 0.75) },
-				{ ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_LOW, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 96 * 0.75) },
-				{ ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_HIGH, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 24.0 * 0.75) },
-				{ ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_MEDIUM, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 72 * 0.75) },
-				{ ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_LOW, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 96 * 0.75) },
-				{ ServiceLevelAgreement.HPI_IT_NORMAL_MEDIUM, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 72 * 0.75) },
-				{ ServiceLevelAgreement.HPI_IT_NORMAL_LOW, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 96 * 0.75) },
-				// HPE-IT (Same values as HP-IT)
-				{ ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_TOP, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 3.0) },
-				{ ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_HIGH, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 6.0) },
-				{ ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_MEDIUM, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 72 * 0.75) },
-				{ ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_LOW, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 96 * 0.75) },
-				{ ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_HIGH, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 6.0) },
-				{ ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_MEDIUM, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 72 * 0.75) },
-				{ ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_LOW, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 96 * 0.75) },
-				{ ServiceLevelAgreement.HPE_IT_NORMAL_MEDIUM, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 96 * 0.75) },
-				{ ServiceLevelAgreement.HPE_IT_NORMAL_LOW, incident,
-						DateTimeUtil.addHours(FIRST_DAY_2015_YEAR_TIMESTAMP, 144 * 0.75) }, });
-
-	}
-
 	@SuppressWarnings("unused")
 	private static List<IncidentTestCase> getIncidentsForCalculateTimeToFixDeadLine() {
 		List<IncidentTestCase> testCases = new ArrayList<>();
@@ -209,51 +106,129 @@ public class IncidentTest {
 		return testCases;
 	}
 
+	@SuppressWarnings("unused")
+	private static List<IncidentTestCase> getIncidentsForCalculateBurnedOutDate() {
+		List<IncidentTestCase> testCases = new ArrayList<>();
+		testCases.addAll(hpIncidentsForBurnedOutDate());
+		testCases.addAll(hpiIncidentsForBurnedOutDate());
+		testCases.addAll(hpeIncidentsForBurnedOutDate());
+		return testCases;
+	}
+
+	private static List<IncidentTestCase> hpeIncidentsForBurnedOutDate() {
+		List<IncidentTestCase> testCases = new ArrayList<>();
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_TOP, addHours(THREE_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_HIGH, addHours(SIX_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_MEDIUM,
+				addHours(THREE_DAYS * SEVENTY_FIVE_PERCENT)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_LOW,
+				addHours(FOUR_DAYS * SEVENTY_FIVE_PERCENT)));
+
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_HIGH, addHours(SIX_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_MEDIUM,
+				addHours(THREE_DAYS * SEVENTY_FIVE_PERCENT)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_LOW,
+				addHours(FOUR_DAYS * SEVENTY_FIVE_PERCENT)));
+
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_NORMAL_MEDIUM,
+				addHours(FOUR_DAYS * SEVENTY_FIVE_PERCENT)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_NORMAL_LOW,
+				addHours(SIX_DAYS * SEVENTY_FIVE_PERCENT)));
+		return testCases;
+	}
+
+	private static List<IncidentTestCase> hpiIncidentsForBurnedOutDate() {
+		List<IncidentTestCase> testCases = new ArrayList<>();
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_TOP,
+				addHours(EIGHT_HOURS * SEVENTY_FIVE_PERCENT)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_HIGH,
+				addHours(ONE_DAY * SEVENTY_FIVE_PERCENT)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_MEDIUM,
+				addHours(THREE_DAYS * SEVENTY_FIVE_PERCENT)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_LOW,
+				addHours(FOUR_DAYS * SEVENTY_FIVE_PERCENT)));
+
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_HIGH,
+				addHours(ONE_DAY * SEVENTY_FIVE_PERCENT)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_MEDIUM,
+				addHours(THREE_DAYS * SEVENTY_FIVE_PERCENT)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_LOW,
+				addHours(FOUR_DAYS * SEVENTY_FIVE_PERCENT)));
+
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_NORMAL_MEDIUM,
+				addHours(THREE_DAYS * SEVENTY_FIVE_PERCENT)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_NORMAL_LOW,
+				addHours(FOUR_DAYS * SEVENTY_FIVE_PERCENT)));
+		return testCases;
+	}
+
+	private static List<IncidentTestCase> hpIncidentsForBurnedOutDate() {
+		List<IncidentTestCase> testCases = new ArrayList<>();
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP, addHours(THREE_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH, addHours(SIX_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM,
+				addHours(THREE_DAYS * SEVENTY_FIVE_PERCENT)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW,
+				addHours(FOUR_DAYS * SEVENTY_FIVE_PERCENT)));
+
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH, addHours(SIX_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM,
+				addHours(THREE_DAYS * SEVENTY_FIVE_PERCENT)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW,
+				addHours(FOUR_DAYS * SEVENTY_FIVE_PERCENT)));
+
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM,
+				addHours(FOUR_DAYS * SEVENTY_FIVE_PERCENT)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_NORMAL_LOW,
+				addHours(SIX_DAYS * SEVENTY_FIVE_PERCENT)));
+		return testCases;
+	}
+
 	private static List<IncidentTestCase> hpIncidentsForTimeToFix() {
 		List<IncidentTestCase> testCases = new ArrayList<>();
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP, addHours(3.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH, addHours(6.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM, addHours(72.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW, addHours(96.0)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_TOP, addHours(THREE_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_HIGH, addHours(SIX_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_MEDIUM, addHours(THREE_DAYS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_MISSION_CRITICAL_LOW, addHours(FOUR_DAYS)));
 
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH, addHours(6.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM, addHours(72.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW, addHours(96.0)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_HIGH, addHours(SIX_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_MEDIUM, addHours(THREE_DAYS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_ENTITY_ESSENTIAL_LOW, addHours(FOUR_DAYS)));
 
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM, addHours(96.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_NORMAL_LOW, addHours(144)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_NORMAL_MEDIUM, addHours(FOUR_DAYS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HP_IT_NORMAL_LOW, addHours(SIX_DAYS)));
 		return testCases;
 	}
 
 	private static List<IncidentTestCase> hpiIncidentsForTimeToFix() {
 		List<IncidentTestCase> testCases = new ArrayList<>();
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_TOP, addHours(8.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_HIGH, addHours(24.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_MEDIUM, addHours(72.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_LOW, addHours(96.0)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_TOP, addHours(EIGHT_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_HIGH, addHours(ONE_DAY)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_MEDIUM, addHours(THREE_DAYS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_MISSION_CRITICAL_LOW, addHours(FOUR_DAYS)));
 
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_HIGH, addHours(24.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_MEDIUM, addHours(72.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_LOW, addHours(96.0)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_HIGH, addHours(ONE_DAY)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_MEDIUM, addHours(THREE_DAYS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_ENTITY_ESSENTIAL_LOW, addHours(FOUR_DAYS)));
 
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_NORMAL_MEDIUM, addHours(72.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_NORMAL_LOW, addHours(96.0)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_NORMAL_MEDIUM, addHours(THREE_DAYS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPI_IT_NORMAL_LOW, addHours(FOUR_DAYS)));
 		return testCases;
 	}
 
 	private static List<IncidentTestCase> hpeIncidentsForTimeToFix() {
 		List<IncidentTestCase> testCases = new ArrayList<>();
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_TOP, addHours(3.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_HIGH, addHours(6.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_MEDIUM, addHours(72.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_LOW, addHours(96.0)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_TOP, addHours(THREE_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_HIGH, addHours(SIX_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_MEDIUM, addHours(THREE_DAYS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_MISSION_CRITICAL_LOW, addHours(FOUR_DAYS)));
 
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_HIGH, addHours(6.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_MEDIUM, addHours(72.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_LOW, addHours(96.0)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_HIGH, addHours(SIX_HOURS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_MEDIUM, addHours(THREE_DAYS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_ENTITY_ESSENTIAL_LOW, addHours(FOUR_DAYS)));
 
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_NORMAL_MEDIUM, addHours(96.0)));
-		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_NORMAL_LOW, addHours(144)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_NORMAL_MEDIUM, addHours(FOUR_DAYS)));
+		testCases.add(new IncidentTestCase(ServiceLevelAgreement.HPE_IT_NORMAL_LOW, addHours(SIX_DAYS)));
 		return testCases;
 	}
 
