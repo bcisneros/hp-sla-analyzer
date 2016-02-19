@@ -25,7 +25,7 @@ import com.hp.sla.analyser.model.util.ExcelReader;
 public class SlaReportGeneratorTest {
 
 	private SlaReportGenerator instance;
-	String testDestinationPath = System.getProperty("user.dir") + "\\target\\";
+	String testDestinationPath = System.getProperty("user.dir") + "/target/";
 
 	@Before
 	public void setUp() {
@@ -34,7 +34,7 @@ public class SlaReportGeneratorTest {
 
 	@Test
 	public void generateReport_WithValidEntryReports_ShouldGenerateReportFile() throws Exception {
-		String resourcesLocation = System.getProperty("user.dir") + "\\src\\test\\resources\\files\\";
+		String resourcesLocation = System.getProperty("user.dir") + "/src/test/resources/files/";
 		instance.generateReport(resourcesLocation + "testIncidents.xlsx",
 				resourcesLocation + "testAssignmentGroupAudits.xlsx", testDestinationPath);
 		File file = new File(instance.getGeneratedReportFile());
