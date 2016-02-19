@@ -55,7 +55,6 @@ public abstract class ExcelParser<T> {
 		boolean dataStart = false;
 		// Traversing over each row of XLSX file
 		logger.info("Iterating the XLSX file.");
-		int rowCount = 1;
 		while (rowIterator.hasNext()) {
 			Row row = rowIterator.next();
 			// For each row, iterate through each columns
@@ -72,7 +71,6 @@ public abstract class ExcelParser<T> {
 						|| firstCellValue.startsWith("HP")) {
 					break;
 				}
-				rowCount++;
 				T obj = createObject(cellIterator);
 				objects.add(obj);
 			} else if (cellIterator.hasNext()
