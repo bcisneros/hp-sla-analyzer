@@ -82,7 +82,9 @@ public class SlaReportGenerator {
 		}
 		return w;
 	}
+
 	private String destination = "C:\\temp\\";
+
 	private SlaReportGeneratorObserver observer;
 
 	private String generatedReportFile;
@@ -93,6 +95,12 @@ public class SlaReportGenerator {
 	 */
 	public SlaReportGenerator() {
 		observer = new DefaultSlaReportObserver();
+	}
+
+	public SlaReportGenerator(String destination) {
+		super();
+		observer = new DefaultSlaReportObserver();
+		this.destination = destination;
 	}
 
 	/**
