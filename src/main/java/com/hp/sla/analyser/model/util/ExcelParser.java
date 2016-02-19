@@ -57,7 +57,6 @@ public abstract class ExcelParser<T> {
 		logger.info("Iterating the XLSX file.");
 		int rowCount = 1;
 		while (rowIterator.hasNext()) {
-			logger.debug("Row:" + rowCount);
 			Row row = rowIterator.next();
 			// For each row, iterate through each columns
 			Iterator<Cell> cellIterator = row.cellIterator();

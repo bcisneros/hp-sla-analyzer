@@ -20,10 +20,8 @@ public class ResourcesUtil {
 	 */
 	public static InputStream getResourceFromProjectClasspath(String file) {
 		InputStream testFile = null;
-		logger.debug("1");
 		try {
 			testFile = classLoader.getResourceAsStream(file);
-			logger.debug("2");
 		} catch (Exception ex) {
 			final String message = "Error while getting the file " + file;
 			logger.error(message, ex);
