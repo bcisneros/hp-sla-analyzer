@@ -52,7 +52,7 @@ public class AuditParserTest extends ExcelParserTest<Audit> {
 
 	@Override
 	protected int getExpectedSize() {
-		return 3040;
+		return 70;
 	}
 
 	@Override

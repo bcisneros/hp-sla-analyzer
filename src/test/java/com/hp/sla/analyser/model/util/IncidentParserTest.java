@@ -66,7 +66,7 @@ public class IncidentParserTest extends ExcelParserTest<Incident> {
 
 	@Override
 	protected int getExpectedSize() {
-		return 4196;
+		return 40;
 	}
 
 	@Override
