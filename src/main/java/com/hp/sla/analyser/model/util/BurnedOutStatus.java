@@ -10,7 +10,7 @@ package com.hp.sla.analyser.model.util;
  *
  * @author Mallinali Ramirez Corona
  */
-public enum BurnedOut {
+public enum BurnedOutStatus {
 
     COMPLIANCE("yes"),
     NON_COMPLIANCE("no"),
@@ -18,7 +18,7 @@ public enum BurnedOut {
 
     private String name;
 
-    BurnedOut(String name) {
+    BurnedOutStatus(String name) {
         this.name = name;
     }
 

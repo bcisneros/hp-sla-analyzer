@@ -25,7 +25,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.hp.sla.analyser.model.util.AuditParser;
-import com.hp.sla.analyser.model.util.BurnedOut;
+import com.hp.sla.analyser.model.util.BurnedOutStatus;
 import com.hp.sla.analyser.model.util.ExcelReader;
 import com.hp.sla.analyser.model.util.ExcelWritter;
 import com.hp.sla.analyser.model.util.IncidentParser;
@@ -241,7 +241,7 @@ public class SlaReportGenerator {
 		List<ReportDetail> undeterminedIncidents = new ArrayList<>();
 		logger.info("Creating determine and undetermined lists");
 		for (ReportDetail detail : data) {
-			if (BurnedOut.UNDETERMINED.name().equalsIgnoreCase(detail.getBurnedOutComplianceString())) {
+			if (BurnedOutStatus.UNDETERMINED.name().equalsIgnoreCase(detail.getBurnedOutComplianceString())) {
 				undeterminedIncidents.add(detail);
 			} else {
 				determinedIncidents.add(detail);
